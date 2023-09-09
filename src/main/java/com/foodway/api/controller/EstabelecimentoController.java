@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/estabelecimento")
+@RequestMapping("/estabelecimentos")
 public class EstabelecimentoController {
 
 
@@ -19,7 +19,7 @@ public class EstabelecimentoController {
 
     @GetMapping
     public ResponseEntity<List<Estabelecimento>> getEstabelecimentos(){
-            return getEstabelecimentos();
+            return estabelecimentoService.getEstabelecimentos();
     }
 
     @GetMapping("/{id}")
@@ -35,6 +35,11 @@ public class EstabelecimentoController {
     @PostMapping
     public ResponseEntity<Estabelecimento> postEstabelecimento(@RequestBody Estabelecimento estabelecimento){
         return estabelecimentoService.save(estabelecimento);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Estabelecimento> putEstabelecimento(@PathVariable UUID id, @RequestBody Estabelecimento estabelecimento){
+        return estabelecimentoService.putEstabelecimento(id, estabelecimento);
     }
 
 //    @PostMapping("/t")

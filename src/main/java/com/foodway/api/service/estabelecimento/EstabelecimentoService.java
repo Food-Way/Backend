@@ -36,4 +36,14 @@ public class EstabelecimentoService {
     public ResponseEntity<Estabelecimento> save(Estabelecimento estabelecimento) {
         return ResponseEntity.status(201).body(estabelecimentoRepository.save(estabelecimento));
     }
+
+    public ResponseEntity<Estabelecimento> putEstabelecimento(UUID id, Estabelecimento estabelecimento) {
+        Optional<Estabelecimento> estabelecimentoOptional = estabelecimentoRepository.findById(id);
+        if(estabelecimentoOptional.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+
+        estabelecimento.atualizar(estabelecimentoOptional.get());
+        return ResponseEntity.status(200).body(estabelecimentoRepository.save(estabelecimento));
+    }
 }

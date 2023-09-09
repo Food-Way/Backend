@@ -5,10 +5,12 @@ import com.foodway.api.model.Usuario;
 import com.foodway.api.record.RequestUserData;
 import com.foodway.api.repository.UsuarioRepository;
 import org.hibernate.validator.constraints.UUID;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -45,6 +47,23 @@ public class UsuarioService {
         if (usuario.isPresent()) {
             usuarioRepository.delete(usuario.get());
             return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    public ResponseEntity<List<Usuario>> getUsuarios() {
+        List<Usuario> usuarios = usuarioRepository.findAll();
+        if (usuarios.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(usuarios);
+    }
+
+    public ResponseEntity<Usuario> putUsuario(UUID id,@NotNull Usuario usuario) {
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
+        if (usuarioOptional.isPresent()) {
+            usuario.atualizar(usuarioOptional.get());
+            return ResponseEntity.status(200).body(usuarioRepository.save(usuario));
         }
         return ResponseEntity.status(404).build();
     }

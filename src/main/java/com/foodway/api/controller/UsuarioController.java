@@ -10,30 +10,42 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @GetMapping("/usuarios-teste") ResponseEntity<List<Usuario>> getUsuarios() {
+        return usuarioService.getUsuarios();
+    }
 
     @GetMapping("/id")
     public ResponseEntity<Usuario> getUsuario(@PathVariable UUID id) {
         return usuarioService.getUsuario(id);
     }
 
-   @PostMapping
-    public ResponseEntity<Usuario> save(@RequestBody @Validated RequestUserData data) {
-        return usuarioService.cadastrar(data);
-    }
     @GetMapping
     public ResponseEntity<Usuario> login(@RequestBody @Validated RequestUserLogin data) {
         return usuarioService.loginUser(data);
     }
 
+   @PostMapping
+    public ResponseEntity<Usuario> save(@RequestBody @Validated RequestUserData data) {
+        return usuarioService.cadastrar(data);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Usuario> delete(@PathVariable UUID id) {
         return usuarioService.deleteUsuario(id);
+    }
+
+    @PutMapping
+    public ResponseEntity<Usuario> put(@PathVariable UUID id, @RequestBody Usuario usuario) {
+        return usuarioService.putUsuario(id, usuario);
     }
     /*
         {
