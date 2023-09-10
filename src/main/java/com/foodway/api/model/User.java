@@ -1,18 +1,14 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.foodway.api.record.RequestUserData;
 import jakarta.persistence.*;
-import lombok.*;
 
-
+import java.util.Optional;
 import java.util.UUID;
 
-@Entity(name = "usuario")
-@AllArgsConstructor
-@NoArgsConstructor
-
-public class Usuario implements Updatable {
+//@Entity(name = "tbUser")
+@Entity(name = "tbUser")
+public abstract class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
     private UUID idUser;
@@ -22,22 +18,23 @@ public class Usuario implements Updatable {
     private String password;
     @Enumerated
     private TypeUser typeUser;
+    private String profilePhoto;
 
-    public Usuario(RequestUserData data){
-        this.name = data.nome() + " " + data.sobrenome();
-        this.email = data.email();
-        this.password = data.senha();
-        this.typeUser = data.typeUser();
+    public User() {
     }
 
-    @Override
-    public void updateName(String name) {
+    public User(String name, String email, String password, TypeUser typeUser, String profilePhoto) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.typeUser = typeUser;
+        this.profilePhoto = profilePhoto;
     }
-    public void atualizar( Usuario usuario) {
-        this.name = usuario.getName();
-        this.email = usuario.getEmail();
-        this.typeUser = usuario.getTypeUser();
-    }
+
+    public abstract void update(Optional<?> optional);
+
+    //todo Relembrar pq passa id
+    public abstract void comment(UUID idUser);
 
     public String getName() {
         return name;
@@ -69,5 +66,13 @@ public class Usuario implements Updatable {
 
     public void setTypeUser(TypeUser typeUser) {
         this.typeUser = typeUser;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 }

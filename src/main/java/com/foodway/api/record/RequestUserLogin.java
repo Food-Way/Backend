@@ -1,4 +1,4 @@
-package com.foodway.api.controller;
+package com.foodway.api.record;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

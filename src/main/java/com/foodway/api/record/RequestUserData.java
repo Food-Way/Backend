@@ -11,6 +11,7 @@ public record RequestUserData(
         @NotBlank String sobrenome,
         @NotBlank @Email String email,
         @NotBlank String senha,
-        @NotNull TypeUser typeUser
+        @NotNull TypeUser typeUser,
+        @NotBlank String profilePhoto
 ){
 }
