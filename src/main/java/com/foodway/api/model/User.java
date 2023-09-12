@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 //@Entity(name = "tbUser")
-@Entity(name = "tbUser")
+
 public abstract class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
