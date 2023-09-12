@@ -1,6 +1,7 @@
 package com.foodway.api.service.costumer;
 
 import com.foodway.api.model.Costumer;
+import com.foodway.api.record.RequestUserCostumer;
 import com.foodway.api.record.UpdateCostumerData;
 import com.foodway.api.repository.CostumerRepository;
 import org.apache.coyote.Response;
@@ -39,8 +40,9 @@ public class CostumerService {
         return ResponseEntity.status(200).body(costumerRepository.save(costumerOptional.get()));
     }
 
-    public ResponseEntity<Costumer> saveCostumer(Costumer costumer) {
-        return ResponseEntity.status(201).body(costumerRepository.save(costumer));
+    public ResponseEntity<Costumer> saveCostumer(RequestUserCostumer costumer) {
+        Costumer createdCostumer = new Costumer(costumer);
+        return ResponseEntity.status(201).body(costumerRepository.save(createdCostumer));
     }
 
     public ResponseEntity<Costumer> deleteCostumer(UUID id) {

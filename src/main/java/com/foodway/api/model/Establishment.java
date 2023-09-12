@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.foodway.api.record.RequestUserEstablishment;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,12 +24,21 @@ public class Establishment extends User {
     @Column(length = 45)
     private String number;
     private String rate;
-    @Column(length = 14)
+    @Column(length = 14, unique = true)
     private String cnpj;
 //    private List<Product> menu;
 //    private List<Comment> postList;
 
     public Establishment() {}
+    public Establishment(RequestUserEstablishment establishment) {
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
+        this.establishmentName = establishment.establishmentName();
+        this.description = establishment.description();
+        this.cep = establishment.cep();
+        this.number = establishment.number();
+        this.rate = establishment.rate();
+        this.cnpj = establishment.cnpj();
+    }
 
     @Override
     public void update(Optional<?> optional) {
@@ -40,6 +50,7 @@ public class Establishment extends User {
         this.setRate(establishment.getRate());
         this.setCnpj(establishment.getCnpj());
     }
+
 
     @Override
     public void comment(UUID idUser) {}

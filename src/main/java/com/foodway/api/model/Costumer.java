@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.foodway.api.record.RequestUserCostumer;
 import com.foodway.api.record.UpdateCostumerData;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -13,12 +14,18 @@ public class Costumer extends User{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idCostumer;
-    @Column(length = 11)
+    @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
     private String bio;
 
     public Costumer() {}
+
+    public Costumer(RequestUserCostumer costumer) {
+        super(costumer.name(), costumer.email(), costumer.password(), costumer.typeUser(), costumer.profilePhoto());
+        this.cpf = costumer.cpf();
+        this.bio = costumer.bio();
+    }
 
     public Costumer(String name, String email, String password, TypeUser typeUser, String profilePhoto, String cpf, String bio) {
         super(name, email, password, typeUser, profilePhoto);
