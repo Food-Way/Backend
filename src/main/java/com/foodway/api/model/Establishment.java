@@ -12,9 +12,9 @@ import java.util.UUID;
 //@NotBlank
 @EqualsAndHashCode
 public class Establishment extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID idEstablishment;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private UUID idEstablishment;
     @Column(length = 75)
     private String establishmentName;
     @Column(length = 255)
@@ -31,7 +31,7 @@ public class Establishment extends User {
 
     public Establishment() {}
     public Establishment(RequestUserEstablishment establishment) {
-        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.ETypeUser(), establishment.profilePhoto());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
         this.cep = establishment.cep();
@@ -51,12 +51,11 @@ public class Establishment extends User {
         this.setCnpj(establishment.getCnpj());
     }
 
-
     @Override
     public void comment(UUID idUser) {}
 
-    public Establishment(String name, String email, String password, TypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
-        super(name, email, password, typeUser, profilePhoto);
+    public Establishment(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
+        super(name, email, password, ETypeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
         this.cep = cep;
@@ -67,9 +66,9 @@ public class Establishment extends User {
 //        this.postList = postList;
     }
 
-    public UUID getIdEstablishment() {
-        return idEstablishment;
-    }
+//    public UUID getIdEstablishment() {
+//        return idEstablishment;
+//    }
     public String getEstablishmentName() {
         return establishmentName;
     }
@@ -115,6 +114,45 @@ public class Establishment extends User {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
+
+//    public List<Product> getMenu() {
+//        return menu;
+//    }
+//
+//    public void setMenu(List<Product> menu) {
+//        this.menu = menu;
+//    }
+//
+//    public List<Comment> getPostList() {
+//        return postList;
+//    }
+//
+//    public void setPostList(List<Comment> postList) {
+//        this.postList = postList;
+//    }
+//
+//    public void addComment(Comment comment) {
+//        this.postList.add(comment);
+//    }
+
+//    {
+//        "name": "leleo",
+//            "email": "leleo@gmail.com",
+//            "password": "leleooooo",
+//            "typeUser": "ESTABLISHMENT",
+//            "profilePhoto": "foto",
+//            "establishmentName": "leleo da cocada preta",
+//            "description": "Um otimo cachorro quente",
+//            "cep": "01234568",
+//            "number": "451",
+//            "rate": "3.5",
+//            "cnpj": "12345678912",
+//            "menu": [],
+//        "postList": []
+//    }
+
+
+
 
 
 }

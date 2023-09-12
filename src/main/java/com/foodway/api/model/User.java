@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.util.Optional;
 import java.util.UUID;
 
-//@Entity(name = "tbUser")
-
+@Entity(name = "tbUser")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
@@ -17,17 +17,17 @@ public abstract class User {
     @JsonIgnore
     private String password;
     @Enumerated
-    private TypeUser typeUser;
+    private ETypeUser ETypeUser;
     private String profilePhoto;
 
     public User() {
     }
 
-    public User(String name, String email, String password, TypeUser typeUser, String profilePhoto) {
+    public User(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.typeUser = typeUser;
+        this.ETypeUser = ETypeUser;
         this.profilePhoto = profilePhoto;
     }
 
@@ -60,12 +60,12 @@ public abstract class User {
         this.password = password;
     }
 
-    public TypeUser getTypeUser() {
-        return typeUser;
+    public ETypeUser getTypeUser() {
+        return ETypeUser;
     }
 
-    public void setTypeUser(TypeUser typeUser) {
-        this.typeUser = typeUser;
+    public void setTypeUser(ETypeUser ETypeUser) {
+        this.ETypeUser = ETypeUser;
     }
 
     public String getProfilePhoto() {

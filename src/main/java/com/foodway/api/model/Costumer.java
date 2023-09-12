@@ -11,9 +11,9 @@ import java.util.UUID;
 @Entity(name = "tbCostumer")
 @EqualsAndHashCode
 public class Costumer extends User{
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID idCostumer;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private UUID idCostumer;
     @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
@@ -22,13 +22,13 @@ public class Costumer extends User{
     public Costumer() {}
 
     public Costumer(RequestUserCostumer costumer) {
-        super(costumer.name(), costumer.email(), costumer.password(), costumer.typeUser(), costumer.profilePhoto());
+        super(costumer.name(), costumer.email(), costumer.password(), costumer.ETypeUser(), costumer.profilePhoto());
         this.cpf = costumer.cpf();
         this.bio = costumer.bio();
     }
 
-    public Costumer(String name, String email, String password, TypeUser typeUser, String profilePhoto, String cpf, String bio) {
-        super(name, email, password, typeUser, profilePhoto);
+    public Costumer(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto, String cpf, String bio) {
+        super(name, email, password, ETypeUser, profilePhoto);
         this.cpf = cpf;
         this.bio = bio;
     }
@@ -63,4 +63,22 @@ public class Costumer extends User{
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    /*
+    {
+        "name": "string",
+        "email": "string",
+        "password": "string",
+        "ETypeUser": "COSTUMER",
+        "profilePhoto": "string",
+        "cpf": "string",
+        "bio": "string"
+    }
+    * */
+
+
+
+
+
+
 }

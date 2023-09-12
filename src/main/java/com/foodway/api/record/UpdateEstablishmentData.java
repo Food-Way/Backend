@@ -2,20 +2,18 @@ package com.foodway.api.record;
 
 //import com.foodway.api.model.Post;
 //import com.foodway.api.model.Product;
-import com.foodway.api.model.TypeUser;
+import com.foodway.api.model.ETypeUser;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
-
-import java.util.List;
 
 public record UpdateEstablishmentData(
         @NotBlank String nome,
         @NotBlank String sobrenome,
         @NotBlank @Email String email,
         @NotBlank String senha,
-        @NotNull TypeUser typeUser,
+        @NotNull ETypeUser ETypeUser,
         @NotBlank String profilePhoto,
         @NotBlank String establishmentName,
         @NotBlank String description,
