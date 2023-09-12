@@ -1,6 +1,7 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.model.Establishment;
+import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import lombok.AllArgsConstructor;
@@ -37,8 +38,9 @@ public class EstablishmentService {
          return ResponseEntity.status(204).build();
     }
 
-    public ResponseEntity<Establishment> saveEstablishment(Establishment establishment) {
-        return ResponseEntity.status(201).body(establishmentRepository.save(establishment));
+    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
+        Establishment createdEstablishment = new Establishment(establishment);
+        return ResponseEntity.status(201).body(establishmentRepository.save(createdEstablishment));
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {

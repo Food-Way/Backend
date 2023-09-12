@@ -2,6 +2,7 @@ package com.foodway.api.controller;
 
 
 import com.foodway.api.model.Costumer;
+import com.foodway.api.record.RequestUserCostumer;
 import com.foodway.api.record.UpdateCostumerData;
 import com.foodway.api.service.costumer.CostumerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class CostumerController {
     @Autowired
     private CostumerService costumerService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Costumer>> getCostumer(){
         return costumerService.getConsumers();
     }
@@ -34,8 +35,8 @@ public class CostumerController {
         return costumerService.putCostumer(id, costumer);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Costumer> saveCostumer(@RequestBody @Validated Costumer costumer){
+    @PostMapping
+    public ResponseEntity<Costumer> saveCostumer(@RequestBody @Validated RequestUserCostumer costumer){
         return costumerService.saveCostumer(costumer);
     }
 
