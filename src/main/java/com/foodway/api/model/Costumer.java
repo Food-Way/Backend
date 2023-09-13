@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.foodway.api.record.RequestUserCostumer;
 import com.foodway.api.record.UpdateCostumerData;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
@@ -10,17 +11,23 @@ import java.util.UUID;
 @Entity(name = "tbCostumer")
 @EqualsAndHashCode
 public class Costumer extends User{
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID idCostumer;
-    @Column(length = 11)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private UUID idCostumer;
+    @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
     private String bio;
 
     public Costumer() {}
 
-    public Costumer(String name, String email, String password, TypeUser typeUser, String profilePhoto, String cpf, String bio) {
+    public Costumer(RequestUserCostumer costumer) {
+        super(costumer.name(), costumer.email(), costumer.password(), costumer.typeUser(), costumer.profilePhoto());
+        this.cpf = costumer.cpf();
+        this.bio = costumer.bio();
+    }
+
+    public Costumer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio) {
         super(name, email, password, typeUser, profilePhoto);
         this.cpf = cpf;
         this.bio = bio;
@@ -56,4 +63,22 @@ public class Costumer extends User{
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    /*
+    {
+        "name": "string",
+        "email": "string",
+        "password": "string",
+        "ETypeUser": "COSTUMER",
+        "profilePhoto": "string",
+        "cpf": "string",
+        "bio": "string"
+    }
+    * */
+
+
+
+
+
+
 }

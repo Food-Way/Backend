@@ -1,6 +1,7 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.model.Establishment;
+import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.service.establishment.EstablishmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,13 @@ public class EstablishmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated Establishment establishment) {
+    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Establishment> putEstablishment(@PathVariable UUID id, @RequestBody @Validated UpdateEstablishmentData establishment) {
+        System.out.println("Passei aqui");
         return establishmentService.putEstablishment(id, establishment);
     }
 }

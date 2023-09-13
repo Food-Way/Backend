@@ -1,6 +1,9 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.record.RequestComment;
+import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,11 +38,12 @@ public class EstablishmentService {
              return ResponseEntity.status(404).build();
          }
          establishmentRepository.delete(establishment.get());
-         return ResponseEntity.status(204).build();
+         return ResponseEntity.status(200).build();
     }
 
-    public ResponseEntity<Establishment> saveEstablishment(Establishment establishment) {
-        return ResponseEntity.status(201).body(establishmentRepository.save(establishment));
+    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
+        Establishment createdEstablishment = new Establishment(establishment);
+        return ResponseEntity.status(201).body(establishmentRepository.save(createdEstablishment));
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {
@@ -46,8 +51,22 @@ public class EstablishmentService {
         if(establishmentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
         }
-
-        establishmentOptional.get().update(Optional.ofNullable(data));
+        System.out.println("Passei aqui2");
+        Establishment establishment = establishmentOptional.get();
+        establishment.update(Optional.of(data));
         return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
     }
+
+//    public ResponseEntity postComment(UUID idUser, Comment comment){
+//            Optional<Establishment> establishment = establishmentRepository.findById(idUser);
+//            if (establishment.isEmpty()){
+//                return ResponseEntity.status(404).build();
+//            }
+//
+//
+//            Establishment teste = establishment.stream().findFirst().get();
+//            teste.addComment(comment);
+//
+//            return ResponseEntity.status(201).body(comment);
+//    }
 }
