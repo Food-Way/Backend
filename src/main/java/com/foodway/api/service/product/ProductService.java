@@ -21,7 +21,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             productRepository.delete(product.get());
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.status(200).build();
         }
         return ResponseEntity.status(404).build();
     }
@@ -32,7 +32,9 @@ public class ProductService {
             return ResponseEntity.status(404).build();
         }
         product.get().update(Optional.ofNullable(data));
-        return ResponseEntity.status(200).body(productRepository.save(product.get()));
+        Product savedProduct = product.get();
+        productRepository.save(savedProduct);
+        return ResponseEntity.status(200).body(savedProduct);
     }
 
     public ResponseEntity<Product> postProduct(RequestProduct product) {

@@ -15,14 +15,12 @@ public record RequestUserCostumer(
         String password,
         @Enumerated
         @NotNull
-        ETypeUser ETypeUser,
+        ETypeUser typeUser,
         @NotBlank
         String profilePhoto,
         @CPF
         String cpf,
         @NotBlank
         String bio
-
-
 ) {
 }

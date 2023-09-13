@@ -39,7 +39,7 @@ public class CommentService {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isPresent()) {
             commentRepository.delete(comment.get());
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.status(200).build();
         }
         return ResponseEntity.status(404).build();
     }

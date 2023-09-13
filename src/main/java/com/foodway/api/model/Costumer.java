@@ -22,13 +22,13 @@ public class Costumer extends User{
     public Costumer() {}
 
     public Costumer(RequestUserCostumer costumer) {
-        super(costumer.name(), costumer.email(), costumer.password(), costumer.ETypeUser(), costumer.profilePhoto());
+        super(costumer.name(), costumer.email(), costumer.password(), costumer.typeUser(), costumer.profilePhoto());
         this.cpf = costumer.cpf();
         this.bio = costumer.bio();
     }
 
-    public Costumer(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto, String cpf, String bio) {
-        super(name, email, password, ETypeUser, profilePhoto);
+    public Costumer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio) {
+        super(name, email, password, typeUser, profilePhoto);
         this.cpf = cpf;
         this.bio = bio;
     }

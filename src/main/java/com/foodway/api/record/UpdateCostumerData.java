@@ -11,7 +11,7 @@ public record UpdateCostumerData(
         @NotBlank String lastName,
         @NotBlank @Email(message = "Email inválido") String email,
         @NotBlank String password,
-        @NotNull ETypeUser ETypeUser,
+        @NotNull ETypeUser typeUser,
         @NotBlank String profilePhoto,
         @NotBlank @CPF(message = "CPF inválido") String cpf,
         @NotBlank String bio

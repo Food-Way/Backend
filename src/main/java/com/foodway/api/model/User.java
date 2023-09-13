@@ -17,17 +17,17 @@ public abstract class User {
     @JsonIgnore
     private String password;
     @Enumerated
-    private ETypeUser ETypeUser;
+    private ETypeUser typeUser;
     private String profilePhoto;
 
     public User() {
     }
 
-    public User(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto) {
+    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.ETypeUser = ETypeUser;
+        this.typeUser = typeUser;
         this.profilePhoto = profilePhoto;
     }
 
@@ -35,6 +35,14 @@ public abstract class User {
 
     //todo Relembrar pq passa id
     public abstract void comment(UUID idUser);
+
+    public UUID getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(UUID idUser) {
+        this.idUser = idUser;
+    }
 
     public String getName() {
         return name;
@@ -61,11 +69,11 @@ public abstract class User {
     }
 
     public ETypeUser getTypeUser() {
-        return ETypeUser;
+        return typeUser;
     }
 
-    public void setTypeUser(ETypeUser ETypeUser) {
-        this.ETypeUser = ETypeUser;
+    public void setTypeUser(ETypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 
     public String getProfilePhoto() {

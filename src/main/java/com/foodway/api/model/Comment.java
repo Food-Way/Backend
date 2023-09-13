@@ -24,6 +24,9 @@ public class Comment {
     private List<String> images;
 //    private Rate rate;
 
+    public Comment() {
+    }
+
     public Comment(UUID idPost) {
         this.idPost = idPost;
     }

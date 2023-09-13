@@ -15,7 +15,7 @@ public record RequestUserEstablishment(
         String password,
         @Enumerated
         @NotNull
-        ETypeUser ETypeUser,
+        ETypeUser typeUser,
         @NotBlank
         String profilePhoto,
         @NotBlank

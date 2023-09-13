@@ -9,18 +9,18 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 public record UpdateEstablishmentData(
-        @NotBlank String nome,
-        @NotBlank String sobrenome,
+        @NotBlank String name,
         @NotBlank @Email String email,
-        @NotBlank String senha,
-        @NotNull ETypeUser ETypeUser,
+        @NotBlank String password,
+        @NotNull ETypeUser typeUser,
         @NotBlank String profilePhoto,
         @NotBlank String establishmentName,
         @NotBlank String description,
         @NotBlank String cep,
         @NotBlank String number,
         @NotBlank String rate,
-        @NotBlank @CNPJ(message = "CNPJ inválido") String cnpj
+        @NotBlank
+        String cnpj
 //        List<Product> menu,
 //        List<Post> postList
 ) {

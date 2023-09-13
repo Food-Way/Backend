@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestProduct;
+import com.foodway.api.record.UpdateProductData;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,7 +45,21 @@ public class Product {
     }
 
     public void update(@NotNull Optional<?> optional) {
+        UpdateProductData updateProductData = (UpdateProductData) optional.get();
+        this.name = updateProductData.name();
+        this.description = updateProductData.description();
+        this.price = updateProductData.price();
+        this.updatedAt = updateProductData.updatedAt();
+        this.photo = updateProductData.photo();
 
+    }
+
+    public UUID getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(UUID idProduct) {
+        this.idProduct = idProduct;
     }
 
     public String getName() {
@@ -87,12 +102,12 @@ public class Product {
         this.photo = photo;
     }
 
-    // {
-    //     "name": "nome do produto",
-    //     "description": "descrição do produto",
-    //     "price": 10.00,
-    //     "updatedAt": "2021-10-10T10:10:10",
-    //     "photo": "url da foto"
-    // }
+//     {
+//         "name": "nome do produto",
+//         "description": "descrição do produto",
+//         "price": 10.00,
+//         "updatedAt": "2021-10-10T10:10:10",
+//         "photo": "url da foto"
+//     }
 
 }

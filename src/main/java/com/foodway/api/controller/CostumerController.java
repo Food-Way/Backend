@@ -40,7 +40,7 @@ public class CostumerController {
         return costumerService.saveCostumer(costumer);
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteCostumer(@PathVariable UUID id){
         return costumerService.deleteCostumer(id);
     }

@@ -39,6 +39,7 @@ public class EstablishmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Establishment> putEstablishment(@PathVariable UUID id, @RequestBody @Validated UpdateEstablishmentData establishment) {
+        System.out.println("Passei aqui");
         return establishmentService.putEstablishment(id, establishment);
     }
 }

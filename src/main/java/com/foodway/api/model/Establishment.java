@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUserEstablishment;
+import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,8 +31,24 @@ public class Establishment extends User {
 //    private List<Comment> postList;
 
     public Establishment() {}
+
+    @Override
+    public void update(Optional<?> optional) {
+        super.setName(((UpdateEstablishmentData) optional.get()).name());
+        super.setEmail(((UpdateEstablishmentData) optional.get()).email());
+        super.setPassword(((UpdateEstablishmentData) optional.get()).password());
+        super.setTypeUser(((UpdateEstablishmentData) optional.get()).typeUser());
+        super.setProfilePhoto(((UpdateEstablishmentData) optional.get()).profilePhoto());
+        this.establishmentName = ((UpdateEstablishmentData) optional.get()).establishmentName();
+        this.description = ((UpdateEstablishmentData) optional.get()).description();
+        this.cep = ((UpdateEstablishmentData) optional.get()).cep();
+        this.number = ((UpdateEstablishmentData) optional.get()).number();
+        this.rate = ((UpdateEstablishmentData) optional.get()).rate();
+        this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
+    }
+
     public Establishment(RequestUserEstablishment establishment) {
-        super(establishment.name(), establishment.email(), establishment.password(), establishment.ETypeUser(), establishment.profilePhoto());
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
         this.cep = establishment.cep();
@@ -40,22 +57,13 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
     }
 
-    @Override
-    public void update(Optional<?> optional) {
-        Establishment establishment = (Establishment) optional.get();
-        this.setEstablishmentName(establishment.getEstablishmentName());
-        this.setDescription(establishment.getDescription());
-        this.setCep(establishment.getCep());
-        this.setNumber(establishment.getNumber());
-        this.setRate(establishment.getRate());
-        this.setCnpj(establishment.getCnpj());
-    }
+
 
     @Override
     public void comment(UUID idUser) {}
 
-    public Establishment(String name, String email, String password, ETypeUser ETypeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
-        super(name, email, password, ETypeUser, profilePhoto);
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
+        super(name, email, password, typeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
         this.cep = cep;
@@ -114,6 +122,8 @@ public class Establishment extends User {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
+
+
 
 //    public List<Product> getMenu() {
 //        return menu;

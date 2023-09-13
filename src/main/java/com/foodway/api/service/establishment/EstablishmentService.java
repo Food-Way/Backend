@@ -38,7 +38,7 @@ public class EstablishmentService {
              return ResponseEntity.status(404).build();
          }
          establishmentRepository.delete(establishment.get());
-         return ResponseEntity.status(204).build();
+         return ResponseEntity.status(200).build();
     }
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
@@ -51,8 +51,9 @@ public class EstablishmentService {
         if(establishmentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
         }
-
-        establishmentOptional.get().update(Optional.ofNullable(data));
+        System.out.println("Passei aqui2");
+        Establishment establishment = establishmentOptional.get();
+        establishment.update(Optional.of(data));
         return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
     }
 
