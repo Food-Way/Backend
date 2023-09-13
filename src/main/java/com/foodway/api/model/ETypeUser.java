@@ -1,6 +1,6 @@
 package com.foodway.api.model;
 
-public enum TypeUser {
+public enum ETypeUser {
     CLIENT,
     ESTABLISHMENT
 

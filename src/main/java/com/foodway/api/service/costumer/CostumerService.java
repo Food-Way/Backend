@@ -49,7 +49,7 @@ public class CostumerService {
         Optional<Costumer> costumer = costumerRepository.findById(id);
         if(costumer.isPresent()){
             costumerRepository.delete(costumer.get());
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.status(200).build();
         }
         return ResponseEntity.status(404).build();
     }

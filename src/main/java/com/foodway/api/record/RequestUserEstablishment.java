@@ -1,6 +1,6 @@
 package com.foodway.api.record;
 
-import com.foodway.api.model.TypeUser;
+import com.foodway.api.model.ETypeUser;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +15,7 @@ public record RequestUserEstablishment(
         String password,
         @Enumerated
         @NotNull
-        TypeUser typeUser,
+        ETypeUser typeUser,
         @NotBlank
         String profilePhoto,
         @NotBlank

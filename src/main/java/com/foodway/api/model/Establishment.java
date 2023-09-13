@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUserEstablishment;
+import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,9 +13,9 @@ import java.util.UUID;
 //@NotBlank
 @EqualsAndHashCode
 public class Establishment extends User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID idEstablishment;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.UUID)
+//    private UUID idEstablishment;
     @Column(length = 75)
     private String establishmentName;
     @Column(length = 255)
@@ -30,6 +31,22 @@ public class Establishment extends User {
 //    private List<Comment> postList;
 
     public Establishment() {}
+
+    @Override
+    public void update(Optional<?> optional) {
+        super.setName(((UpdateEstablishmentData) optional.get()).name());
+        super.setEmail(((UpdateEstablishmentData) optional.get()).email());
+        super.setPassword(((UpdateEstablishmentData) optional.get()).password());
+        super.setTypeUser(((UpdateEstablishmentData) optional.get()).typeUser());
+        super.setProfilePhoto(((UpdateEstablishmentData) optional.get()).profilePhoto());
+        this.establishmentName = ((UpdateEstablishmentData) optional.get()).establishmentName();
+        this.description = ((UpdateEstablishmentData) optional.get()).description();
+        this.cep = ((UpdateEstablishmentData) optional.get()).cep();
+        this.number = ((UpdateEstablishmentData) optional.get()).number();
+        this.rate = ((UpdateEstablishmentData) optional.get()).rate();
+        this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
+    }
+
     public Establishment(RequestUserEstablishment establishment) {
         super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
         this.establishmentName = establishment.establishmentName();
@@ -40,22 +57,12 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
     }
 
-    @Override
-    public void update(Optional<?> optional) {
-        Establishment establishment = (Establishment) optional.get();
-        this.setEstablishmentName(establishment.getEstablishmentName());
-        this.setDescription(establishment.getDescription());
-        this.setCep(establishment.getCep());
-        this.setNumber(establishment.getNumber());
-        this.setRate(establishment.getRate());
-        this.setCnpj(establishment.getCnpj());
-    }
 
 
     @Override
     public void comment(UUID idUser) {}
 
-    public Establishment(String name, String email, String password, TypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
         super(name, email, password, typeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
@@ -67,9 +74,9 @@ public class Establishment extends User {
 //        this.postList = postList;
     }
 
-    public UUID getIdEstablishment() {
-        return idEstablishment;
-    }
+//    public UUID getIdEstablishment() {
+//        return idEstablishment;
+//    }
     public String getEstablishmentName() {
         return establishmentName;
     }
@@ -115,6 +122,47 @@ public class Establishment extends User {
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
     }
+
+
+
+//    public List<Product> getMenu() {
+//        return menu;
+//    }
+//
+//    public void setMenu(List<Product> menu) {
+//        this.menu = menu;
+//    }
+//
+//    public List<Comment> getPostList() {
+//        return postList;
+//    }
+//
+//    public void setPostList(List<Comment> postList) {
+//        this.postList = postList;
+//    }
+//
+//    public void addComment(Comment comment) {
+//        this.postList.add(comment);
+//    }
+
+//    {
+//        "name": "leleo",
+//            "email": "leleo@gmail.com",
+//            "password": "leleooooo",
+//            "typeUser": "ESTABLISHMENT",
+//            "profilePhoto": "foto",
+//            "establishmentName": "leleo da cocada preta",
+//            "description": "Um otimo cachorro quente",
+//            "cep": "01234568",
+//            "number": "451",
+//            "rate": "3.5",
+//            "cnpj": "12345678912",
+//            "menu": [],
+//        "postList": []
+//    }
+
+
+
 
 
 }
