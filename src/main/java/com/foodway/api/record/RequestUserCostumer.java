@@ -18,7 +18,6 @@ public record RequestUserCostumer(
         ETypeUser typeUser,
         @NotBlank
         String profilePhoto,
-        @CPF
         String cpf,
         @NotBlank
         String bio
