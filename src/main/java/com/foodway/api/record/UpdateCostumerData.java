@@ -13,7 +13,7 @@ public record UpdateCostumerData(
         @NotBlank String password,
         @NotNull ETypeUser typeUser,
         @NotBlank String profilePhoto,
-        @NotBlank @CPF(message = "CPF inválido") String cpf,
+        @NotBlank String cpf,
         @NotBlank String bio
 ) {
 }
