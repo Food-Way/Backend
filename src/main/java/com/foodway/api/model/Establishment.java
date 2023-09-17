@@ -8,10 +8,8 @@ import lombok.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-@Entity(name = "tbEstablishment")
-//@NotBlank
-@EqualsAndHashCode
+@Table(name = "tbEstablishment")
+@Entity(name = "establishment")
 public class Establishment extends User {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)

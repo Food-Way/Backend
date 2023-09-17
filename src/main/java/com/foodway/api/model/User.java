@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import java.util.Optional;
 import java.util.UUID;
 
-@Entity(name = "tbUser")
+@Table(name = "tbUser")
+@Entity(name = "user")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
     @Id

@@ -8,7 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
-@Entity(name = "tbCostumer")
+@Table(name = "tbCostumer")
+@Entity(name = "costumer")
 @EqualsAndHashCode
 public class Costumer extends User{
 //    @Id

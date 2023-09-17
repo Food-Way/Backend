@@ -2,18 +2,15 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
-@Entity(name = "tbProduct")
+@Table(name = "tbProduct")
+@Entity(name = "product")
 public class Product {
 
     @Id

@@ -1,11 +1,9 @@
 package com.foodway.api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "tbTags")
+@Table(name = "tbRate")
+@Entity(name = "tags")
 public class Tags {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
