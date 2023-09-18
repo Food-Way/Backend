@@ -55,4 +55,4 @@
 
 
 ---
-<center>©️ FoodWay 2023</center>
+<center>©️ FoodWay 2023.</center>
