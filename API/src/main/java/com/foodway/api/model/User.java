@@ -24,6 +24,11 @@ public abstract class User {
     public User() {
     }
 
+//    public User() {
+//        this.email = "foodway@gmail.com";
+//        this.password = "1234567887654";
+//    }
+
     public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto) {
         this.name = name;
         this.email = email;
