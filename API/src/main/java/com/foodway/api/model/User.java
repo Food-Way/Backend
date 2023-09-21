@@ -2,6 +2,7 @@ package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Optional;
 import java.util.UUID;
