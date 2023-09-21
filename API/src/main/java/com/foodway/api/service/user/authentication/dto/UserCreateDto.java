@@ -7,7 +7,7 @@ public class UserCreateDto {
     @Email
     private String email;
 
-    @Size(min = 14, max = 20)
+    @Size(min = 8, max = 20)
     private String password;
 
     public String getEmail() {
