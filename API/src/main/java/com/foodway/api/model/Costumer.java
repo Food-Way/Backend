@@ -5,6 +5,7 @@ import com.foodway.api.record.UpdateCostumerData;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Optional;
 import java.util.UUID;
