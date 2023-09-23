@@ -3,6 +3,7 @@ package com.foodway.api.service.user.authentication.dto;
 import com.foodway.api.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Collection;
 

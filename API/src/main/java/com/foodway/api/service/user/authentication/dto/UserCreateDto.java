@@ -2,6 +2,7 @@ package com.foodway.api.service.user.authentication.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 public class UserCreateDto {
     @Email
