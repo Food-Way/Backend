@@ -55,4 +55,8 @@
 
 
 ---
-<center>©️ FoodWay 2023</center>
+<<<<<<< HEAD
+<center>©️ FoodWay 2023.</center>
+=======
+<center>©️ FoodWay 2023.</center>
+>>>>>>> aa4a096883ca00c4caeedc92441490192dd4e56f
