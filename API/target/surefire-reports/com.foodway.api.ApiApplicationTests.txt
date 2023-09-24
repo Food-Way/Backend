@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.foodway.api.ApiApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.048 s - in com.foodway.api.ApiApplicationTests
