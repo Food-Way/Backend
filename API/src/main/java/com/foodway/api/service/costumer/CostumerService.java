@@ -4,13 +4,9 @@ import com.foodway.api.model.Costumer;
 import com.foodway.api.record.RequestUserCostumer;
 import com.foodway.api.record.UpdateCostumerData;
 import com.foodway.api.repository.CostumerRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +36,8 @@ public class CostumerService {
         return ResponseEntity.status(200).body(costumerRepository.save(costumerOptional.get()));
     }
 
-    public ResponseEntity<Costumer> saveCostumer(RequestUserCostumer costumer) {
-        Costumer createdCostumer = new Costumer(costumer);
+    public ResponseEntity<Costumer> saveCostumer(RequestUserCostumer userCreateDto) {
+        Costumer createdCostumer = new Costumer(userCreateDto);
         return ResponseEntity.status(201).body(costumerRepository.save(createdCostumer));
     }
 
@@ -53,5 +49,6 @@ public class CostumerService {
         }
         return ResponseEntity.status(404).build();
     }
+
 
 }

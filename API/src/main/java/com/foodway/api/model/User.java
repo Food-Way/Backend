@@ -2,6 +2,8 @@ package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +14,7 @@ import java.util.UUID;
 public abstract class User {
     @Id
     @GeneratedValue (strategy = GenerationType.UUID)
+
     private UUID idUser;
     private String name;
     private String email;
@@ -24,13 +27,24 @@ public abstract class User {
     public User() {
     }
 
+//    public User() {
+//        this.email = "foodway@gmail.com";
+//        this.password = "1234567887654";
+//    }
+
     public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.password = encodePassword(password);
         this.typeUser = typeUser;
         this.profilePhoto = profilePhoto;
     }
+
+    private String encodePassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
+    }
+
 
     public abstract void update(Optional<?> optional);
 
