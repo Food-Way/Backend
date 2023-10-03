@@ -58,15 +58,15 @@ public class EstablishmentService {
     }
 
 //    public ResponseEntity postComment(UUID idUser, Comment comment){
-//            Optional<Establishment> establishment = establishmentRepository.findById(idUser);
-//            if (establishment.isEmpty()){
+//            Optional<Establishment> establishmentOptional = establishmentRepository.findById(idUser);
+//
+//            if (establishmentOptional.isEmpty()){
 //                return ResponseEntity.status(404).build();
 //            }
 //
+//            establishmentOptional.get().addComment(comment);
 //
-//            Establishment teste = establishment.stream().findFirst().get();
-//            teste.addComment(comment);
-//
-//            return ResponseEntity.status(201).body(comment);
+//            return ResponseEntity.status(200).body
+//                    (establishmentRepository.save(establishmentOptional.get()));
 //    }
 }

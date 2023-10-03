@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,9 @@ public class Establishment extends User {
     @Column(length = 14, unique = true)
     private String cnpj;
 //    private List<Product> menu;
-//    private List<Comment> postList;
+    @OneToMany
+    @JoinColumn(name="idComment")
+    private List<Comment> postList;
 
     public Establishment() {}
 
@@ -61,7 +64,9 @@ public class Establishment extends User {
     @Override
     public void comment(UUID idUser) {}
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
+    public Establishment(String name, String email, String password, ETypeUser typeUser,
+                         String profilePhoto, String establishmentName,
+                         String description, String cep, String number, String rate, String cnpj) {
         super(name, email, password, typeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
@@ -70,7 +75,7 @@ public class Establishment extends User {
         this.rate = rate;
         this.cnpj = cnpj;
 //        this.menu = menu;
-//        this.postList = postList;
+        this.postList = new ArrayList<>();
     }
 
 //    public UUID getIdEstablishment() {
@@ -132,17 +137,17 @@ public class Establishment extends User {
 //        this.menu = menu;
 //    }
 //
-//    public List<Comment> getPostList() {
-//        return postList;
-//    }
-//
-//    public void setPostList(List<Comment> postList) {
-//        this.postList = postList;
-//    }
-//
-//    public void addComment(Comment comment) {
-//        this.postList.add(comment);
-//    }
+    public List<Comment> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(List<Comment> postList) {
+        this.postList = postList;
+    }
+
+    public void addComment(Comment comment) {
+        this.postList.add(comment);
+    }
 
 //    {
 //        "name": "leleo",
@@ -157,7 +162,7 @@ public class Establishment extends User {
 //            "rate": "3.5",
 //            "cnpj": "12345678912",
 //            "menu": [],
-//        "postList": []
+//            "postList": []
 //    }
 
 

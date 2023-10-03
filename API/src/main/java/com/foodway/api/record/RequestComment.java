@@ -14,14 +14,13 @@ public record RequestComment(
             int upvotes,
             @NotBlank
             String coment,
+//
+//            List<Tags> tagList,
+//
+//            List<Costumer> listCostumer,
             @NotNull
-            List<Tags> tagList,
-            @NotNull
-            List<Costumer> listCostumer,
-            @NotNull
-            List<String> images,
-            @NotNull
-            Rate rate
+            List<String> images
+//            Rate rate
 ){
 
 }

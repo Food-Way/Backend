@@ -8,6 +8,7 @@ package com.foodway.api.controller;
 
 //import org.springframework.http.ResponseEntity;
 //import org.springframework.validation.annotation.Validated;
+
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.user.authentication.dto.UserCreateDto;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
 //
 //import java.util.List;
 //
@@ -26,25 +28,26 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-   private UserService userService;
+    private UserService userService;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @PostMapping
     @SecurityRequirement(name = "Bearer")
-public ResponseEntity<Void> create(@RequestBody @Valid UserCreateDto userCreateDto){
+    public ResponseEntity<Void> create(@RequestBody @Valid UserCreateDto userCreateDto) {
 
 
         String passwordEncrypt = passwordEncoder.encode(userCreateDto.getPassword());
         userCreateDto.setPassword(passwordEncrypt);
 
         this.userService.create(userCreateDto);
-        return  ResponseEntity.status(201).build();
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserTokenDto> login(@RequestBody UserLoginDto userLoginDto){
+    public ResponseEntity<UserTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
         UserTokenDto userTokenDto = this.userService.authenticate(userLoginDto);
-        return  ResponseEntity.status(200).body(userTokenDto);
+        return ResponseEntity.status(200).body(userTokenDto);
     }
 }
 //
