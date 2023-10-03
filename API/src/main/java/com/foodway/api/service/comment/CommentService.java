@@ -1,17 +1,15 @@
 package com.foodway.api.service.comment;
 
 import com.foodway.api.model.Comment;
-import com.foodway.api.model.Costumer;
+import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.service.establishment.EstablishmentService;
-import jdk.jshell.Snippet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +22,32 @@ public class CommentService {
     @Autowired
     EstablishmentService establishmentService;
 
-//    public ResponseEntity postComment(UUID idUser, RequestComment data) {
-//        Comment comment = new Comment(data);
-//
-//        return establishmentService.postComment(idUser, comment);
-//    }
+    @Autowired
+    EstablishmentRepository establishmentRepository;
 
-    public ResponseEntity<List<Comment>> getComments(UUID id) {
+    public ResponseEntity postComment(UUID id, RequestComment data) {
+        Comment comment = new Comment(data);
+
+        Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
+
+        if (establishmentOptional.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+
+        establishmentOptional.get().addComment(comment);
+
+        return ResponseEntity.status(200).body
+                (commentRepository.save(comment));
+    }
+
+    public ResponseEntity<List<Comment>> getComments() {
         if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(commentRepository.findAll());
+    }
+
+    public ResponseEntity<Optional<Comment>> get(UUID id) {
+        if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
+        return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
 
     public ResponseEntity deleteComment(UUID id, UUID idOwner) {

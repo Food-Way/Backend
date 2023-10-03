@@ -1,10 +1,7 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestComment;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import javax.swing.text.html.HTML;
@@ -23,6 +20,8 @@ public class Comment {
 //    private List<Costumer> listCostumer;
     private List<String> images;
 //    private Rate rate;
+    @ManyToOne
+    private Establishment establishment;
 
     public Comment() {
     }

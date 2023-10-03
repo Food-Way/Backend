@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -19,10 +20,15 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<Comment>> getComments(@PathVariable UUID id) {
+    @GetMapping("/")
+    public ResponseEntity<List<Comment>> getComments() {
+        return commentService.getComments();
+    }
 
-        return commentService.getComments(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
+
+        return commentService.get(id);
     }
 
     @PutMapping("/{id}")
@@ -30,10 +36,10 @@ public class CommentController {
         return commentService.putComment(id, comment);
     }
 
-//    @PostMapping("/{idUser}")
-//    public ResponseEntity postComment(@PathVariable UUID idUser, @RequestBody @Validated RequestComment data){
-//        return commentService.postComment(idUser, data);
-//    }
+    @PostMapping("/{id}")
+    public ResponseEntity postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data){
+        return commentService.postComment(id, data);
+    }
 
     @DeleteMapping("/{idComment}/{idOwner}")
     public ResponseEntity deleteComment(@PathVariable UUID id,
