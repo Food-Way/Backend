@@ -3,6 +3,7 @@ package com.foodway.api.service.comment;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestComment;
+import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.EstablishmentRepository;
@@ -25,7 +26,7 @@ public class CommentService {
     @Autowired
     EstablishmentRepository establishmentRepository;
 
-    public ResponseEntity postComment(UUID id, RequestComment data) {
+    public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
         Comment comment = new Comment(data);
 
         Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
@@ -38,6 +39,22 @@ public class CommentService {
 
         return ResponseEntity.status(200).body
                 (commentRepository.save(comment));
+    }
+
+    public ResponseEntity<Comment> postCommentChild(UUID idParent, RequestCommentChild comment) {
+        Comment newComment = new Comment(comment);
+        Optional<Comment> commentOptional = commentRepository.findById(idParent);
+
+        if(commentOptional.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+        Comment commentParent = commentOptional.get();
+
+        commentParent.addCommentChild(newComment);
+
+        commentRepository.save(commentParent);
+
+        return ResponseEntity.status(200).body(newComment);
     }
 
     public ResponseEntity<List<Comment>> getComments() {
@@ -67,4 +84,6 @@ public class CommentService {
         comment.get().update(Optional.ofNullable(data));
         return ResponseEntity.status(200).body(commentRepository.save(comment.get()));
     }
+
+
 }

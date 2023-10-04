@@ -29,7 +29,7 @@ public class Establishment extends User {
     private String cnpj;
 //    private List<Product> menu;
     @OneToMany
-    @JoinColumn(name="idComment")
+    @JoinColumn(name="comments")
     private List<Comment> postList;
 
     public Establishment() {}

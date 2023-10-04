@@ -2,6 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.model.Comment;
 import com.foodway.api.record.RequestComment;
+import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.service.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,12 @@ public class CommentController {
     @PostMapping("/{id}")
     public ResponseEntity postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data){
         return commentService.postComment(id, data);
+    }
+
+    @PostMapping("/parent/{idParent}")
+    public ResponseEntity postCommentChild(@PathVariable UUID idParent,
+                                           @RequestBody RequestCommentChild comment){
+        return commentService.postCommentChild(idParent, comment);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")

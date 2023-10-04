@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestComment;
+import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -20,6 +21,9 @@ public class Comment {
 //    private List<Costumer> listCostumer;
     private List<String> images;
 //    private Rate rate;
+    @OneToMany
+    @JoinColumn(name="comments")
+    List<Comment> comments;
     @ManyToOne
     private Establishment establishment;
 
@@ -40,6 +44,16 @@ public class Comment {
     }
 
     public Comment(RequestComment data){
+        this();
+        this.coment = data.coment();
+        this.upvotes = data.upvotes();
+//        this.tagList = data.tagList();
+//        this.listCostumer = data.listCostumer();
+        this.images = data.images();
+//        this.rate = data.rate();
+    }
+
+    public Comment(RequestCommentChild data){
         this.coment = data.coment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
@@ -88,6 +102,19 @@ public class Comment {
 //    public void setListCostumer(List<Costumer> listCostumer) {
 //        this.listCostumer = listCostumer;
 //    }
+
+
+    public UUID getIdPost() {
+        return idPost;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void addCommentChild(Comment comment) {
+        this.comments.add(comment);
+    }
 
     public List<String> getImages() {
         return images;

@@ -1,5 +1,6 @@
 package com.foodway.api.record;
 
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Costumer;
 import com.foodway.api.model.Rate;
 import com.foodway.api.model.Tags;
@@ -14,7 +15,6 @@ public record RequestComment(
             int upvotes,
             @NotBlank
             String coment,
-//
 //            List<Tags> tagList,
 //
 //            List<Costumer> listCostumer,
