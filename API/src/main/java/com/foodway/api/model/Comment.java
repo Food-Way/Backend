@@ -23,7 +23,6 @@ public class Comment {
 //    private Rate rate;
 
     @ManyToOne
-    @JoinColumn(name = "socorro")
     @GeneratedValue(strategy = GenerationType.UUID)
     private Comment parentComment;
     @OneToMany(mappedBy = "parentComment")
