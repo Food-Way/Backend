@@ -4,8 +4,7 @@ import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-
-import javax.swing.text.html.HTML;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,15 +14,20 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
+    private UUID idParent;
     private int upvotes;
-    private String coment;
+    private String comment;
 //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
     private List<String> images;
 //    private Rate rate;
-    @OneToMany
-    @JoinColumn(name="comments")
-    List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name = "socorro")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private Comment parentComment;
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
     @ManyToOne
     private Establishment establishment;
 
@@ -34,9 +38,9 @@ public class Comment {
         this.idPost = idPost;
     }
 
-    public Comment(int upvotes, String coment, List<String> images) {
+    public Comment(int upvotes, String comment, List<String> images) {
         this.upvotes = upvotes;
-        this.coment = coment;
+        this.comment = comment;
 //        this.tagList = tagList;
 //        this.listCostumer = listCostumer;
         this.images = images;
@@ -44,8 +48,7 @@ public class Comment {
     }
 
     public Comment(RequestComment data){
-        this();
-        this.coment = data.coment();
+        this.comment = data.comment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
 //        this.listCostumer = data.listCostumer();
@@ -53,18 +56,20 @@ public class Comment {
 //        this.rate = data.rate();
     }
 
-    public Comment(RequestCommentChild data){
-        this.coment = data.coment();
+    public Comment(UUID idParent ,RequestCommentChild data){
+        this.idParent = idParent;
+        this.comment = data.comment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
 //        this.listCostumer = data.listCostumer();
         this.images = data.images();
 //        this.rate = data.rate();
+        this.replies = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
         RequestComment c = (RequestComment) optional.get();
-        this.setComent(c.coment());
+        this.setcomment(c.comment());
         this.setUpvotes(c.upvotes());
 //        this.setTagList(c.tagList());
 //        this.setListCostumer(c.listCostumer());
@@ -79,12 +84,11 @@ public class Comment {
         this.upvotes = upvotes;
     }
 
-    public String getComent() {
-        return coment;
+    public String getComment() {
+        return comment;
     }
-
-    public void setComent(String coment) {
-        this.coment = coment;
+    public void setcomment(String comment) {
+        this.comment = comment;
     }
 
 //    public List<Tags> getTagList() {
@@ -108,12 +112,17 @@ public class Comment {
         return idPost;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<Comment> getReplies() {
+        return replies;
     }
 
-    public void addCommentChild(Comment comment) {
-        this.comments.add(comment);
+    public void addReply(Comment reply) {
+        this.replies.add(reply);
+        reply.setParentComment(this);
+    }
+
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
     }
 
     public List<String> getImages() {
@@ -122,5 +131,9 @@ public class Comment {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public UUID getIdParent() {
+        return idParent;
     }
 }

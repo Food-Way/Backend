@@ -14,7 +14,7 @@ public record RequestComment(
             @NotNull
             int upvotes,
             @NotBlank
-            String coment,
+            String comment,
 //            List<Tags> tagList,
 //
 //            List<Costumer> listCostumer,
