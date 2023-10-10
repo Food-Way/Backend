@@ -27,9 +27,8 @@ public class CommentService {
     EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
-        Comment comment = new Comment(data);
-
         Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
+        Comment comment = new Comment(data);
 
         if (establishmentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
@@ -41,20 +40,21 @@ public class CommentService {
                 (commentRepository.save(comment));
     }
 
-    public ResponseEntity<Comment> postCommentChild(UUID idParent, RequestCommentChild comment) {
-        Comment newComment = new Comment(comment);
+    public ResponseEntity<Comment> postCommentChild(UUID idParent, RequestCommentChild data) {
         Optional<Comment> commentOptional = commentRepository.findById(idParent);
 
         if(commentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
         }
         Comment commentParent = commentOptional.get();
+        Comment comment = new Comment(idParent ,data);
 
-        commentParent.addCommentChild(newComment);
+        commentParent.addReply(comment);
 
         commentRepository.save(commentParent);
+        commentRepository.save(comment);
 
-        return ResponseEntity.status(200).body(newComment);
+        return ResponseEntity.status(200).body(comment);
     }
 
     public ResponseEntity<List<Comment>> getComments() {
