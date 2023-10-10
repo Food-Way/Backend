@@ -17,7 +17,7 @@ import java.util.UUID;
 public class EstablishmentController {
     @Autowired
     private EstablishmentService establishmentService;
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishment();
     }
@@ -32,7 +32,7 @@ public class EstablishmentController {
         return establishmentService.deleteEstablishment(id);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }

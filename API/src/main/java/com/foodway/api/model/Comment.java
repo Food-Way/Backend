@@ -1,10 +1,13 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestComment;
-import com.foodway.api.record.RequestCommentChild;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
+
+import javax.swing.text.html.HTML;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,21 +17,12 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
-    private UUID idParent;
     private int upvotes;
-    private String comment;
+    private String coment;
 //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
     private List<String> images;
 //    private Rate rate;
-
-    @ManyToOne
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private Comment parentComment;
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
-    @ManyToOne
-    private Establishment establishment;
 
     public Comment() {
     }
@@ -37,9 +31,9 @@ public class Comment {
         this.idPost = idPost;
     }
 
-    public Comment(int upvotes, String comment, List<String> images) {
+    public Comment(int upvotes, String coment, List<String> images) {
         this.upvotes = upvotes;
-        this.comment = comment;
+        this.coment = coment;
 //        this.tagList = tagList;
 //        this.listCostumer = listCostumer;
         this.images = images;
@@ -47,28 +41,17 @@ public class Comment {
     }
 
     public Comment(RequestComment data){
-        this.comment = data.comment();
+        this.coment = data.coment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
 //        this.listCostumer = data.listCostumer();
         this.images = data.images();
 //        this.rate = data.rate();
-    }
-
-    public Comment(UUID idParent ,RequestCommentChild data){
-        this.idParent = idParent;
-        this.comment = data.comment();
-        this.upvotes = data.upvotes();
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
-        this.images = data.images();
-//        this.rate = data.rate();
-        this.replies = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
         RequestComment c = (RequestComment) optional.get();
-        this.setcomment(c.comment());
+        this.setComent(c.coment());
         this.setUpvotes(c.upvotes());
 //        this.setTagList(c.tagList());
 //        this.setListCostumer(c.listCostumer());
@@ -83,11 +66,12 @@ public class Comment {
         this.upvotes = upvotes;
     }
 
-    public String getComment() {
-        return comment;
+    public String getComent() {
+        return coment;
     }
-    public void setcomment(String comment) {
-        this.comment = comment;
+
+    public void setComent(String coment) {
+        this.coment = coment;
     }
 
 //    public List<Tags> getTagList() {
@@ -106,33 +90,11 @@ public class Comment {
 //        this.listCostumer = listCostumer;
 //    }
 
-
-    public UUID getIdPost() {
-        return idPost;
-    }
-
-    public List<Comment> getReplies() {
-        return replies;
-    }
-
-    public void addReply(Comment reply) {
-        this.replies.add(reply);
-        reply.setParentComment(this);
-    }
-
-    public void setParentComment(Comment parentComment) {
-        this.parentComment = parentComment;
-    }
-
     public List<String> getImages() {
         return images;
     }
 
     public void setImages(List<String> images) {
         this.images = images;
-    }
-
-    public UUID getIdParent() {
-        return idParent;
     }
 }
