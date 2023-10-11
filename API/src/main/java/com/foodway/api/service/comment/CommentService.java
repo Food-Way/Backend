@@ -51,7 +51,7 @@ public class CommentService {
 
         commentParent.addReply(comment);
 
-        commentRepository.save(commentParent);
+//        commentRepository.save(commentParent);
         commentRepository.save(comment);
 
         return ResponseEntity.status(200).body(comment);
