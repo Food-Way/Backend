@@ -24,13 +24,38 @@ public class CommentService {
     @Autowired
     EstablishmentService establishmentService;
 
-//    public ResponseEntity postComment(UUID idUser, RequestComment data) {
-//        Comment comment = new Comment(data);
-//
-//        return establishmentService.postComment(idUser, comment);
-//    }
+    public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
+        Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
+        Comment comment = new Comment(data);
 
-    public ResponseEntity<List<Comment>> getComments(UUID id) {
+        if (establishmentOptional.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+
+        establishmentOptional.get().addComment(comment);
+
+        return ResponseEntity.status(200).body
+                (commentRepository.save(comment));
+    }
+
+    public ResponseEntity<Comment> postCommentChild(UUID idParent, RequestCommentChild data) {
+        Optional<Comment> commentOptional = commentRepository.findById(idParent);
+
+        if(commentOptional.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+        Comment commentParent = commentOptional.get();
+        Comment comment = new Comment(idParent ,data);
+
+        commentParent.addReply(comment);
+
+//        commentRepository.save(commentParent);
+        commentRepository.save(comment);
+
+        return ResponseEntity.status(200).body(comment);
+    }
+
+    public ResponseEntity<List<Comment>> getComments() {
         if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(commentRepository.findAll());
     }
