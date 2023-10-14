@@ -21,6 +21,10 @@ public class EstablishmentController {
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishment();
     }
+    @GetMapping("/exportar")
+    public ResponseEntity<List<Establishment>> exportEstablishments() {
+        return establishmentService.exportEstablishments();
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Establishment> getEstablishment(@PathVariable UUID id) {

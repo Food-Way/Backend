@@ -39,6 +39,7 @@ public class ManagerToken {
         return Jwts.builder().setSubject(authentication.getName())
                 .signWith(parseSecret()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1_000)).compact();
+
     }
 
     public <T> T getClaimForToken(String token, Function<Claims, T> claimsResolver) {

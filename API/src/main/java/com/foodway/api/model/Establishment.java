@@ -23,6 +23,10 @@ public class Establishment extends User {
     private String cep;
     @Column(length = 45)
     private String number;
+
+    @Column
+    private String complement;
+
     private String rate;
     @Column(length = 14, unique = true)
     private String cnpj;
@@ -42,6 +46,7 @@ public class Establishment extends User {
         this.description = ((UpdateEstablishmentData) optional.get()).description();
         this.cep = ((UpdateEstablishmentData) optional.get()).cep();
         this.number = ((UpdateEstablishmentData) optional.get()).number();
+        this.complement = ((UpdateEstablishmentData) optional.get()).complement();
         this.rate = ((UpdateEstablishmentData) optional.get()).rate();
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
     }
@@ -52,6 +57,7 @@ public class Establishment extends User {
         this.description = establishment.description();
         this.cep = establishment.cep();
         this.number = establishment.number();
+        this.complement = establishment.complement();
         this.rate = establishment.rate();
         this.cnpj = establishment.cnpj();
     }
@@ -61,12 +67,13 @@ public class Establishment extends User {
     @Override
     public void comment(UUID idUser) {}
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String rate, String cnpj) {
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number,String complement, String rate, String cnpj) {
         super(name, email, password, typeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
         this.cep = cep;
         this.number = number;
+        this.complement = complement;
         this.rate = rate;
         this.cnpj = cnpj;
 //        this.menu = menu;
@@ -122,9 +129,15 @@ public class Establishment extends User {
         this.cnpj = cnpj;
     }
 
+    public String getComplement() {
+        return complement;
+    }
 
+    public void setComplement(String complement) {
+        this.complement = complement;
+    }
 
-//    public List<Product> getMenu() {
+    //    public List<Product> getMenu() {
 //        return menu;
 //    }
 //

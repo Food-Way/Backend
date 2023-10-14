@@ -6,6 +6,8 @@ import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
+import com.foodway.api.utils.GerenciadorDeArquivo;
+import com.foodway.api.utils.ListaObj;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class EstablishmentService {
 
     private EstablishmentRepository establishmentRepository;
+
 
     public ResponseEntity<List<Establishment>> getEstablishment() {
         if(establishmentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -55,6 +58,13 @@ public class EstablishmentService {
         Establishment establishment = establishmentOptional.get();
         establishment.update(Optional.of(data));
         return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
+    }
+
+    public ResponseEntity<List<Establishment>> exportEstablishments() {
+        ResponseEntity<List<Establishment>> establishment = getEstablishment();
+        ListaObj<Establishment> establishments = establishment.getBody();
+        GerenciadorDeArquivo.gravaArquivoCsv(establishments);
+
     }
 
 //    public ResponseEntity postComment(UUID idUser, Comment comment){
