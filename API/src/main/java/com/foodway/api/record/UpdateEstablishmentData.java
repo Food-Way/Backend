@@ -19,7 +19,7 @@ public record UpdateEstablishmentData(
         @NotBlank String description,
         @NotBlank String cep,
         @NotBlank String number,
-        @NotBlank String complement,
+        String complement,
         @NotBlank String rate,
         @NotBlank
         String cnpj

@@ -1,8 +1,6 @@
 package com.foodway.api.service.establishment;
 
-import com.foodway.api.model.Comment;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
@@ -11,13 +9,12 @@ import com.foodway.api.utils.ListaObj;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
 @Service
 @AllArgsConstructor
@@ -25,11 +22,11 @@ public class EstablishmentService {
 
     private EstablishmentRepository establishmentRepository;
 
-
     public ResponseEntity<List<Establishment>> getEstablishment() {
-        if(establishmentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
+        if (establishmentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(establishmentRepository.findAll());
     }
+
     public ResponseEntity<Establishment> getEstablishment(UUID paramId) {
         Optional<Establishment> establishment = establishmentRepository.findById(paramId);
         return establishment.map(value -> ResponseEntity.status(200).body(value)).orElseGet(() -> ResponseEntity.status(404).build());
@@ -37,11 +34,11 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> deleteEstablishment(UUID id) {
         Optional<Establishment> establishment = establishmentRepository.findById(id);
-         if(establishment.isEmpty()){
-             return ResponseEntity.status(404).build();
-         }
-         establishmentRepository.delete(establishment.get());
-         return ResponseEntity.status(200).build();
+        if (establishment.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+        establishmentRepository.delete(establishment.get());
+        return ResponseEntity.status(200).build();
     }
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
@@ -51,7 +48,7 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {
         Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
-        if(establishmentOptional.isEmpty()){
+        if (establishmentOptional.isEmpty()) {
             return ResponseEntity.status(404).build();
         }
         System.out.println("Passei aqui2");
@@ -60,11 +57,17 @@ public class EstablishmentService {
         return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
     }
 
-    public ResponseEntity<List<Establishment>> exportEstablishments() {
-        ResponseEntity<List<Establishment>> establishment = getEstablishment();
-        ListaObj<Establishment> establishments = establishment.getBody();
-        GerenciadorDeArquivo.gravaArquivoCsv(establishments);
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments() {
+        List<Establishment> establishments = getEstablishment().getBody();
+        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
+        establishments.forEach(listaObjEstablishments::adiciona);
+        gravaArquivoCsv(listaObjEstablishments, "establishments");
+        return ResponseEntity.ok().build();
+    }
 
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments() {
+        leArquivoCsv("establishments");
+        return ResponseEntity.ok().build();
     }
 
 //    public ResponseEntity postComment(UUID idUser, Comment comment){

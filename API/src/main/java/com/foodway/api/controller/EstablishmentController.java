@@ -4,6 +4,7 @@ import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.service.establishment.EstablishmentService;
+import com.foodway.api.utils.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,13 +18,20 @@ import java.util.UUID;
 public class EstablishmentController {
     @Autowired
     private EstablishmentService establishmentService;
+
     @GetMapping
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishment();
     }
-    @GetMapping("/exportar")
-    public ResponseEntity<List<Establishment>> exportEstablishments() {
+
+    @GetMapping("/export")
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments() {
         return establishmentService.exportEstablishments();
+    }
+
+    @GetMapping("/import")
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments() {
+        return establishmentService.importEstablishments();
     }
 
     @GetMapping("/{id}")

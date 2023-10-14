@@ -27,9 +27,8 @@ public record RequestUserEstablishment(
         String cep,
         @NotBlank
         String number,
-        @NotBlank
-        String complement,
 
+        String complement,
         @NotBlank
         String rate,
         @NotBlank

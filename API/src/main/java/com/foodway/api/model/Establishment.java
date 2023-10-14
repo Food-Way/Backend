@@ -2,17 +2,17 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")
 public class Establishment extends User {
-//    @Id
+    //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
 //    private UUID idEstablishment;
     @Column(length = 75)
@@ -23,17 +23,40 @@ public class Establishment extends User {
     private String cep;
     @Column(length = 45)
     private String number;
-
-    @Column
+    @Column(length = 45)
     private String complement;
-
     private String rate;
     @Column(length = 14, unique = true)
     private String cnpj;
 //    private List<Product> menu;
 //    private List<Comment> postList;
 
-    public Establishment() {}
+    public Establishment() {
+    }
+
+    public Establishment(RequestUserEstablishment establishment) {
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
+        this.establishmentName = establishment.establishmentName();
+        this.description = establishment.description();
+        this.cep = establishment.cep();
+        this.number = establishment.number();
+        this.complement = establishment.complement();
+        this.rate = establishment.rate();
+        this.cnpj = establishment.cnpj();
+    }
+
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String complement, String rate, String cnpj) {
+        super(name, email, password, typeUser, profilePhoto);
+        this.establishmentName = establishmentName;
+        this.description = description;
+        this.cep = cep;
+        this.number = number;
+        this.complement = complement;
+        this.rate = rate;
+        this.cnpj = cnpj;
+//        this.menu = menu;
+//        this.postList = postList;
+    }
 
     @Override
     public void update(Optional<?> optional) {
@@ -51,44 +74,21 @@ public class Establishment extends User {
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
     }
 
-    public Establishment(RequestUserEstablishment establishment) {
-        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
-        this.establishmentName = establishment.establishmentName();
-        this.description = establishment.description();
-        this.cep = establishment.cep();
-        this.number = establishment.number();
-        this.complement = establishment.complement();
-        this.rate = establishment.rate();
-        this.cnpj = establishment.cnpj();
-    }
-
-
-
     @Override
-    public void comment(UUID idUser) {}
-
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number,String complement, String rate, String cnpj) {
-        super(name, email, password, typeUser, profilePhoto);
-        this.establishmentName = establishmentName;
-        this.description = description;
-        this.cep = cep;
-        this.number = number;
-        this.complement = complement;
-        this.rate = rate;
-        this.cnpj = cnpj;
-//        this.menu = menu;
-//        this.postList = postList;
+    public void comment(UUID idUser) {
     }
 
-//    public UUID getIdEstablishment() {
+    //    public UUID getIdEstablishment() {
 //        return idEstablishment;
 //    }
     public String getEstablishmentName() {
         return establishmentName;
     }
+
     public void setEstablishmentName(String establishmentName) {
         this.establishmentName = establishmentName;
     }
+
     public String getDescription() {
         return description;
     }
@@ -172,9 +172,6 @@ public class Establishment extends User {
 //            "menu": [],
 //        "postList": []
 //    }
-
-
-
 
 
 }
