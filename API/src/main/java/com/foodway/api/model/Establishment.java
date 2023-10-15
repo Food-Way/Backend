@@ -4,8 +4,10 @@ import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -28,8 +30,10 @@ public class Establishment extends User {
     private String rate;
     @Column(length = 14, unique = true)
     private String cnpj;
-//    private List<Product> menu;
-//    private List<Comment> postList;
+    //    private List<Product> menu;
+    @OneToMany
+    private List<Comment> postList;
+
 
     public Establishment() {
     }
@@ -153,9 +157,9 @@ public class Establishment extends User {
 //        this.postList = postList;
 //    }
 //
-//    public void addComment(Comment comment) {
-//        this.postList.add(comment);
-//    }
+    public void addComment(Comment comment) {
+        this.postList.add(comment);
+    }
 
 //    {
 //        "name": "leleo",
