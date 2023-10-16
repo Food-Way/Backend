@@ -1,12 +1,12 @@
 package com.foodway.api.service.user.authentication.dto;
 
 
-import com.foodway.api.model.Costumer;
+import com.foodway.api.model.Customer;
 import com.foodway.api.model.User;
 
 public class UserMapper {
     public static User of(UserCreateDto userCreateDto) {
-        User user = new Costumer();
+        User user = new Customer();
 
         user.setEmail(userCreateDto.getEmail());
         user.setPassword(userCreateDto.getPassword());

@@ -1,18 +1,17 @@
 package com.foodway.api.model;
 
-import com.foodway.api.record.RequestUserCostumer;
-import com.foodway.api.record.UpdateCostumerData;
+import com.foodway.api.record.RequestUserCustomer;
+import com.foodway.api.record.UpdateCustomerData;
 import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Optional;
 import java.util.UUID;
 @Table(name = "tbCostumer")
 @Entity(name = "costumer")
 @EqualsAndHashCode
-public class Costumer extends User{
+public class Customer extends User{
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
 //    private UUID idCostumer;
@@ -21,15 +20,15 @@ public class Costumer extends User{
     @Column(length = 254)
     private String bio;
 
-    public Costumer() {}
+    public Customer() {}
 
-    public Costumer(RequestUserCostumer costumer) {
-        super(costumer.name(), costumer.email(), costumer.password(), costumer.typeUser(), costumer.profilePhoto());
-        this.cpf = costumer.cpf();
-        this.bio = costumer.bio();
+    public Customer(RequestUserCustomer customer) {
+        super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto());
+        this.cpf = customer.cpf();
+        this.bio = customer.bio();
     }
 
-    public Costumer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio) {
+    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio) {
         super(name, email, password, typeUser, profilePhoto);
         this.cpf = cpf;
         this.bio = bio;
@@ -37,7 +36,7 @@ public class Costumer extends User{
 
     @Override
     public void update(@NotNull Optional<?> optional) {
-        UpdateCostumerData c = (UpdateCostumerData) optional.get();
+        UpdateCustomerData c = (UpdateCustomerData) optional.get();
         System.out.println(c);
         this.setName(c.name());
         this.setEmail(c.email());
