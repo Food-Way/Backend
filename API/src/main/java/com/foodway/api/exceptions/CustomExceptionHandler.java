@@ -11,10 +11,10 @@ import java.net.URI;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)
-    public ProblemDetail costumerNotFound(CustomerNotFoundException e) {
+    public ProblemDetail customerNotFound(CustomerNotFoundException e) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problemDetail.setType(URI.create(""));
-        problemDetail.setTitle("Costumer not found");
+        problemDetail.setTitle("Customer not found");
         problemDetail.setDetail(e.getMessage());
         return problemDetail;
     }
