@@ -57,11 +57,19 @@ public class EstablishmentService {
         return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
     }
 
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishments() {
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishmentsCsv() {
         List<Establishment> establishments = getEstablishment().getBody();
         ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
         establishments.forEach(listaObjEstablishments::adiciona);
         gravaArquivoCsv(listaObjEstablishments, "establishments");
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishmentsTxt() {
+        List<Establishment> establishments = getEstablishment().getBody();
+        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
+        establishments.forEach(listaObjEstablishments::adiciona);
+        gravaArquivoTxt(listaObjEstablishments, "establishments");
         return ResponseEntity.ok().build();
     }
 

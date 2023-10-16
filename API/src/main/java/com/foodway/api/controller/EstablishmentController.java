@@ -25,8 +25,14 @@ public class EstablishmentController {
     }
 
     @GetMapping("/export")
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishments() {
-        return establishmentService.exportEstablishments();
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {
+        if (archiveType.equals("csv")) {
+            return establishmentService.exportEstablishmentsCsv();
+        } else if (archiveType.equals("txt")) {
+            return establishmentService.exportEstablishmentsTxt();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/import")
