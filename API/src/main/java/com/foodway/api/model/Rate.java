@@ -9,10 +9,8 @@ public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idRate;
-
     private int ratePoint;
     private ETypeRate typeRate;
-
     public Rate() {
     }
 

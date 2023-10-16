@@ -27,7 +27,7 @@ public class Establishment extends User {
     private String number;
     @Column(length = 45)
     private String complement;
-    private String rate;
+    private Double rate;
     @Column(length = 14, unique = true)
     private String cnpj;
     //    private List<Product> menu;
@@ -49,7 +49,7 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
     }
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String complement, String rate, String cnpj) {
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String complement, Double rate, String cnpj) {
         super(name, email, password, typeUser, profilePhoto);
         this.establishmentName = establishmentName;
         this.description = description;
@@ -117,11 +117,11 @@ public class Establishment extends User {
         this.number = number;
     }
 
-    public String getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(String rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 

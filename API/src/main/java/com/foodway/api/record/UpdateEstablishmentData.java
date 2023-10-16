@@ -20,7 +20,7 @@ public record UpdateEstablishmentData(
         @NotBlank String cep,
         @NotBlank String number,
         String complement,
-        @NotBlank String rate,
+        @NotBlank Double rate,
         @NotBlank
         String cnpj
 //        List<Product> menu,

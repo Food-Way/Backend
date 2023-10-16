@@ -30,7 +30,7 @@ public record RequestUserEstablishment(
 
         String complement,
         @NotBlank
-        String rate,
+        Double rate,
         @NotBlank
         String cnpj
 ) {
