@@ -36,7 +36,7 @@ public class ProductController {
         return productService.getProducts();
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     @Operation(summary = "Get product by ID", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the product"),
