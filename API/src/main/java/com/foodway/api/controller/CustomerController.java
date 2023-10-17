@@ -37,7 +37,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Get costumer by ID", method = "GET")
+    @Operation(summary = "Get customer by ID", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
@@ -47,19 +47,35 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update costumer by ID", method = "PUT")
+    @Operation(summary = "Update customer by ID", method = "PUT")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity<Customer> putCustomer(@PathVariable UUID id, @RequestBody @Validated UpdateCustomerData customer){
         return customerService.putCustomer(id, customer);
     }
 
     @PostMapping
-    @Operation(summary = "Create a new costumer", method = "POST")
+    @Operation(summary = "Create a new customer", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the created customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<Customer> saveCustomer(@RequestBody @Validated RequestUserCustomer customer){
         return customerService.saveCustomer(customer);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a costumer by ID", method = "DELETE")
+    @Operation(summary = "Delete customer by ID", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the deleted customer"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     public ResponseEntity deleteCustomer(@PathVariable UUID id){
         return customerService.deleteCustomer(id);
     }
