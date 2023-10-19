@@ -1,11 +1,13 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.model.EEntity;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.GerenciadorDeArquivo;
 import com.foodway.api.utils.ListaObj;
+import com.foodway.api.utils.Ordernation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,14 @@ public class EstablishmentService {
     public ResponseEntity<List<Establishment>> getEstablishment() {
         if (establishmentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(establishmentRepository.findAll());
+    }
+
+    public ResponseEntity<ListaObj<Establishment>> getEstablishmentOrderByRate() {
+        List<Establishment> establishmentList = establishmentRepository.findAll();
+        if (establishmentList.isEmpty()) return ResponseEntity.status(204).build();
+
+        ListaObj<Establishment> list = new ListaObj<>(establishmentList.size(), establishmentList);
+        return ResponseEntity.status(200).body(Ordernation.filterBySome(list, "rate", EEntity.ESTABLISHMENT));
     }
 
     public ResponseEntity<Establishment> getEstablishment(UUID paramId) {

@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.UUID;
 
 public interface EstablishmentRepository extends JpaRepository<Establishment,UUID> {
+
 }

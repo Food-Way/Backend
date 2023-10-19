@@ -23,6 +23,10 @@ public class EstablishmentController {
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishment();
     }
+    @GetMapping("/greater-rate")
+    public ResponseEntity<ListaObj<Establishment>> getEstablishmentsOrderByRate() {
+        return establishmentService.getEstablishmentOrderByRate();
+    }
 
     @GetMapping("/export")
     public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {

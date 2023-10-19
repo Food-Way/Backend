@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,7 @@ public class Establishment extends User {
     private String number;
     @Column(length = 45)
     private String complement;
+    @PositiveOrZero
     private Double rate;
     @Column(length = 14, unique = true)
     private String cnpj;

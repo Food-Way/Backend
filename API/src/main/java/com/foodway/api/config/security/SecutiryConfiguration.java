@@ -58,7 +58,9 @@ public class SecutiryConfiguration {
             new AntPathRequestMatcher("/actuator/*"),
             new AntPathRequestMatcher("/usuarios/login/**"),
             new AntPathRequestMatcher("/h2-console/**"),
-            new AntPathRequestMatcher("/error/**")
+            new AntPathRequestMatcher("/error/**"),
+            new AntPathRequestMatcher("/customers/**"),
+            new AntPathRequestMatcher("/establishments/**")
     };
 
     @Bean

@@ -1,5 +1,7 @@
 package com.foodway.api.utils;
 
+import java.util.List;
+
 public class ListaObj<T> {
 
     // 01) Declarar vetor de int:
@@ -18,7 +20,18 @@ public class ListaObj<T> {
     public ListaObj(int tamanho) {
         vetor = (T[]) new Object[tamanho];
         nroElem = 0;
+    }
 
+    public ListaObj(int tamanho, List<T> list) {
+        vetor = (T[]) new Object[tamanho];
+        adicionaLista(list);
+        nroElem = list.size();
+    }
+
+    public void adicionaLista(List<T> list) {
+        for (int i = 0; i < vetor.length; i++) {
+            adiciona(list.get(i));
+        }
     }
 
     // 04) Método adiciona:
@@ -33,12 +46,18 @@ public class ListaObj<T> {
         }
     }
 
+    public void adicionaNoIndice(int indice, T obj) {
+        if (indice > 0 || indice < nroElem) {
+            vetor[indice] = obj;
+        }
+    }
+
 
     // 05) Método busca:
     // Recebe o elemento a ser procurado na lista
     // Retorna o índice do elemento, se for encontrado
     // Retorna -1 se não encontrou
-    public int busca(T elementoBuscado)  {
+    public int busca(T elementoBuscado) {
         for (int i = 0; i < nroElem; i++) {
             if (vetor[i].equals(elementoBuscado)) {
                 return i;
@@ -68,7 +87,7 @@ public class ListaObj<T> {
     // Utiliza os métodos busca e removePeloIndice
     // Retorna false, se não encontrou o elemento
     // Retorna true, se encontrou e removeu o elemento
-    public boolean removeElemento(T elementoARemover){
+    public boolean removeElemento(T elementoARemover) {
         int indice = busca(elementoARemover);
         if (indice != -1) {
             return removePeloIndice(indice);
@@ -85,7 +104,7 @@ public class ListaObj<T> {
     // 09) Método getElemento
     // Recebe um índice e retorna o elemento desse índice
     // Se o índice for inválido, retorna null
-    public T getElemento(int indice)  {
+    public T getElemento(int indice) {
         if (indice < 0 || indice >= nroElem) {
             return null;
         }

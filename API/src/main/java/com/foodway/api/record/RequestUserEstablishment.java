@@ -29,7 +29,7 @@ public record RequestUserEstablishment(
         String number,
 
         String complement,
-        @NotBlank
+        @NotNull
         Double rate,
         @NotBlank
         String cnpj
