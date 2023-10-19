@@ -4,7 +4,6 @@ import com.foodway.api.model.EEntity;
 import com.foodway.api.model.Establishment;
 
 public class Ordernation {
-
     public static <T> ListaObj<T> filterBySome(ListaObj<T> list, String filter, EEntity eEntity) {
         switch (filter.toUpperCase() + eEntity) {
             case "RATEESTABLISHMENT" :
