@@ -8,10 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,7 +59,7 @@ public class SecutiryConfiguration {
             new AntPathRequestMatcher("/webjars/**"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/actuator/*"),
-            new AntPathRequestMatcher("/usuarios/login/**"),
+            new AntPathRequestMatcher("/users/login/**"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
             new AntPathRequestMatcher("/customers/**"),
@@ -67,10 +70,10 @@ public class SecutiryConfiguration {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .headers(headers -> headers
-                        .frameOptions(options -> options.disable())
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
-                .cors(corsConfigurer -> corsConfigurer.disable()) // Desabilita o CORS
-                .csrf(csrf -> csrf.disable()) // Desabilita o CSRF
+                .cors(Customizer.withDefaults()) // Desabilita o CORS
+                .csrf(AbstractHttpConfigurer::disable) // Desabilita o CSRF
                 .authorizeRequests(authorize -> authorize
                         .requestMatchers(URLS_ALLOWED).permitAll() // Usa requestMatchers para URLs permitidas
                         .anyRequest().authenticated()
