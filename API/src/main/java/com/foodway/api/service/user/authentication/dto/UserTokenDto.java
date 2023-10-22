@@ -1,9 +1,13 @@
 package com.foodway.api.service.user.authentication.dto;
 
+import com.foodway.api.model.ETypeUser;
+
 public class UserTokenDto {
     private long idUser;
     private String email;
     private String token;
+
+    private ETypeUser typeUser;
 
     public long getIdUser() {
         return idUser;
@@ -27,5 +31,13 @@ public class UserTokenDto {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public ETypeUser getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(ETypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 }
