@@ -1,6 +1,10 @@
 package com.foodway.api.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Table(name = "tbRate")
 @Entity(name = "tags")
@@ -10,6 +14,10 @@ public class Tags {
     private Long idTags;
 
     private String name;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Tags(String name) {
         this.name = name;
@@ -18,11 +26,23 @@ public class Tags {
     public Tags() {
     }
 
+    public Long getIdTags() {
+        return idTags;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

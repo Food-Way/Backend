@@ -9,7 +9,6 @@ public record UpdateProductData(
         @NotNull String name,
         @NotNull String description,
         @NotNull BigDecimal price,
-        @NotNull LocalDateTime updatedAt,
         @NotNull String photo
 ) {
 }

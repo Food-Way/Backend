@@ -2,17 +2,20 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.UUID;
+
 @Table(name = "tbCostumer")
 @Entity(name = "costumer")
 @EqualsAndHashCode
-public class Customer extends User{
-//    @Id
+public class Customer extends User {
+    //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
 //    private UUID idCostumer;
     @Column(length = 11, unique = true)
@@ -20,7 +23,8 @@ public class Customer extends User{
     @Column(length = 254)
     private String bio;
 
-    public Customer() {}
+    public Customer() {
+    }
 
     public Customer(RequestUserCustomer customer) {
         super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto());
@@ -47,7 +51,8 @@ public class Customer extends User{
     }
 
     @Override
-    public void comment(UUID idUser) {}
+    public void comment(UUID idUser) {
+    }
 
     public String getCpf() {
         return cpf;
@@ -76,10 +81,5 @@ public class Customer extends User{
         "bio": "string"
     }
     * */
-
-
-
-
-
 
 }

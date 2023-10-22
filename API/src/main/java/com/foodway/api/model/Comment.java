@@ -4,7 +4,10 @@ import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +15,8 @@ import java.util.UUID;
 
 @Entity(name = "tbComment")
 public class Comment {
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
@@ -21,18 +26,22 @@ public class Comment {
     //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
     private List<String> images;
-//    private Rate rate;
-
+    //    private Rate rate;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     @ManyToOne
     @GeneratedValue(strategy = GenerationType.UUID)
     private Comment parentComment;
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
     @ManyToOne
     private Establishment establishment;
+    @OneToOne
+    private Customer customer;
 
     public Comment() {
     }
+
     public Comment(UUID idPost) {
         this.idPost = idPost;
     }
@@ -46,7 +55,7 @@ public class Comment {
 //        this.rate = rate;
     }
 
-    public Comment(RequestComment data){
+    public Comment(RequestComment data) {
         this.comment = data.comment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
@@ -55,7 +64,7 @@ public class Comment {
 //        this.rate = data.rate();
     }
 
-    public Comment(UUID idParent ,RequestCommentChild data){
+    public Comment(UUID idParent, RequestCommentChild data) {
         this.idParent = idParent;
         this.comment = data.comment();
         this.upvotes = data.upvotes();
@@ -74,9 +83,11 @@ public class Comment {
 //        this.setListCostumer(c.listCostumer());
         this.setImages(c.images());
     }
+
     public int getUpvotes() {
         return upvotes;
     }
+
     public void setUpvotes(int upvotes) {
         this.upvotes = upvotes;
     }
@@ -84,6 +95,7 @@ public class Comment {
     public String getComment() {
         return comment;
     }
+
     public void setcomment(String comment) {
         this.comment = comment;
     }
@@ -102,6 +114,7 @@ public class Comment {
 //    public void setListCostumer(List<Costumer> listCostumer) {
 //        this.listCostumer = listCostumer;
 //    }
+
     public UUID getIdPost() {
         return idPost;
     }
@@ -122,8 +135,17 @@ public class Comment {
     public List<String> getImages() {
         return images;
     }
+
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public UUID getIdParent() {

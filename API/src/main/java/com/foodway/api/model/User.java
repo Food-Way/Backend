@@ -2,9 +2,11 @@ package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,7 +15,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
 
     private UUID idUser;
     private String name;
@@ -23,6 +25,10 @@ public abstract class User {
     @Enumerated
     private ETypeUser typeUser;
     private String profilePhoto;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public User() {
     }
@@ -44,7 +50,6 @@ public abstract class User {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
-
 
     public abstract void update(Optional<?> optional);
 
@@ -97,5 +102,13 @@ public abstract class User {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

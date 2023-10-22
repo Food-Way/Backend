@@ -21,10 +21,10 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    @GetMapping("/")
-    public ResponseEntity<List<Comment>> getComments() {
-        return commentService.getComments();
-    }
+//    @GetMapping("/")
+//    public ResponseEntity<List<Comment>> getComments() {
+//        return commentService.getComments();
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
@@ -32,25 +32,28 @@ public class CommentController {
         return commentService.get(id);
     }
 
+    @GetMapping
+    public ResponseEntity<List<Comment>> getCommentsOfAEstablishment(@RequestParam UUID idEstablishment) {
+        return commentService.getCommentsOfAEstablishment(idEstablishment);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment){
+    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment) {
         return commentService.putComment(id, comment);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data){
+    public ResponseEntity postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data) {
         return commentService.postComment(id, data);
     }
 
     @PostMapping("/parent/{idParent}")
-    public ResponseEntity postCommentChild(@PathVariable UUID idParent,
-                                           @RequestBody RequestCommentChild comment){
+    public ResponseEntity postCommentChild(@PathVariable UUID idParent, @RequestBody RequestCommentChild comment) {
         return commentService.postCommentChild(idParent, comment);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")
-    public ResponseEntity deleteComment(@PathVariable UUID id,
-                                        @PathVariable UUID idOwner){
+    public ResponseEntity deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
         return commentService.deleteComment(id, idOwner);
     }
 
