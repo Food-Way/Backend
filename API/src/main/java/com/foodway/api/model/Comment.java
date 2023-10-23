@@ -129,4 +129,12 @@ public class Comment {
     public UUID getIdParent() {
         return idParent;
     }
+
+    public Establishment getEstablishment() {
+        return establishment;
+    }
+
+    public void setEstablishment(Establishment establishment) {
+        this.establishment = establishment;
+    }
 }

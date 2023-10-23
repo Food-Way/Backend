@@ -29,6 +29,7 @@ public class CommentService {
         if (establishmentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
         }
+        comment.setEstablishment(establishmentOptional.get());
         establishmentOptional.get().addComment(comment);
         return ResponseEntity.status(200).body
                 (commentRepository.save(comment));
