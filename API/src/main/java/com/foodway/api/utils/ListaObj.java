@@ -156,6 +156,7 @@ public class ListaObj<T> {
         return null;
     }
 
+    // pegar o indice de uma nota específica
     public int findByRate(Double rate){
         int inf, mid, sup;
         inf = 0;
