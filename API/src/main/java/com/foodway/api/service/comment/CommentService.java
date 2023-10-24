@@ -59,8 +59,9 @@ public class CommentService {
 
     public ResponseEntity<Optional<Comment>> get(UUID id) {
         if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(commentRepository.findByIdEstablishment(id));
+        return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
+
     public ResponseEntity deleteComment(UUID id, UUID idOwner) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isPresent()) {

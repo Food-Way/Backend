@@ -28,7 +28,6 @@ public class CommentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
-
         return commentService.get(id);
     }
 
