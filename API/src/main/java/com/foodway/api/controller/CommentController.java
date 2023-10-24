@@ -42,14 +42,14 @@ public class CommentController {
         return commentService.putComment(id, comment);
     }
 
-    @PostMapping("establishments/{id}")
+    @PostMapping("establishment/{id}")
     public ResponseEntity<Comment> postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data) {
         return commentService.postComment(id, data);
     }
 
-    @PostMapping("/parent/{idParent}")
-    public ResponseEntity postCommentChild(@PathVariable UUID idParent, @RequestBody RequestCommentChild comment) {
-        return commentService.postCommentChild(idParent, comment);
+    @PostMapping("establishment/{idEstablishment}/parent/{idParent}")
+    public ResponseEntity postCommentChild(@PathVariable UUID idEstablishment, @PathVariable UUID idParent, @RequestBody RequestCommentChild comment) {
+        return commentService.postCommentChild(idEstablishment, idParent, comment);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")

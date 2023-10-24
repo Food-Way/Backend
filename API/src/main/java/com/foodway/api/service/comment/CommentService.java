@@ -31,14 +31,16 @@ public class CommentService {
         return ResponseEntity.status(200).body(commentRepository.save(comment));
     }
 
-    public ResponseEntity<Comment> postCommentChild(UUID idParent, RequestCommentChild data) {
+    public ResponseEntity<Comment> postCommentChild(UUID idEstablishment, UUID idParent, RequestCommentChild data) {
         Optional<Comment> commentOptional = commentRepository.findById(idParent);
+        final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
 
         if (commentOptional.isEmpty()) {
             return ResponseEntity.status(404).build();
         }
         Comment commentParent = commentOptional.get();
         Comment comment = new Comment(idParent, data);
+        comment.setIdEstablishment(establishment.getIdUser());
 
         commentParent.addReply(comment);
 

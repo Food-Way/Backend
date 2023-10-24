@@ -19,8 +19,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity(name = "tbComment")
 public class Comment {
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
@@ -39,6 +37,8 @@ public class Comment {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
 
     public Comment() {
     }
@@ -54,6 +54,7 @@ public class Comment {
 //        this.listCostumer = listCostumer;
         this.images = images;
 //        this.rate = rate;
+        this.replies = new ArrayList<>();
     }
 
     public Comment(RequestComment data) {
@@ -63,6 +64,7 @@ public class Comment {
 //        this.listCostumer = data.listCostumer();
         this.images = data.images();
 //        this.rate = data.rate();
+        this.replies = new ArrayList<>();
     }
 
     public Comment(UUID idParent, RequestCommentChild data) {
