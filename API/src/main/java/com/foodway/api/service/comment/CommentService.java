@@ -29,7 +29,7 @@ public class CommentService {
         if (establishmentOptional.isEmpty()){
             return ResponseEntity.status(404).build();
         }
-        comment.setEstablishment(establishmentOptional.get());
+        comment.setIdEstablishment(establishmentOptional.get().getIdUser());
         establishmentOptional.get().addComment(comment);
         return ResponseEntity.status(200).body
                 (commentRepository.save(comment));
@@ -56,9 +56,10 @@ public class CommentService {
         if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(commentRepository.findAll());
     }
+
     public ResponseEntity<Optional<Comment>> get(UUID id) {
         if (commentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(commentRepository.findById(id));
+        return ResponseEntity.status(200).body(commentRepository.findByIdEstablishment(id));
     }
     public ResponseEntity deleteComment(UUID id, UUID idOwner) {
         Optional<Comment> comment = commentRepository.findById(id);

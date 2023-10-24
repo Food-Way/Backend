@@ -12,27 +12,27 @@ import java.util.UUID;
 
 @Entity(name = "tbComment")
 public class Comment {
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
     private UUID idParent;
     private int upvotes;
     private String comment;
+//    private Rate rate;
     //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
     private List<String> images;
-//    private Rate rate;
-
     @ManyToOne
     @GeneratedValue(strategy = GenerationType.UUID)
     private Comment parentComment;
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
-    @ManyToOne
-    private Establishment establishment;
+
+    private UUID idEstablishment;
 
     public Comment() {
     }
+
     public Comment(UUID idPost) {
         this.idPost = idPost;
     }
@@ -46,7 +46,7 @@ public class Comment {
 //        this.rate = rate;
     }
 
-    public Comment(RequestComment data){
+    public Comment(RequestComment data) {
         this.comment = data.comment();
         this.upvotes = data.upvotes();
 //        this.tagList = data.tagList();
@@ -55,7 +55,7 @@ public class Comment {
 //        this.rate = data.rate();
     }
 
-    public Comment(UUID idParent ,RequestCommentChild data){
+    public Comment(UUID idParent, RequestCommentChild data) {
         this.idParent = idParent;
         this.comment = data.comment();
         this.upvotes = data.upvotes();
@@ -74,9 +74,11 @@ public class Comment {
 //        this.setListCostumer(c.listCostumer());
         this.setImages(c.images());
     }
+
     public int getUpvotes() {
         return upvotes;
     }
+
     public void setUpvotes(int upvotes) {
         this.upvotes = upvotes;
     }
@@ -84,6 +86,7 @@ public class Comment {
     public String getComment() {
         return comment;
     }
+
     public void setcomment(String comment) {
         this.comment = comment;
     }
@@ -122,6 +125,7 @@ public class Comment {
     public List<String> getImages() {
         return images;
     }
+
     public void setImages(List<String> images) {
         this.images = images;
     }
@@ -130,11 +134,11 @@ public class Comment {
         return idParent;
     }
 
-    public Establishment getEstablishment() {
-        return establishment;
+    public UUID getIdEstablishment() {
+        return idEstablishment;
     }
 
-    public void setEstablishment(Establishment establishment) {
-        this.establishment = establishment;
+    public void setIdEstablishment(UUID idEstablishment) {
+        this.idEstablishment = idEstablishment;
     }
 }
