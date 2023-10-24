@@ -36,17 +36,21 @@ public class GerenciadorDeArquivo {
 
                 //Recupere um elemento da lista e formate aqui:
                 Establishment establishment = lista.getElemento(i);
-                saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%.2f;%s;%s;%s\n",
 
                         establishment.getIdUser(),
                         establishment.getName(),
+                        establishment.getEstablishmentName(),
                         establishment.getEmail(),
                         establishment.getTypeUser(),
                         establishment.getCep(),
                         establishment.getNumber(),
                         establishment.getComplement(),
                         establishment.getRate(),
-                        establishment.getCnpj());
+                        establishment.getCnpj(),
+                        establishment.getCreatedAt(),
+                        establishment.getUpdatedAt()
+                );
             }
         } catch (FormatterClosedException erro) {
             System.out.println("Erro ao gravar o arquivo");
@@ -84,26 +88,26 @@ public class GerenciadorDeArquivo {
         // Bloco try-catch para ler o arquivo
         try {
             //Leia e formate a saída no console aqui:
-
             // Cabeçalho
-            System.out.printf("%-40s %-20s %-30s %-15s %-10s %-8s %-15s %-5s %-15s\n",
-                    "Id", "Name", "Email", "TypeUser", "Cep", "Number", "Complement", "Rate", "Cnpj");
-
+            System.out.printf("%-40s %-20s %-30s %-30s %-15s %-10s %-8s %-15s %-5s %-15s %-28s %-28s\n",
+                    "ID", "NAME", "ESTABLISHMENT NAME", "EMAIL", "TYPE USER", "CEP", "NUMBER", "COMPLEMENT", "RATE", "CNPJ", "CREATED AT", "UPDATED AT");
             while (entrada.hasNext()) {
 
                 String id = entrada.next();
                 String name = entrada.next();
+                String establishmentName = entrada.next();
                 String email = entrada.next();
                 String typeUser = entrada.next();
                 String cep = entrada.next();
                 String number = entrada.next();
                 String complement = entrada.next();
-                String rate = entrada.next();
+                Double rate = entrada.nextDouble();
                 String cnpj = entrada.next();
+                String createdAt = entrada.next();
+                String updatedAt = entrada.next();
 
-                System.out.printf("%-40s %-20s %-30s %-15s %-10s %-8s %-15s %-5s %-15s\n",
-                        id, name, email, typeUser, cep, number, complement, rate, cnpj);
-
+                System.out.printf("%-40s %-20s %-30s %-30s %-15s %-10s %-8s %-15s %-5.2f %-15s %-28s %-28s\n",
+                        id, name, establishmentName, email, typeUser, cep, number, complement, rate, cnpj, createdAt, updatedAt);
             }
         } catch (NoSuchElementException erro) {
             System.out.println("Arquivo com problemas");

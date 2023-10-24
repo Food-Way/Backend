@@ -2,16 +2,25 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity(name = "tbComment")
 public class Comment {
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
@@ -19,16 +28,17 @@ public class Comment {
     private UUID idEstablishment;
     private String comment;
     //    private Rate rate;
-    //    private List<Tags> tagList;
+//    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
     private int upvotes;
     private List<String> images;
     @ManyToOne
     @GeneratedValue(strategy = GenerationType.UUID)
     private Comment parentComment;
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
-
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Comment() {
     }
@@ -140,5 +150,13 @@ public class Comment {
 
     public void setIdEstablishment(UUID idEstablishment) {
         this.idEstablishment = idEstablishment;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

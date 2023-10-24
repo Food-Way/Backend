@@ -2,13 +2,19 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Table(name = "tbProduct")
 @Entity(name = "product")
 public class Product {
@@ -19,25 +25,26 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
-    private LocalDateTime updatedAt;
     private String photo;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public Product() {
     }
 
-    public Product(String name, String description, BigDecimal price, LocalDateTime updatedAt, String photo) {
+    public Product(String name, String description, BigDecimal price, String photo) {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.updatedAt = updatedAt;
         this.photo = photo;
     }
 
-    public Product(RequestProduct requestProduct){
+    public Product(RequestProduct requestProduct) {
         this.name = requestProduct.name();
         this.description = requestProduct.description();
         this.price = requestProduct.price();
-        this.updatedAt = requestProduct.updatedAt();
         this.photo = requestProduct.photo();
     }
 
@@ -46,7 +53,6 @@ public class Product {
         this.name = updateProductData.name();
         this.description = updateProductData.description();
         this.price = updateProductData.price();
-        this.updatedAt = updateProductData.updatedAt();
         this.photo = updateProductData.photo();
 
     }
@@ -83,14 +89,6 @@ public class Product {
         this.price = price;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public String getPhoto() {
         return photo;
     }
@@ -99,7 +97,15 @@ public class Product {
         this.photo = photo;
     }
 
-//     {
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    //     {
 //         "name": "nome do produto",
 //         "description": "descrição do produto",
 //         "price": 10.00,
