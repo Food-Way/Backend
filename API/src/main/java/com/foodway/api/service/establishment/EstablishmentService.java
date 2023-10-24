@@ -40,6 +40,11 @@ public class EstablishmentService {
         return establishment.map(value -> ResponseEntity.status(200).body(value)).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
+    public ResponseEntity getBinarySearch(Double rate) {
+        ListaObj<Establishment> list = getEstablishmentOrderByRate().getBody();
+        return ResponseEntity.status(200).body(list.findByRate(rate));
+    }
+
     public ResponseEntity<Establishment> deleteEstablishment(UUID id) {
         Optional<Establishment> establishment = establishmentRepository.findById(id);
         if (establishment.isEmpty()) {
@@ -85,17 +90,4 @@ public class EstablishmentService {
         leArquivoCsv("establishments");
         return ResponseEntity.ok().build();
     }
-
-//    public ResponseEntity postComment(UUID idUser, Comment comment){
-//            Optional<Establishment> establishment = establishmentRepository.findById(idUser);
-//            if (establishment.isEmpty()){
-//                return ResponseEntity.status(404).build();
-//            }
-//
-//
-//            Establishment teste = establishment.stream().findFirst().get();
-//            teste.addComment(comment);
-//
-//            return ResponseEntity.status(201).body(comment);
-//    }
 }

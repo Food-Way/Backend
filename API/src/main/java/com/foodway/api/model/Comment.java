@@ -12,23 +12,23 @@ import java.util.UUID;
 
 @Entity(name = "tbComment")
 public class Comment {
-    @OneToMany(mappedBy = "parentComment")
-    List<Comment> replies;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idPost;
     private UUID idParent;
-    private int upvotes;
+    private UUID idEstablishment;
     private String comment;
-//    private Rate rate;
+    //    private Rate rate;
     //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
+    private int upvotes;
     private List<String> images;
     @ManyToOne
     @GeneratedValue(strategy = GenerationType.UUID)
     private Comment parentComment;
+    @OneToMany(mappedBy = "parentComment")
+    List<Comment> replies;
 
-    private UUID idEstablishment;
 
     public Comment() {
     }

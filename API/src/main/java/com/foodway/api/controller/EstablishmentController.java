@@ -23,11 +23,14 @@ public class EstablishmentController {
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishment();
     }
-    @GetMapping("/greater-rate")
+    @GetMapping("/order-by-greater-rate")
     public ResponseEntity<ListaObj<Establishment>> getEstablishmentsOrderByRate() {
         return establishmentService.getEstablishmentOrderByRate();
     }
-
+    @GetMapping("/search-rate")
+    public ResponseEntity<Establishment> getBinarySearch(@RequestParam Double rate) {
+        return establishmentService.getBinarySearch(rate);
+    }
     @GetMapping("/export")
     public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {
         if (archiveType.equals("csv")) {

@@ -156,6 +156,26 @@ public class ListaObj<T> {
         return null;
     }
 
+    public int findByRate(Double rate){
+        int inf, mid, sup;
+        inf = 0;
+        sup = vetor.length - 1;
+
+        while(inf <= sup){
+            mid = (inf + sup) / 2;
+            Establishment current = (Establishment) vetor[mid];
+            if(current.getRate().equals(rate)){
+                return mid;
+            } else if(rate > current.getRate()){
+                sup = mid - 1;
+            } else {
+                inf = mid + 1;
+            }
+        }
+
+        return -1;
+    }
+
     // Get do vetor
     // Não retirar, é usado nos testes
     public T[] getVetor() {
