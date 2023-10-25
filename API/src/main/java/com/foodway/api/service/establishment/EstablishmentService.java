@@ -82,12 +82,17 @@ public class EstablishmentService {
         List<Establishment> establishments = getEstablishment().getBody();
         ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
         establishments.forEach(listaObjEstablishments::adiciona);
-        gravaArquivoTxt(listaObjEstablishments, "establishments");
+        gravaArquivoTxt(establishments, "establishments.txt");
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<ListaObj<Establishment>> importEstablishments() {
+    public ResponseEntity<ListaObj<Establishment>> importEstablishmentsCsv() {
         leArquivoCsv("establishments");
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<ListaObj<Establishment>> importEstablishmentTxt() {
+        leArquivoTxt("establishments.txt");
         return ResponseEntity.ok().build();
     }
 }

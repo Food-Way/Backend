@@ -53,8 +53,14 @@ public class EstablishmentController {
     }
 
     @GetMapping("/import")
-    public ResponseEntity<ListaObj<Establishment>> importEstablishments() {
-        return establishmentService.importEstablishments();
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
+        if (archiveType.equals("csv")) {
+            return establishmentService.importEstablishmentsCsv();
+        } else if (archiveType.equals("txt")) {
+            return establishmentService.importEstablishmentTxt();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{id}")
