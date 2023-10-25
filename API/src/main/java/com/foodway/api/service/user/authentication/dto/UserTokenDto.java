@@ -2,18 +2,20 @@ package com.foodway.api.service.user.authentication.dto;
 
 import com.foodway.api.model.ETypeUser;
 
+import java.util.UUID;
+
 public class UserTokenDto {
-    private long idUser;
+    private UUID idUser;
     private String email;
     private String token;
 
     private ETypeUser typeUser;
 
-    public long getIdUser() {
+    public UUID getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(long idUser) {
+    public void setIdUser(UUID idUser) {
         this.idUser = idUser;
     }
 
