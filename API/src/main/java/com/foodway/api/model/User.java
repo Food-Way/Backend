@@ -1,17 +1,27 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Table(name = "tbUser")
 @Entity(name = "user")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idUser;
     private String name;
     private String email;
@@ -20,6 +30,10 @@ public abstract class User {
     @Enumerated
     private ETypeUser typeUser;
     private String profilePhoto;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public User() {
     }
@@ -27,9 +41,14 @@ public abstract class User {
     public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto) {
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.password = encodePassword(password);
         this.typeUser = typeUser;
         this.profilePhoto = profilePhoto;
+    }
+
+    private String encodePassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
     }
 
     public abstract void update(Optional<?> optional);
@@ -83,5 +102,13 @@ public abstract class User {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 }

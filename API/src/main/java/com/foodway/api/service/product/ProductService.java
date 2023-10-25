@@ -28,7 +28,7 @@ public class ProductService {
 
     public ResponseEntity<Product> putProduct(UUID id, UpdateProductData data) {
         Optional<Product> product = productRepository.findById(id);
-        if(product.isEmpty()) {
+        if (product.isEmpty()) {
             return ResponseEntity.status(404).build();
         }
         product.get().update(Optional.ofNullable(data));
@@ -43,7 +43,15 @@ public class ProductService {
     }
 
     public ResponseEntity<List<Product>> getProducts() {
-        if(productRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
+        if (productRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(productRepository.findAll());
+    }
+
+    public ResponseEntity<Product> getProductById(UUID id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.status(200).body(product.get());
     }
 }
