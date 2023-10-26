@@ -5,20 +5,13 @@ import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.utils.ListaObj;
-import java.util.List;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/establishments")
@@ -43,24 +36,12 @@ public class EstablishmentController {
 
     @GetMapping("/export")
     public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {
-        if (archiveType.equals("csv")) {
-            return establishmentService.exportEstablishmentsCsv();
-        } else if (archiveType.equals("txt")) {
-            return establishmentService.exportEstablishmentsTxt();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        return establishmentService.exportEstablishments(archiveType);
     }
 
     @GetMapping("/import")
     public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
-        if (archiveType.equals("csv")) {
-            return establishmentService.importEstablishmentsCsv();
-        } else if (archiveType.equals("txt")) {
-            return establishmentService.importEstablishmentTxt();
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+            return establishmentService.importEstablishments(archiveType);
     }
 
     @GetMapping("/{id}")

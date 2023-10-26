@@ -60,39 +60,34 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {
-        Optional<Establishment> establishmentOptional = establishmentRepository.findById(id);
-        if (establishmentOptional.isEmpty()) {
-            return ResponseEntity.status(404).build();
-        }
-        System.out.println("Passei aqui2");
-        Establishment establishment = establishmentOptional.get();
+        ResponseEntity<Establishment> establishment1 = getEstablishment(id);
+        Establishment establishment = establishment1.getBody();
         establishment.update(Optional.of(data));
-        return ResponseEntity.status(200).body(establishmentRepository.save(establishmentOptional.get()));
+        return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
     }
 
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishmentsCsv() {
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(String archiveType) {
         List<Establishment> establishments = getEstablishment().getBody();
         ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
         establishments.forEach(listaObjEstablishments::adiciona);
-        gravaArquivoCsv(listaObjEstablishments, "establishments");
-        return ResponseEntity.ok().build();
+        if (archiveType.equals("csv")) {
+            gravaArquivoCsv(listaObjEstablishments, "establishments");
+            return ResponseEntity.ok().build();
+        } else if (archiveType.equals("txt")) {
+            gravaArquivoTxt(establishments, "establishments.txt");
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishmentsTxt() {
-        List<Establishment> establishments = getEstablishment().getBody();
-        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
-        establishments.forEach(listaObjEstablishments::adiciona);
-        gravaArquivoTxt(establishments, "establishments.txt");
-        return ResponseEntity.ok().build();
-    }
-
-    public ResponseEntity<ListaObj<Establishment>> importEstablishmentsCsv() {
-        leArquivoCsv("establishments");
-        return ResponseEntity.ok().build();
-    }
-
-    public ResponseEntity<ListaObj<Establishment>> importEstablishmentTxt() {
-        leArquivoTxt("establishments.txt");
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments(String archiveType) {
+        if (archiveType.equals("csv")) {
+            leArquivoCsv("establishments");
+            return ResponseEntity.ok().build();
+        } else if (archiveType.equals("txt")) {
+            leArquivoTxt("establishments.txt");
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
