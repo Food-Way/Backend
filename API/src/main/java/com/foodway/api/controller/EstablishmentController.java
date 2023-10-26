@@ -19,9 +19,14 @@ public class EstablishmentController {
     @Autowired
     private EstablishmentService establishmentService;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Establishment> getEstablishment(@PathVariable UUID id) {
+        return establishmentService.getEstablishment(id);
+    }
+
     @GetMapping
     public ResponseEntity<List<Establishment>> getEstablishments() {
-        return establishmentService.getEstablishment();
+        return establishmentService.getEstablishments();
     }
 
     @GetMapping("/order-by-greater-rate")
@@ -30,7 +35,7 @@ public class EstablishmentController {
     }
 
     @GetMapping("/search-rate")
-    public ResponseEntity<Establishment> getBinarySearch(@RequestParam Double rate) {
+    public ResponseEntity getBinarySearch(@RequestParam Double rate) {
         return establishmentService.getBinarySearch(rate);
     }
 
@@ -42,11 +47,6 @@ public class EstablishmentController {
     @GetMapping("/import")
     public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
             return establishmentService.importEstablishments(archiveType);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Establishment> getEstablishment(@PathVariable UUID id) {
-        return establishmentService.getEstablishment(id);
     }
 
     @DeleteMapping("/{id}")

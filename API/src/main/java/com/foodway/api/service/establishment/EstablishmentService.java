@@ -22,16 +22,20 @@ public class EstablishmentService {
 
     private EstablishmentRepository establishmentRepository;
 
-    public ResponseEntity<List<Establishment>> getEstablishment() {
-        if (establishmentRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(establishmentRepository.findAll());
+    public ResponseEntity<List<Establishment>> getEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findAll();
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(establishments);
     }
 
     public ResponseEntity<ListaObj<Establishment>> getEstablishmentOrderByRate() {
-        List<Establishment> establishmentList = establishmentRepository.findAll();
-        if (establishmentList.isEmpty()) return ResponseEntity.status(204).build();
-
-        ListaObj<Establishment> list = new ListaObj<>(establishmentList.size(), establishmentList);
+        List<Establishment> establishments = getEstablishments().getBody();
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        ListaObj<Establishment> list = new ListaObj<>(establishments.size(), establishments);
         return ResponseEntity.status(200).body(list.filterBySome(list, "rate", EEntity.ESTABLISHMENT));
     }
 
@@ -67,9 +71,8 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<ListaObj<Establishment>> exportEstablishments(String archiveType) {
-        List<Establishment> establishments = getEstablishment().getBody();
-        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size());
-        establishments.forEach(listaObjEstablishments::adiciona);
+        List<Establishment> establishments = getEstablishments().getBody();
+        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size(), establishments);
         if (archiveType.equals("csv")) {
             gravaArquivoCsv(listaObjEstablishments, "establishments");
             return ResponseEntity.ok().build();
