@@ -80,10 +80,6 @@ public class Establishment extends User {
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
     }
 
-    @Override
-    public void comment(UUID idUser) {
-    }
-
     //    public UUID getIdEstablishment() {
 //        return idEstablishment;
 //    }

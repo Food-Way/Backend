@@ -47,10 +47,7 @@ public class Customer extends User {
         this.setProfilePhoto(c.profilePhoto());
         this.setCpf(c.cpf());
         this.setBio(c.bio());
-    }
-
-    @Override
-    public void comment(UUID idUser) {
+        this.setCategories(c.categories());
     }
 
     public String getCpf() {
