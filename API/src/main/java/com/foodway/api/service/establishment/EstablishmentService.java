@@ -7,6 +7,7 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.ListaObj;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,14 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getEstablishmentsWithFilters(String culinary) {
+        List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByRateDesc(culinary);
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }

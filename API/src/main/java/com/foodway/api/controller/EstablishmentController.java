@@ -1,10 +1,12 @@
 package com.foodway.api.controller;
 
+import com.foodway.api.model.Culinary;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.utils.ListaObj;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,8 +27,11 @@ public class EstablishmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Establishment>> getEstablishments() {
-        return establishmentService.getEstablishments();
+    public ResponseEntity<List<Establishment>> getEstablishments(@Nullable @RequestParam String culinary) {
+        if (culinary == null) {
+            return establishmentService.getEstablishments();
+        }
+        return establishmentService.getEstablishmentsWithFilters(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")
