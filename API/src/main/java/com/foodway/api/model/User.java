@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import jdk.dynalink.linker.LinkerServices;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,11 +28,11 @@ public abstract class User {
     private String profilePhoto;
     @ManyToMany
     @JoinTable(
-            name = "tbUserCategory",
+            name = "tbUserCulinary",
             joinColumns = @JoinColumn(name = "idUser"),
-            inverseJoinColumns = @JoinColumn(name = "idCategory")
+            inverseJoinColumns = @JoinColumn(name = "idCulinary")
     )
-    private List<Category> categories;
+    private List<Culinary> culinary;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -113,11 +112,11 @@ public abstract class User {
         return updatedAt;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public List<Culinary> getCulinary() {
+        return culinary;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCulinary(List<Culinary> culinary) {
+        this.culinary = culinary;
     }
 }

@@ -1,6 +1,6 @@
 package com.foodway.api.record;
 
-import com.foodway.api.model.Category;
+import com.foodway.api.model.Culinary;
 import com.foodway.api.model.ETypeUser;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +18,6 @@ public record UpdateCustomerData(
         String profilePhoto,
         @NotBlank @CPF String cpf,
         String bio,
-        List<Category> categories
+        List<Culinary> culinary
 ) {
 }

@@ -47,7 +47,7 @@ public class Customer extends User {
         this.setProfilePhoto(c.profilePhoto());
         this.setCpf(c.cpf());
         this.setBio(c.bio());
-        this.setCategories(c.categories());
+        this.setCulinary(c.culinary());
     }
 
     public String getCpf() {

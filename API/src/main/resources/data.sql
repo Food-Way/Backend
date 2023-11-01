@@ -1,1 +1,1 @@
-INSERT INTO Category (name) VALUES ('Eletrônicos');
+INSERT INTO Culinary (name) VALUES ('Eletrônicos');

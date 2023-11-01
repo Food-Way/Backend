@@ -3,23 +3,22 @@ package com.foodway.api.model;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Table(name = "tbCategory")
-public class Category {
+@Table(name = "tbCulinary")
+public class Culinary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String name;
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "culinary")
     List<User> users;
 
-    public Category() {
+    public Culinary() {
     }
 
-    public Category(String name) {
+    public Culinary(String name) {
         this.name = name;
     }
 
