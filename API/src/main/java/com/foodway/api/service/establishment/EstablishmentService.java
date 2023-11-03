@@ -2,6 +2,7 @@ package com.foodway.api.service.establishment;
 
 import com.foodway.api.model.EEntity;
 import com.foodway.api.model.Establishment;
+//import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
@@ -9,6 +10,7 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.ListaObj;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -85,10 +87,12 @@ public class EstablishmentService {
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
         Establishment createdEstablishment = new Establishment(establishment);
         RequestUserEstablishment.Address address = establishment.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "api.key");
-        createdEstablishment.setLong(mapsLong.getLng());
-        createdEstablishment.setLat(mapsLat.getLat());
-        return ResponseEntity.status(201).body(establishmentRepository.save(createdEstablishment));
+        MapsLongLag mapsLongLag = mapsClient.getLongLat("50", "Rua+Doutor+Rodrigo+Pereira+Barreto", "São+Paulo", "api.key");
+
+//        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "api.key");
+//        createdEstablishment.setLong(mapsLong.getLng());
+//        createdEstablishment.setLat(mapsLat.getLat());
+        return null;
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {

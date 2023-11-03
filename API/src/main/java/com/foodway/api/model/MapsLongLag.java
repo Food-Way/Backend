@@ -28,4 +28,12 @@ public class MapsLongLag {
         public void setLatitude(String latitude) {
             this.latitude = latitude;
         }
+
+    @Override
+    public String toString() {
+        return "MapsLongLag{" +
+                "longtitude='" + longtitude + '\'' +
+                ", latitude='" + latitude + '\'' +
+                '}';
+    }
 }
