@@ -1,6 +1,5 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.model.Culinary;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
@@ -18,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/establishments")
 public class EstablishmentController {
+
     @Autowired
     private EstablishmentService establishmentService;
 
@@ -27,11 +27,24 @@ public class EstablishmentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Establishment>> getEstablishments(@Nullable @RequestParam String culinary) {
+    public ResponseEntity<List<Establishment>> getEstablishments() {
+        return establishmentService.getEstablishments();
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<List<Establishment>> getBestEstablishments(@Nullable @RequestParam String culinary) {
         if (culinary == null) {
-            return establishmentService.getEstablishments();
+            return establishmentService.getBestEstablishments();
         }
-        return establishmentService.getEstablishmentsWithFilters(culinary);
+        return establishmentService.getBestEstablishmentsByCulinary(culinary);
+    }
+
+    @GetMapping("/more-commented")
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
+        if (culinary == null) {
+            return establishmentService.getMoreCommentedEstablishments();
+        }
+        return establishmentService.getMoreCommentedEstablishmentsByCulinary(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")
@@ -51,7 +64,7 @@ public class EstablishmentController {
 
     @GetMapping("/import")
     public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
-            return establishmentService.importEstablishments(archiveType);
+        return establishmentService.importEstablishments(archiveType);
     }
 
     @DeleteMapping("/{id}")

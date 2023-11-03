@@ -44,10 +44,9 @@ public class Establishment extends User {
         super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
-        this.cep = establishment.cep();
-        this.number = establishment.number();
-        this.complement = establishment.complement();
-        this.rate = establishment.rate();
+        this.cep = establishment.address().cep();
+        this.number = establishment.address().number();
+        this.complement = establishment.address().complement();
         this.cnpj = establishment.cnpj();
     }
 
@@ -147,9 +146,9 @@ public class Establishment extends User {
 //        this.menu = menu;
 //    }
 //
-//    public List<Comment> getPostList() {
-//        return postList;
-//    }
+    public List<Comment> getPostList() {
+        return postList;
+    }
 //
 //    public void setPostList(List<Comment> postList) {
 //        this.postList = postList;

@@ -2,12 +2,13 @@ package com.foodway.api.service.establishment;
 
 import com.foodway.api.model.EEntity;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.model.MapsClient;
+import com.foodway.api.model.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.ListaObj;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,28 +23,42 @@ import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 public class EstablishmentService {
 
     private EstablishmentRepository establishmentRepository;
+    private MapsClient mapsClient;
+
+    public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).build();
+    }
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(establishments);
+        return validateIsEmpty(establishments);
     }
 
-    public ResponseEntity<List<Establishment>> getEstablishmentsWithFilters(String culinary) {
+    public ResponseEntity<List<Establishment>> getBestEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByRateDesc();
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getBestEstablishmentsByCulinary(String culinary) {
         List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByRateDesc(culinary);
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(establishments);
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findByOrderByPostListDesc();
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishmentsByCulinary(String culinary) {
+        List<Establishment> establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
+        return validateIsEmpty(establishments);
     }
 
     public ResponseEntity<ListaObj<Establishment>> getEstablishmentOrderByRate() {
         List<Establishment> establishments = getEstablishments().getBody();
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
         ListaObj<Establishment> list = new ListaObj<>(establishments.size(), establishments);
         return ResponseEntity.status(200).body(list.filterBySome(list, "rate", EEntity.ESTABLISHMENT));
     }
@@ -69,6 +84,10 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
         Establishment createdEstablishment = new Establishment(establishment);
+        RequestUserEstablishment.Address address = establishment.address();
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "api.key");
+        createdEstablishment.setLong(mapsLong.getLng());
+        createdEstablishment.setLat(mapsLat.getLat());
         return ResponseEntity.status(201).body(establishmentRepository.save(createdEstablishment));
     }
 

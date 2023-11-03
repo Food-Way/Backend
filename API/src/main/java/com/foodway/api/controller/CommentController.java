@@ -8,6 +8,8 @@ import com.foodway.api.service.comment.CommentService;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
