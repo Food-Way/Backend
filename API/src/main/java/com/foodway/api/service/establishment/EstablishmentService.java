@@ -31,7 +31,7 @@ public class EstablishmentService {
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(200).body(establishments);
     }
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
