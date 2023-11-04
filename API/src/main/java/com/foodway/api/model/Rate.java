@@ -19,6 +19,7 @@ public class Rate {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idRate;
     private UUID idCustomer;
+    private UUID idEstablishment;
     @PositiveOrZero
     @Min(value = 0, message = "Value should be at least 0.")
     @Max(value = 5, message = "Value cannot exceed 5.")
@@ -99,5 +100,13 @@ public class Rate {
 
     public void setIdCustomer(UUID idCustomer) {
         this.idCustomer = idCustomer;
+    }
+
+    public UUID getIdEstablishment() {
+        return idEstablishment;
+    }
+
+    public void setIdEstablishment(UUID idEstablishment) {
+        this.idEstablishment = idEstablishment;
     }
 }

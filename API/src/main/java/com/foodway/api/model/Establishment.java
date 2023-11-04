@@ -34,6 +34,9 @@ public class Establishment extends User {
     private String cnpj;
     //    private List<Product> menu;
     @OneToMany
+    private List<Rate> rates;
+
+    @OneToMany
     private List<Comment> postList;
 
 
@@ -149,16 +152,24 @@ public class Establishment extends User {
     public List<Comment> getPostList() {
         return postList;
     }
-//
-//    public void setPostList(List<Comment> postList) {
-//        this.postList = postList;
-//    }
-//
+
     public void addComment(Comment comment) {
         this.postList.add(comment);
     }
 
-//    {
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public void setRates(List<Rate> rates) {
+        this.rates = rates;
+    }
+
+    //    {
 //        "name": "leleo",
 //            "email": "leleo@gmail.com",
 //            "password": "leleooooo",

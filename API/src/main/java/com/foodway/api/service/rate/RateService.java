@@ -1,10 +1,13 @@
 package com.foodway.api.service.rate;
 
 import com.foodway.api.model.Customer;
+import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
 import com.foodway.api.record.RequestRate;
 import com.foodway.api.repository.CustomerRepository;
+import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.RateRepository;
+import com.foodway.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,8 @@ public class RateService {
     RateRepository rateRepository;
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<List<Rate>> getAll() {
         if(rateRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -32,14 +37,20 @@ public class RateService {
         return ResponseEntity.status(200).body(rateRepository.findById(id).get());
     }
 
-    public ResponseEntity<Rate> post(UUID idCustomer, RequestRate data) {
+    public ResponseEntity<Rate> post(UUID idCustomer, UUID idEstablishment, RequestRate data) {
         if(!customerRepository.existsById(idCustomer)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+        if(!establishmentRepository.existsById(idEstablishment)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
         final Customer customer = customerRepository.findById(idCustomer).get();
+        final Establishment establishment = establishmentRepository.findById(idEstablishment).get();
         final Rate newRate = new Rate(data);
         customer.addRate(newRate);
+        establishment.addRate(newRate);
         newRate.setIdCustomer(idCustomer);
+        newRate.setIdEstablishment(idEstablishment);
         return ResponseEntity.status(201).body(rateRepository.save(newRate));
     }
 
