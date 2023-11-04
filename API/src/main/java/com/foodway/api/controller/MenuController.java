@@ -64,7 +64,7 @@ import java.util.UUID;
                 return ResponseEntity.notFound().build();
             }
             productRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().build();
         }
 
 
