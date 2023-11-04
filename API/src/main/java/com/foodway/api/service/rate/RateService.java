@@ -48,7 +48,7 @@ public class RateService {
         final Establishment establishment = establishmentRepository.findById(idEstablishment).get();
         final Rate newRate = new Rate(data);
 
-        if(customer.validateTypeRate(newRate.getTypeRate())){
+        if(customer.validateTypeRate(newRate.getTypeRate(), idEstablishment)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rate type already exist!");
         }
         customer.addRate(newRate);

@@ -82,12 +82,12 @@ public class Customer extends User {
         this.rates.add(rate);
     }
 
-    public boolean validateTypeRate(ETypeRate typeRate){
+    public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
         boolean existTypeRate = false;
         switch (typeRate) {
             case AMBIENT, SERVICE, FOOD:
                 for(Rate rate: rates) {
-                    if(rate.getTypeRate().equals(typeRate)){
+                    if(rate.getTypeRate().equals(typeRate) && rate.getIdEstablishment().equals(idEstablishment)){
                         existTypeRate = true;
                         return existTypeRate;
                     }
