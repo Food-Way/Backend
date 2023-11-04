@@ -1,7 +1,7 @@
 package com.foodway.api.service.comment;
 
 import com.foodway.api.model.Comment;
-import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Enums.Establishment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;

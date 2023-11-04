@@ -1,7 +1,7 @@
 package com.foodway.api.utils;
 
-import com.foodway.api.model.EEntity;
-import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Enums.EEntity;
+import com.foodway.api.model.Enums.Establishment;
 
 import java.util.List;
 

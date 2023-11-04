@@ -1,7 +1,7 @@
 //package com.foodway.api.mapper;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.foodway.api.model.MapsLongLag;
+//import com.foodway.api.model.DTOs.MapsLongLag;
 //
 //public class AddressMapping {
 //    public static MapsLongLag test {

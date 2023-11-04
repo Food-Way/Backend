@@ -1,6 +1,6 @@
 package com.foodway.api.utils;
 
-import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Enums.Establishment;
 
 import java.io.*;
 import java.time.LocalDateTime;

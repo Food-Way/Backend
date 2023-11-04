@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.foodway.api.model.Enums.ETypeUser;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

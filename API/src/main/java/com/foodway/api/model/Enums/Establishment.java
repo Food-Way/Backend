@@ -1,5 +1,7 @@
-package com.foodway.api.model;
+package com.foodway.api.model.Enums;
 
+import com.foodway.api.model.Comment;
+import com.foodway.api.model.User;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.Column;
@@ -10,7 +12,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")

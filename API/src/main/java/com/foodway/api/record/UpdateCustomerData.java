@@ -1,7 +1,7 @@
 package com.foodway.api.record;
 
 import com.foodway.api.model.Culinary;
-import com.foodway.api.model.ETypeUser;
+import com.foodway.api.model.Enums.ETypeUser;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

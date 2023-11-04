@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.foodway.api.model.Enums.ETypeRate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
