@@ -34,13 +34,13 @@ public class Customer extends User {
     }
 
     public Customer(RequestUserCustomer customer) {
-        super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto());
+        super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto(), customer.culinary());
         this.cpf = customer.cpf();
         this.bio = customer.bio();
     }
 
-    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio) {
-        super(name, email, password, typeUser, profilePhoto);
+    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio, List<Culinary> culinary) {
+        super(name, email, password, typeUser, profilePhoto, culinary);
         this.cpf = cpf;
         this.bio = bio;
         this.rates = new ArrayList<>();

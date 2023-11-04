@@ -1,11 +1,14 @@
 package com.foodway.api.record;
 
+import com.foodway.api.model.Culinary;
 import com.foodway.api.model.Enums.ETypeUser;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.br.CNPJ;
+
+import java.util.List;
 
 public record RequestUserEstablishment(
         @NotBlank String name,
@@ -16,7 +19,8 @@ public record RequestUserEstablishment(
         @NotBlank String establishmentName,
         String description,
         @NotBlank @CNPJ String cnpj,
-        Address address
+        Address address,
+        List<Culinary> culinary
 
 ) {
     public record Address(
@@ -27,7 +31,6 @@ public record RequestUserEstablishment(
             @NotBlank String neighborhood,
             @NotBlank String city,
             @NotBlank String state) {
-
 
     }
 }

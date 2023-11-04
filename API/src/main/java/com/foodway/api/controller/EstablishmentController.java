@@ -73,7 +73,7 @@ public class EstablishmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
+        public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }
 

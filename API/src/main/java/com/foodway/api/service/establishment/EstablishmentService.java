@@ -84,15 +84,15 @@ public class EstablishmentService {
         return ResponseEntity.status(200).build();
     }
 
-    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
-        Establishment createdEstablishment = new Establishment(establishment);
-        RequestUserEstablishment.Address address = establishment.address();
-//        MapsLongLag mapsLongLag = mapsClient.getLongLat("50", "Rua+Doutor+Rodrigo+Pereira+Barreto", "São+Paulo", "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
-        System.out.println(mapsLongLag);
-//        createdEstablishment.setLat(mapsLongLag.getResults().get(0).getGeometry().getLocation().getLat());
-//        createdEstablishment.setLng(mapsLongLag.getResults().get(0).getGeometry().getLocation().getLng());
-        return null;
+    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
+        Establishment establishment = new Establishment(establishmentRequest);
+        RequestUserEstablishment.Address address = establishmentRequest.address();
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
+        establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
+        establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
+        System.out.println(establishment);
+        Establishment establishmentSaved = establishmentRepository.save(establishment);
+        return ResponseEntity.status(201).body(establishmentSaved);
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {

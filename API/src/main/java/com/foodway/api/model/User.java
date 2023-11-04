@@ -42,12 +42,13 @@ public abstract class User {
     public User() {
     }
 
-    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto) {
+    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, List<Culinary> culinary) {
         this.name = name;
         this.email = email;
         this.password = encodePassword(password);
         this.typeUser = typeUser;
         this.profilePhoto = profilePhoto;
+        this.culinary = culinary;
     }
 
     private String encodePassword(String password) {

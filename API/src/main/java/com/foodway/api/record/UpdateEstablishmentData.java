@@ -1,7 +1,5 @@
 package com.foodway.api.record;
 
-//import com.foodway.api.model.Post;
-//import com.foodway.api.model.Product;
 
 import com.foodway.api.model.Enums.ETypeUser;
 import jakarta.validation.constraints.Email;
@@ -16,12 +14,17 @@ public record UpdateEstablishmentData(
         String profilePhoto,
         @NotBlank String establishmentName,
         String description,
-        @NotBlank String cep,
-        @NotBlank String number,
-        String complement,
         Double rate,
-        @NotBlank String cnpj
-//        List<Product> menu,
-//        List<Post> postList
+        @NotBlank String cnpj,
+        Address address
 ) {
+    public record Address(
+            @NotBlank String cep,
+            @NotBlank String number,
+            String complement,
+            @NotBlank String street,
+            @NotBlank String neighborhood,
+            @NotBlank String city,
+            @NotBlank String state) {
+    }
 }
