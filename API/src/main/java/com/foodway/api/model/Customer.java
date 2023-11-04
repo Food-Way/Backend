@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import jakarta.persistence.Column;
@@ -10,7 +11,7 @@ import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 

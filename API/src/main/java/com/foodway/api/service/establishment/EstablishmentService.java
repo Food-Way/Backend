@@ -1,15 +1,14 @@
 package com.foodway.api.service.establishment;
 
-import com.foodway.api.model.EEntity;
+import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Establishment;
 //import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
-import com.foodway.api.model.MapsLongLag;
+import com.foodway.api.record.DTOs.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.ListaObj;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,11 @@ import java.util.UUID;
 import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
 @Service
-@AllArgsConstructor
 public class EstablishmentService {
 
+    @Autowired
     private EstablishmentRepository establishmentRepository;
+    @Autowired
     private MapsClient mapsClient;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
@@ -87,11 +87,11 @@ public class EstablishmentService {
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
         Establishment createdEstablishment = new Establishment(establishment);
         RequestUserEstablishment.Address address = establishment.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat("50", "Rua+Doutor+Rodrigo+Pereira+Barreto", "São+Paulo", "api.key");
-
-//        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "api.key");
-//        createdEstablishment.setLong(mapsLong.getLng());
-//        createdEstablishment.setLat(mapsLat.getLat());
+//        MapsLongLag mapsLongLag = mapsClient.getLongLat("50", "Rua+Doutor+Rodrigo+Pereira+Barreto", "São+Paulo", "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(establishment.address().number(), establishment.address().street(), establishment.address().city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
+        System.out.println(mapsLongLag);
+//        createdEstablishment.setLat(mapsLongLag.getResults().get(0).getGeometry().getLocation().getLat());
+//        createdEstablishment.setLng(mapsLongLag.getResults().get(0).getGeometry().getLocation().getLng());
         return null;
     }
 

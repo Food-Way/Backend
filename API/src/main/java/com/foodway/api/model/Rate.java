@@ -3,8 +3,13 @@ package com.foodway.api.model;
 import com.foodway.api.record.RequestRate;
 import jakarta.persistence.*;
 
+import com.foodway.api.model.Enums.ETypeRate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -15,6 +20,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "tbRate")
 @Entity(name = "rate")
 public class Rate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idRate;
@@ -33,25 +39,19 @@ public class Rate {
     public Rate() {
     }
 
-    public Rate(Long idRate, int ratePoint, ETypeRate typeRate, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.idRate = idRate;
+    public Rate(int ratePoint, ETypeRate typeRate) {
         this.ratePoint = ratePoint;
         this.typeRate = typeRate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
+
     public Rate(RequestRate data) {
         this.ratePoint = data.ratePoint();
         this.typeRate = data.typeRate();
-        this.createdAt = data.createdAt();
-        this.updatedAt = data.updatedAt();
     }
 
     public void update(Rate data) {
         this.ratePoint = data.ratePoint;
         this.typeRate = data.typeRate;
-        this.createdAt = data.createdAt;
-        this.updatedAt = data.updatedAt;
     }
 
     public Long getIdRate() {

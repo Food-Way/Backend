@@ -1,10 +1,7 @@
 package com.foodway.api.record;
 
-import com.foodway.api.model.ETypeRate;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import com.foodway.api.model.Enums.ETypeRate;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDateTime;
 

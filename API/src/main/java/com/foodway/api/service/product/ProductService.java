@@ -5,6 +5,8 @@ import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
 import com.foodway.api.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -54,4 +56,41 @@ public class ProductService {
         }
         return ResponseEntity.status(200).body(product.get());
     }
+
+    public ResponseEntity<List<Product>> getMenu(String orderBy) {
+        List<Product> menu;
+
+        if ("price".equals(orderBy)) {
+            menu = productRepository.findAll(Sort.by(Sort.Order.asc("price")));
+        } else if ("name".equals(orderBy)) {
+            menu = productRepository.findAll(Sort.by(Sort.Order.asc("name")));
+        } else if ("maxPrice".equals(orderBy)) {
+            menu = productRepository.findAll(Sort.by(Sort.Order.desc("price")));
+        } else if ("minPrice".equals(orderBy)) {
+            menu = productRepository.findAll(Sort.by(Sort.Order.asc("price")));
+        } else {
+
+            menu = productRepository.findAll(Sort.by(Sort.Order.asc("price")));
+        }
+
+        if (menu.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(menu);
+        }
+
+        return ResponseEntity.ok(menu);
+    }
+    public ResponseEntity<List<Product>> searchMenu(String query) {
+        List<Product> searchResults = productRepository.findByNameContaining(query);
+
+        if (searchResults.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(searchResults);
+    }
 }
+
+
+
+
+
