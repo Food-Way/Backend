@@ -1,17 +1,14 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import com.foodway.api.model.Enums.ETypeUser;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +27,13 @@ public abstract class User {
     @Enumerated
     private ETypeUser typeUser;
     private String profilePhoto;
+    @ManyToMany
+    @JoinTable(
+            name = "tbUserCulinary",
+            joinColumns = @JoinColumn(name = "idUser"),
+            inverseJoinColumns = @JoinColumn(name = "idCulinary")
+    )
+    private List<Culinary> culinary;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -52,9 +56,6 @@ public abstract class User {
     }
 
     public abstract void update(Optional<?> optional);
-
-    //todo Relembrar pq passa id
-    public abstract void comment(UUID idUser);
 
     public UUID getIdUser() {
         return idUser;
@@ -110,5 +111,13 @@ public abstract class User {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Culinary> getCulinary() {
+        return culinary;
+    }
+
+    public void setCulinary(List<Culinary> culinary) {
+        this.culinary = culinary;
     }
 }

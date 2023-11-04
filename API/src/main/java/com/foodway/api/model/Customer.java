@@ -1,17 +1,23 @@
 package com.foodway.api.model;
 
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.server.ResponseStatusException;
 
-@Table(name = "tbCostumer")
-@Entity(name = "costumer")
+@Table(name = "tbCustumer")
+@Entity(name = "custumer")
 @EqualsAndHashCode
 public class Customer extends User {
     //    @Id
@@ -21,6 +27,8 @@ public class Customer extends User {
     private String cpf;
     @Column(length = 254)
     private String bio;
+    @OneToMany
+    private List<Rate> rates;
 
     public Customer() {
     }
@@ -35,6 +43,7 @@ public class Customer extends User {
         super(name, email, password, typeUser, profilePhoto);
         this.cpf = cpf;
         this.bio = bio;
+        this.rates = new ArrayList<>();
     }
 
     @Override
@@ -47,10 +56,7 @@ public class Customer extends User {
         this.setProfilePhoto(c.profilePhoto());
         this.setCpf(c.cpf());
         this.setBio(c.bio());
-    }
-
-    @Override
-    public void comment(UUID idUser) {
+        this.setCulinary(c.culinary());
     }
 
     public String getCpf() {
@@ -67,6 +73,29 @@ public class Customer extends User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
+    }
+
+    public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
+        boolean existTypeRate = false;
+        switch (typeRate) {
+            case AMBIENT, SERVICE, FOOD:
+                for(Rate rate: rates) {
+                    if(rate.getTypeRate().equals(typeRate) && rate.getIdEstablishment().equals(idEstablishment)){
+                        existTypeRate = true;
+                        return existTypeRate;
+                    }
+                }
+                break;
+        }
+        return existTypeRate;
     }
 
     /*

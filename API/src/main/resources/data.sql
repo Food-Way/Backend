@@ -1,0 +1,1 @@
+INSERT INTO Culinary (name) VALUES ('Eletrônicos');

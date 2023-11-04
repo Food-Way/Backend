@@ -1,5 +1,8 @@
 package com.foodway.api.model;
 
+import com.foodway.api.model.Comment;
+import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.model.User;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.Column;
@@ -10,7 +13,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")
@@ -34,6 +36,9 @@ public class Establishment extends User {
     private String cnpj;
     //    private List<Product> menu;
     @OneToMany
+    private List<Rate> rates;
+
+    @OneToMany
     private List<Comment> postList;
 
 
@@ -44,10 +49,9 @@ public class Establishment extends User {
         super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
-        this.cep = establishment.cep();
-        this.number = establishment.number();
-        this.complement = establishment.complement();
-        this.rate = establishment.rate();
+        this.cep = establishment.address().cep();
+        this.number = establishment.address().number();
+        this.complement = establishment.address().complement();
         this.cnpj = establishment.cnpj();
     }
 
@@ -78,10 +82,6 @@ public class Establishment extends User {
         this.complement = ((UpdateEstablishmentData) optional.get()).complement();
         this.rate = ((UpdateEstablishmentData) optional.get()).rate();
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
-    }
-
-    @Override
-    public void comment(UUID idUser) {
     }
 
     //    public UUID getIdEstablishment() {
@@ -151,19 +151,27 @@ public class Establishment extends User {
 //        this.menu = menu;
 //    }
 //
-//    public List<Comment> getPostList() {
-//        return postList;
-//    }
-//
-//    public void setPostList(List<Comment> postList) {
-//        this.postList = postList;
-//    }
-//
+    public List<Comment> getPostList() {
+        return postList;
+    }
+
     public void addComment(Comment comment) {
         this.postList.add(comment);
     }
 
-//    {
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
+    }
+
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public void setRates(List<Rate> rates) {
+        this.rates = rates;
+    }
+
+    //    {
 //        "name": "leleo",
 //            "email": "leleo@gmail.com",
 //            "password": "leleooooo",

@@ -30,13 +30,13 @@ public class Comment {
 //    private List<Costumer> listCostumer;
     private int upvotes;
     private List<String> images;
-    @ManyToOne
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private Comment parentComment;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+    @ManyToOne
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private Comment parentComment;
     @OneToMany(mappedBy = "parentComment")
     List<Comment> replies;
 

@@ -1,6 +1,6 @@
 package com.foodway.api.service.user.authentication.dto;
 
-import com.foodway.api.model.ETypeUser;
+import com.foodway.api.model.Enums.ETypeUser;
 
 import java.util.UUID;
 
