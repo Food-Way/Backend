@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,20 +32,15 @@ public class RateService {
         return ResponseEntity.status(200).body(rateRepository.findById(id).get());
     }
 
-    public ResponseEntity<Rate> post(RequestRate data) {
+    public ResponseEntity<Rate> post(UUID idCustomer, RequestRate data) {
+        if(!customerRepository.existsById(idCustomer)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        final Customer customer = customerRepository.findById(idCustomer).get();
         final Rate newRate = new Rate(data);
-
+        customer.addRate(newRate);
+        newRate.setIdCustomer(idCustomer);
         return ResponseEntity.status(201).body(rateRepository.save(newRate));
-
-//        if(!customerRepository.existsById(idCustomer)){
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-//        }
-//        final Customer customer = customerRepository.findById(idCustomer).get();
-//        final Rate newRate = new Rate(data);
-//        customer.getRates().add(newRate);
-//        newRate.setCustomer(customer);
-//
-//        return ResponseEntity.status(201).body(rateRepository.save(newRate));
     }
 
     public ResponseEntity<Rate> put(Long id, RequestRate data) {

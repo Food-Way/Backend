@@ -77,8 +77,8 @@ public class Customer extends User {
         return rates;
     }
 
-    public void setRates(List<Rate> rates) {
-        this.rates = rates;
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
     }
 
     /*
