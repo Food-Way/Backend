@@ -39,7 +39,7 @@ public class EstablishmentController {
         return establishmentService.getBestEstablishmentsByCulinary(culinary);
     }
 
-    @GetMapping("/more-commented")
+    @GetMapping("/most-commented")
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
         if (culinary == null) {
             return establishmentService.getMoreCommentedEstablishments();
