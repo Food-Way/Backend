@@ -1,7 +1,6 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestRate;
-import jakarta.persistence.*;
 
 import com.foodway.api.model.Enums.ETypeRate;
 import jakarta.persistence.Entity;
@@ -10,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
