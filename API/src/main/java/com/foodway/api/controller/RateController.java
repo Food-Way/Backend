@@ -28,9 +28,9 @@ public class RateController {
     public ResponseEntity<Rate> get(@PathVariable Long id){
         return rateService.get(id);
     }
-    @PostMapping
-    public ResponseEntity<Rate> post(@RequestBody @Validated RequestRate rate){
-        return rateService.post(rate);
+    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
+    public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Validated RequestRate rate){
+        return rateService.post(idCustomer, idEstablishment, rate);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Rate> put(@PathVariable Long id, @RequestBody @Validated RequestRate rate){

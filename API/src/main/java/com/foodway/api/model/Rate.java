@@ -24,8 +24,8 @@ public class Rate {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idRate;
-    @ManyToOne
-    private Customer customer;
+    private UUID idCustomer;
+    private UUID idEstablishment;
     @PositiveOrZero
     @Min(value = 0, message = "Value should be at least 0.")
     @Max(value = 5, message = "Value cannot exceed 5.")
@@ -94,11 +94,19 @@ public class Rate {
         this.updatedAt = updatedAt;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public UUID getIdCustomer() {
+        return idCustomer;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setIdCustomer(UUID idCustomer) {
+        this.idCustomer = idCustomer;
+    }
+
+    public UUID getIdEstablishment() {
+        return idEstablishment;
+    }
+
+    public void setIdEstablishment(UUID idEstablishment) {
+        this.idEstablishment = idEstablishment;
     }
 }
