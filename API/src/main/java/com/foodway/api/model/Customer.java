@@ -17,9 +17,8 @@ import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
 
-@Table(name = "tbCustumer")
-@Entity(name = "custumer")
-@EqualsAndHashCode
+@Table(name = "tbCustomer")
+@Entity(name = "customer")
 public class Customer extends User {
     //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
