@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.server.ResponseStatusException;
 
 @Table(name = "tbCustumer")
 @Entity(name = "custumer")
@@ -79,6 +80,21 @@ public class Customer extends User {
 
     public void addRate(Rate rate) {
         this.rates.add(rate);
+    }
+
+    public boolean validateTypeRate(ETypeRate typeRate){
+        boolean existTypeRate = false;
+        switch (typeRate) {
+            case AMBIENT, SERVICE, FOOD:
+                for(Rate rate: rates) {
+                    if(rate.getTypeRate().equals(typeRate)){
+                        existTypeRate = true;
+                        return existTypeRate;
+                    }
+                }
+                break;
+        }
+        return existTypeRate;
     }
 
     /*

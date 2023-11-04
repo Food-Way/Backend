@@ -39,14 +39,18 @@ public class RateService {
 
     public ResponseEntity<Rate> post(UUID idCustomer, UUID idEstablishment, RequestRate data) {
         if(!customerRepository.existsById(idCustomer)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }
         if(!establishmentRepository.existsById(idEstablishment)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }
         final Customer customer = customerRepository.findById(idCustomer).get();
         final Establishment establishment = establishmentRepository.findById(idEstablishment).get();
         final Rate newRate = new Rate(data);
+
+        if(customer.validateTypeRate(newRate.getTypeRate())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rate type already exist!");
+        }
         customer.addRate(newRate);
         establishment.addRate(newRate);
         newRate.setIdCustomer(idCustomer);
