@@ -1,6 +1,7 @@
-package com.foodway.api.model.Enums;
+package com.foodway.api.model;
 
 import com.foodway.api.model.Comment;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.model.User;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;

@@ -63,8 +63,6 @@ public class SecutiryConfiguration {
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
             new AntPathRequestMatcher("/customers/**"),
-            new AntPathRequestMatcher("/menu/**"),
-            new AntPathRequestMatcher("/products/**"),
             new AntPathRequestMatcher("/establishments/**")
     };
 

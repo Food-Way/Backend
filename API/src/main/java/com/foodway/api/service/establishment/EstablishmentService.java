@@ -1,7 +1,7 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.model.Enums.EEntity;
-import com.foodway.api.model.Enums.Establishment;
+import com.foodway.api.model.Establishment;
 //import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
 import com.foodway.api.record.DTOs.MapsLongLag;
