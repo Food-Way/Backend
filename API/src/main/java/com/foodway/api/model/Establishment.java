@@ -1,8 +1,6 @@
 package com.foodway.api.model;
 
-import com.foodway.api.model.Comment;
 import com.foodway.api.model.Enums.ETypeUser;
-import com.foodway.api.model.User;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.Column;
@@ -37,7 +35,6 @@ public class Establishment extends User {
     //    private List<Product> menu;
     @OneToMany
     private List<Rate> rates;
-
     @OneToMany
     private List<Comment> postList;
 
