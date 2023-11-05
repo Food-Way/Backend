@@ -1,72 +1,66 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.model.Product;
-import com.foodway.api.repository.ProductRepository;
-import com.foodway.api.service.product.ProductService;
+import com.foodway.api.service.menu.MenuService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-    @RestController
-    @RequestMapping("/menu")
-    public class MenuController {
+@RestController
+@RequestMapping("/menu")
+@Tag(name = "Menu")
+public class MenuController {
 
-        @Autowired
-        private ProductRepository productRepository;
-        @Autowired
-        private ProductService productService;
+    @Autowired
+    private MenuService menuService;
 
-        @GetMapping
-        public ResponseEntity<List<Product>> getMenu(@RequestParam(name = "orderBy", defaultValue = "price") String orderBy) {
-            ResponseEntity<List<Product>> response = productService.getMenu(orderBy);
-
-            if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
-                return ResponseEntity.noContent().build();
-            }
-
-            return response;
-        }
-        @GetMapping("/search")
-        public ResponseEntity<List<Product>> searchMenu(@RequestParam(name = "query") String query) {
-            ResponseEntity<List<Product>> response = productService.searchMenu(query);
-
-            if (response.getStatusCode() == HttpStatus.NO_CONTENT) {
-                return ResponseEntity.noContent().build();
-            }
-
-            return response;
-        }
-        @PostMapping
-        public ResponseEntity<Product> createMenuItem(@RequestBody Product product) {
-            if (product.getIdProduct() != null) {
-                return ResponseEntity.badRequest().build();
-            }
-            Product createdProduct = productRepository.save(product);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
-        }
-
-        @PutMapping("/{id}")
-        public ResponseEntity<Product> updateMenuItem(@PathVariable UUID id, @RequestBody Product product) {
-            if (!productRepository.existsById(id)) {
-                return ResponseEntity.notFound().build();
-            }
-            product.setIdProduct(id);
-            Product updatedProduct = productRepository.save(product);
-            return ResponseEntity.ok(updatedProduct);
-        }
-
-        @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteMenuItem(@PathVariable UUID id) {
-            if (!productRepository.existsById(id)) {
-                return ResponseEntity.notFound().build();
-            }
-            productRepository.deleteById(id);
-            return ResponseEntity.ok().build();
-        }
-
-
+    @GetMapping
+    @Operation(summary = "Get menu", method = "GET")
+    @ApiResponse(responseCode = "200", description = "Return the menu")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<List<Product>> getMenu(@RequestParam(name = "orderBy", defaultValue = "price") String orderBy) {
+        return menuService.getMenu(orderBy);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Search menu", method = "GET")
+    @ApiResponse(responseCode = "200", description = "Return search results")
+    @ApiResponse(responseCode = "204", description = "No content")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<List<Product>> searchMenu(@RequestParam(name = "query") String query) {
+        return menuService.searchMenu(query);
+    }
+
+    @PostMapping
+    @Operation(summary = "Create a menu item", method = "POST")
+    @ApiResponse(responseCode = "201", description = "Return the created menu item")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Product> createMenuItem(@RequestBody Product product) {
+        return menuService.createMenuItem(product);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a menu item by ID", method = "PUT")
+    @ApiResponse(responseCode = "200", description = "Return the updated menu item")
+    @ApiResponse(responseCode = "400", description = "Bad request")
+    @ApiResponse(responseCode = "404", description = "Not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Product> updateMenuItem(@PathVariable UUID id, @RequestBody Product product) {
+        return menuService.updateMenuItem(id, product);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a menu item by ID", method = "DELETE")
+    @ApiResponse(responseCode = "200", description = "Menu item deleted successfully")
+    @ApiResponse(responseCode = "404", description = "Not found")
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+    public ResponseEntity<Void> deleteMenuItem(@PathVariable UUID id) {
+        return menuService.deleteMenuItem(id);
+    }
+}
