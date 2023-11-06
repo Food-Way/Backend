@@ -5,6 +5,7 @@ import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.utils.ListaObj;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/establishments")
 public class EstablishmentController {
+
     @Autowired
     private EstablishmentService establishmentService;
 
@@ -27,6 +29,22 @@ public class EstablishmentController {
     @GetMapping
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishments();
+    }
+
+    @GetMapping("/best")
+    public ResponseEntity<List<Establishment>> getBestEstablishments(@Nullable @RequestParam String culinary) {
+        if (culinary == null) {
+            return establishmentService.getBestEstablishments();
+        }
+        return establishmentService.getBestEstablishmentsByCulinary(culinary);
+    }
+
+    @GetMapping("/most-commented")
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
+        if (culinary == null) {
+            return establishmentService.getMoreCommentedEstablishments();
+        }
+        return establishmentService.getMoreCommentedEstablishmentsByCulinary(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")
@@ -46,7 +64,7 @@ public class EstablishmentController {
 
     @GetMapping("/import")
     public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
-            return establishmentService.importEstablishments(archiveType);
+        return establishmentService.importEstablishments(archiveType);
     }
 
     @DeleteMapping("/{id}")
@@ -55,7 +73,7 @@ public class EstablishmentController {
     }
 
     @PostMapping
-    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
+        public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }
 

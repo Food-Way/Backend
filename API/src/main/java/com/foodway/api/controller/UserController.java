@@ -58,7 +58,8 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "User is not authenticated"),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred while processing the request")
     })
-    public ResponseEntity  get() {
+
+    public ResponseEntity get() {
         // Se o usuário está autenticado, retorna um código de status 200
         return ResponseEntity.ok().build();
     }

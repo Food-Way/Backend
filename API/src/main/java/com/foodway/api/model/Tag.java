@@ -9,23 +9,23 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-@Table(name = "tbRate")
-@Entity(name = "tags")
-public class Tags {
+@Table(name = "tbTag")
+@Entity(name = "tag")
+public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idTags;
+    private Long idTag;
     private String name;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Tags(String name) {
+    public Tag(String name) {
         this.name = name;
     }
 
-    public Tags() {
+    public Tag() {
     }
 
     public String getName() {

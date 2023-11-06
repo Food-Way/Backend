@@ -37,13 +37,13 @@ public class GerenciadorDeArquivo {
                         establishment.getEstablishmentName(),
                         establishment.getEmail(),
                         establishment.getTypeUser(),
-                        establishment.getCep(),
-                        establishment.getNumber(),
-                        establishment.getComplement(),
+                        establishment.getAddress().getCep(),
+                        establishment.getAddress().getNumber(),
+                        establishment.getAddress().getComplement(),
                         establishment.getRate(),
-                        establishment.getCnpj(),
-                        establishment.getCreatedAt(),
-                        establishment.getUpdatedAt()
+                        establishment.getCnpj()
+//                        establishment.getCreatedAt(),
+//                        establishment.getUpdatedAt()
                 );
             }
         } catch (FormatterClosedException erro) {
@@ -159,13 +159,13 @@ public class GerenciadorDeArquivo {
             corpo += String.format("%-40s", e.getEstablishmentName());
             corpo += String.format("%-30s", e.getEmail());
             corpo += String.format("%-15s", e.getTypeUser());
-            corpo += String.format("%-10s", e.getCep());
-            corpo += String.format("%-8s", e.getNumber());
-            corpo += String.format("%-15s", e.getComplement());
+            corpo += String.format("%-10s", e.getAddress().getCep());
+            corpo += String.format("%-8s", e.getAddress().getNumber());
+            corpo += String.format("%-15s", e.getAddress().getComplement());
             corpo += String.format("%5s", e.getRate());
             corpo += String.format("%-15s", e.getCnpj());
-            corpo += String.format("%19s", e.getCreatedAt());
-            corpo += String.format("%19s", e.getUpdatedAt());
+//            corpo += String.format("%19s", e.getCreatedAt());
+//            corpo += String.format("%19s", e.getUpdatedAt());
 
             //Gravando corpo no arquivo:
             gravaRegistro(corpo, nomeArq);

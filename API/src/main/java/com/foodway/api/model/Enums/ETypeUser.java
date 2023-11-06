@@ -1,4 +1,4 @@
-package com.foodway.api.model;
+package com.foodway.api.model.Enums;
 
 public enum ETypeUser {
     CLIENT,

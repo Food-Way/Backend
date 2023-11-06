@@ -1,38 +1,30 @@
 package com.foodway.api.model;
 
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")
 public class Establishment extends User {
-    //    @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    private UUID idEstablishment;
+
     @Column(length = 75)
     private String establishmentName;
     @Column(length = 255)
     private String description;
-    @Column(length = 8)
-    private String cep;
-    @Column(length = 45)
-    private String number;
-    @Column(length = 45)
-    private String complement;
     @PositiveOrZero
     private Double rate;
     @Column(length = 14, unique = true)
     private String cnpj;
-    //    private List<Product> menu;
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
+    @OneToMany
+    private List<Rate> rates;
     @OneToMany
     private List<Comment> postList;
 
@@ -41,27 +33,21 @@ public class Establishment extends User {
     }
 
     public Establishment(RequestUserEstablishment establishment) {
-        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto());
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto(), establishment.culinary());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
-        this.cep = establishment.cep();
-        this.number = establishment.number();
-        this.complement = establishment.complement();
-        this.rate = establishment.rate();
+        this.address = new Address(establishment.address().cep(), establishment.address().number(), establishment.address().complement(), establishment.address().street(), establishment.address().neighborhood(), establishment.address().city(), establishment.address().state());
         this.cnpj = establishment.cnpj();
     }
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String establishmentName, String description, String cep, String number, String complement, Double rate, String cnpj) {
-        super(name, email, password, typeUser, profilePhoto);
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto,
+                         List<Culinary> culinary, String establishmentName, String description, Double rate, String cnpj, Address address) {
+        super(name, email, password, typeUser, profilePhoto, culinary);
         this.establishmentName = establishmentName;
         this.description = description;
-        this.cep = cep;
-        this.number = number;
-        this.complement = complement;
         this.rate = rate;
         this.cnpj = cnpj;
-//        this.menu = menu;
-//        this.postList = postList;
+        this.address = address;
     }
 
     @Override
@@ -73,20 +59,17 @@ public class Establishment extends User {
         super.setProfilePhoto(((UpdateEstablishmentData) optional.get()).profilePhoto());
         this.establishmentName = ((UpdateEstablishmentData) optional.get()).establishmentName();
         this.description = ((UpdateEstablishmentData) optional.get()).description();
-        this.cep = ((UpdateEstablishmentData) optional.get()).cep();
-        this.number = ((UpdateEstablishmentData) optional.get()).number();
-        this.complement = ((UpdateEstablishmentData) optional.get()).complement();
+        this.address.setCep(((UpdateEstablishmentData) optional.get()).address().cep());
+        this.address.setNumber(((UpdateEstablishmentData) optional.get()).address().number());
+        this.address.setComplement(((UpdateEstablishmentData) optional.get()).address().complement());
+        this.address.setStreet(((UpdateEstablishmentData) optional.get()).address().street());
+        this.address.setNeighborhood(((UpdateEstablishmentData) optional.get()).address().neighborhood());
+        this.address.setCity(((UpdateEstablishmentData) optional.get()).address().city());
+        this.address.setState(((UpdateEstablishmentData) optional.get()).address().state());
         this.rate = ((UpdateEstablishmentData) optional.get()).rate();
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
     }
 
-    @Override
-    public void comment(UUID idUser) {
-    }
-
-    //    public UUID getIdEstablishment() {
-//        return idEstablishment;
-//    }
     public String getEstablishmentName() {
         return establishmentName;
     }
@@ -101,22 +84,6 @@ public class Establishment extends User {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     public Double getRate() {
@@ -135,49 +102,28 @@ public class Establishment extends User {
         this.cnpj = cnpj;
     }
 
-    public String getComplement() {
-        return complement;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setComplement(String complement) {
-        this.complement = complement;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    //    public List<Product> getMenu() {
-//        return menu;
-//    }
-//
-//    public void setMenu(List<Product> menu) {
-//        this.menu = menu;
-//    }
-//
-//    public List<Comment> getPostList() {
-//        return postList;
-//    }
-//
-//    public void setPostList(List<Comment> postList) {
-//        this.postList = postList;
-//    }
-//
+    public void setRates(List<Rate> rates) {
+        this.rates = rates;
+    }
+
+    public void setPostList(List<Comment> postList) {
+        this.postList = postList;
+    }
+
     public void addComment(Comment comment) {
         this.postList.add(comment);
     }
 
-//    {
-//        "name": "leleo",
-//            "email": "leleo@gmail.com",
-//            "password": "leleooooo",
-//            "typeUser": "ESTABLISHMENT",
-//            "profilePhoto": "foto",
-//            "establishmentName": "leleo da cocada preta",
-//            "description": "Um otimo cachorro quente",
-//            "cep": "01234568",
-//            "number": "451",
-//            "rate": "3.5",
-//            "cnpj": "12345678912",
-//            "menu": [],
-//        "postList": []
-//    }
-
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
+    }
 
 }

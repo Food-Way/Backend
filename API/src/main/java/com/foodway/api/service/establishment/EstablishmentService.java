@@ -1,12 +1,15 @@
 package com.foodway.api.service.establishment;
 
-import com.foodway.api.model.EEntity;
+import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Establishment;
+//import com.foodway.api.model.MapsClient;
+import com.foodway.api.model.MapsClient;
+import com.foodway.api.record.DTOs.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.utils.ListaObj;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,24 +20,47 @@ import java.util.UUID;
 import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
 @Service
-@AllArgsConstructor
 public class EstablishmentService {
 
+    @Autowired
     private EstablishmentRepository establishmentRepository;
+    @Autowired
+    private MapsClient mapsClient;
 
-    public ResponseEntity<List<Establishment>> getEstablishments() {
-        List<Establishment> establishments = establishmentRepository.findAll();
+    public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(200).body(establishments);
     }
 
+    public ResponseEntity<List<Establishment>> getEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findAll();
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getBestEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByRateDesc();
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getBestEstablishmentsByCulinary(String culinary) {
+        List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByRateDesc(culinary);
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findByOrderByPostListDesc();
+        return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishmentsByCulinary(String culinary) {
+        List<Establishment> establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
+        return validateIsEmpty(establishments);
+    }
+
     public ResponseEntity<ListaObj<Establishment>> getEstablishmentOrderByRate() {
         List<Establishment> establishments = getEstablishments().getBody();
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
         ListaObj<Establishment> list = new ListaObj<>(establishments.size(), establishments);
         return ResponseEntity.status(200).body(list.filterBySome(list, "rate", EEntity.ESTABLISHMENT));
     }
@@ -58,9 +84,15 @@ public class EstablishmentService {
         return ResponseEntity.status(200).build();
     }
 
-    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishment) {
-        Establishment createdEstablishment = new Establishment(establishment);
-        return ResponseEntity.status(201).body(establishmentRepository.save(createdEstablishment));
+    public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
+        Establishment establishment = new Establishment(establishmentRequest);
+        RequestUserEstablishment.Address address = establishmentRequest.address();
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
+        establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
+        establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
+        System.out.println(establishment);
+        Establishment establishmentSaved = establishmentRepository.save(establishment);
+        return ResponseEntity.status(201).body(establishmentSaved);
     }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {

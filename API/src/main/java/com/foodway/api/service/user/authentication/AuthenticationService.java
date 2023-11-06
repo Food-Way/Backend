@@ -29,12 +29,12 @@ public class AuthenticationService implements UserDetailsService {
         String passwordData = user.getPassword();
 
         // Verifique a senha usando o BCryptPasswordEncoder
-
-        boolean wrongPassword = passwordEncoder.matches("password123", passwordData);
-
-        if (!wrongPassword) {
-            throw new BadCredentialsException("Senha incorreta");
-        }
+//
+//        boolean wrongPassword = passwordEncoder.matches("password123", passwordData);
+//
+//        if (!wrongPassword) {
+//            throw new BadCredentialsException("Senha incorreta");
+//        }
 
         return new UserDetailsDto(user);
 
