@@ -41,9 +41,9 @@ public class GerenciadorDeArquivo {
                         establishment.getAddress().getNumber(),
                         establishment.getAddress().getComplement(),
                         establishment.getRate(),
-                        establishment.getCnpj(),
-                        establishment.getCreatedAt(),
-                        establishment.getUpdatedAt()
+                        establishment.getCnpj()
+//                        establishment.getCreatedAt(),
+//                        establishment.getUpdatedAt()
                 );
             }
         } catch (FormatterClosedException erro) {
@@ -164,8 +164,8 @@ public class GerenciadorDeArquivo {
             corpo += String.format("%-15s", e.getAddress().getComplement());
             corpo += String.format("%5s", e.getRate());
             corpo += String.format("%-15s", e.getCnpj());
-            corpo += String.format("%19s", e.getCreatedAt());
-            corpo += String.format("%19s", e.getUpdatedAt());
+//            corpo += String.format("%19s", e.getCreatedAt());
+//            corpo += String.format("%19s", e.getUpdatedAt());
 
             //Gravando corpo no arquivo:
             gravaRegistro(corpo, nomeArq);

@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
 import jakarta.persistence.*;
@@ -104,14 +105,6 @@ public abstract class User {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
     }
 
     public List<Culinary> getCulinary() {

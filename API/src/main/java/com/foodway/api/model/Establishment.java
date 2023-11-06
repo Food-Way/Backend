@@ -40,7 +40,8 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
     }
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, List<Culinary> culinary, String establishmentName, String description, Double rate, String cnpj, Address address) {
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto,
+                         List<Culinary> culinary, String establishmentName, String description, Double rate, String cnpj, Address address) {
         super(name, email, password, typeUser, profilePhoto, culinary);
         this.establishmentName = establishmentName;
         this.description = description;
@@ -125,16 +126,4 @@ public class Establishment extends User {
         this.rates.add(rate);
     }
 
-    @Override
-    public String toString() {
-        return "Establishment{" +
-                "establishmentName='" + establishmentName + '\'' +
-                ", description='" + description + '\'' +
-                ", rate=" + rate +
-                ", cnpj='" + cnpj + '\'' +
-                ", address=" + address +
-                ", rates=" + rates +
-                ", postList=" + postList +
-                '}';
-    }
 }
