@@ -1,6 +1,7 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.model.Enums.EEntity;
+import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 //import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
@@ -8,11 +9,14 @@ import com.foodway.api.record.DTOs.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
+import com.foodway.api.repository.RateRepository;
+import com.foodway.api.repository.UserRepository;
 import com.foodway.api.utils.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.FilterOutputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,12 +29,17 @@ public class EstablishmentService {
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
+    private RateRepository rateRepository;
+    @Autowired
     private MapsClient mapsClient;
+    @Autowired
+    private UserRepository userRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
+//        getAverageOfIndicators(establishments);
         return ResponseEntity.status(200).body(establishments);
     }
 
@@ -125,10 +134,16 @@ public class EstablishmentService {
         return ResponseEntity.badRequest().build();
     }
 
-//    public double getAverageOfIndicators(List<Establishment> list){
-//        for (Establishment e : list) {
-//
+//    public void getAverageOfIndicators(List<Establishment> establishments) {
+//        double ambient = 0.0;
+//        double service = 0.0;
+//        double food = 0.0;
+//        for (Establishment e : establishments) {
+//            ambient = rateRepository.avgIndicators(ETypeRate.AMBIENT, e.getIdUser());
+//            service = rateRepository.avgIndicators(ETypeRate.SERVICE, e.getIdUser());
+//            food = rateRepository.avgIndicators(ETypeRate.FOOD, e.getIdUser());
 //        }
 //
+//        System.out.println(ambient + service + food);
 //    }
 }

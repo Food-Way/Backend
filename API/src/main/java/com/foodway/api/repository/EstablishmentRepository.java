@@ -1,5 +1,6 @@
 package com.foodway.api.repository;
 
+import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

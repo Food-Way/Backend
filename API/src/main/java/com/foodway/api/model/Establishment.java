@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,8 @@ public class Establishment extends User {
         this.description = establishment.description();
         this.address = new Address(establishment.address().cep(), establishment.address().number(), establishment.address().complement(), establishment.address().street(), establishment.address().neighborhood(), establishment.address().city(), establishment.address().state());
         this.cnpj = establishment.cnpj();
+        this.rates = new ArrayList<>();
+        this.postList = new ArrayList<>();
     }
 
     public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto,
@@ -65,6 +68,8 @@ public class Establishment extends User {
         this.description = description;
         this.cnpj = cnpj;
         this.address = address;
+        this.postList = new ArrayList<>();
+        this.rates = new ArrayList<>();
     }
 
     @Override
@@ -84,6 +89,8 @@ public class Establishment extends User {
         this.address.setCity(((UpdateEstablishmentData) optional.get()).address().city());
         this.address.setState(((UpdateEstablishmentData) optional.get()).address().state());
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
+        this.postList = new ArrayList<>();
+        this.rates = new ArrayList<>();
     }
 
     public String getEstablishmentName() {

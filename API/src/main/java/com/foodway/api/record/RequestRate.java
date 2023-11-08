@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record RequestRate(
         @NotNull
-        int ratePoint,
+        double ratePoint,
         @NotNull
         ETypeRate typeRate,
         @NotNull
