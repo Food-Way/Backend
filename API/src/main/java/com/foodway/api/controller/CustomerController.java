@@ -46,6 +46,16 @@ public class CustomerController {
         return customerService.getCustomer(id);
     }
 
+    @GetMapping("/profile/{id}")
+    @Operation(summary = "Get customer profile by ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Customer> getCustomerProfile(@PathVariable UUID id){
+        return customerService.getCustomerProfile(id);
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update customer by ID", method = "PUT")
     @ApiResponses(value = {

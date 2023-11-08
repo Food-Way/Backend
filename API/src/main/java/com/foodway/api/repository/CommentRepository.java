@@ -8,4 +8,9 @@ import java.util.UUID;
 
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Optional<Comment> findByIdEstablishment(UUID id);
+
+    long countByIdCustomer(UUID idCustomer);
+
+
+
 }

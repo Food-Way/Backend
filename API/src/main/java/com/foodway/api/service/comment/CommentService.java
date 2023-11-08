@@ -1,11 +1,13 @@
 package com.foodway.api.service.comment;
 
 import com.foodway.api.model.Comment;
+import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.CommentRepository;
+import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +22,14 @@ public class CommentService {
     CommentRepository commentRepository;
     @Autowired
     EstablishmentService establishmentService;
+    @Autowired
+    CustomerService customerService;
 
     public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
         final Establishment establishment = establishmentService.getEstablishment(id).getBody();
+        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
         final Comment comment = new Comment(data);
 
-        assert establishment != null;
         comment.setIdEstablishment(establishment.getIdUser());
         establishment.addComment(comment);
         return ResponseEntity.status(200).body(commentRepository.save(comment));
@@ -80,5 +84,13 @@ public class CommentService {
         }
         comment.get().update(Optional.ofNullable(data));
         return ResponseEntity.status(200).body(commentRepository.save(comment.get()));
+    }
+
+    public ResponseEntity<Comment> upvoteComment(UUID idComment, UUID idVoter) {
+        // TODO CRIAR CLASSE PARA UPVOTES
+        Comment comment = get(idComment).getBody().get();
+        customerService.getCustomer(idVoter);
+        comment.upvote();
+        return null;
     }
 }

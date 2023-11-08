@@ -24,10 +24,12 @@ public class Comment {
     private UUID idPost;
     private UUID idParent;
     private UUID idEstablishment;
+    private UUID idCustomer;
     private String comment;
-    //    private Rate rate;
 //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
+
+    // TODO CRIAR CLASSE PARA UPVOTES
     private int upvotes;
     private List<String> images;
     @CreationTimestamp
@@ -60,21 +62,21 @@ public class Comment {
     public Comment(RequestComment data) {
         this.comment = data.comment();
         this.upvotes = data.upvotes();
+        this.idCustomer = data.idCustomer();
+        this.upvotes = 0;
+        this.images = data.images();
+        this.replies = new ArrayList<>();
 //        this.tagList = data.tagList();
 //        this.listCostumer = data.listCostumer();
-        this.images = data.images();
-//        this.rate = data.rate();
-        this.replies = new ArrayList<>();
     }
 
     public Comment(UUID idParent, RequestCommentChild data) {
         this.idParent = idParent;
         this.comment = data.comment();
-        this.upvotes = data.upvotes();
+        this.upvotes = 0;
 //        this.tagList = data.tagList();
 //        this.listCostumer = data.listCostumer();
         this.images = data.images();
-//        this.rate = data.rate();
         this.replies = new ArrayList<>();
     }
 
@@ -93,6 +95,10 @@ public class Comment {
 
     public void setUpvotes(int upvotes) {
         this.upvotes = upvotes;
+    }
+
+    public void upvote() {
+        this.upvotes++;
     }
 
     public String getComment() {
@@ -152,6 +158,14 @@ public class Comment {
 
     public void setIdEstablishment(UUID idEstablishment) {
         this.idEstablishment = idEstablishment;
+    }
+
+    public UUID getIdCustomer() {
+        return idCustomer;
+    }
+
+    public void setIdCustomer(UUID idCustomer) {
+        this.idCustomer = idCustomer;
     }
 
     public LocalDateTime getCreatedAt() {

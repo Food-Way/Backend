@@ -13,14 +13,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comments")
@@ -44,9 +37,14 @@ public class CommentController {
         return commentService.putComment(id, comment);
     }
 
-    @PostMapping("establishment/{id}")
+    @PostMapping("establishment/{idEstablishment}")
     public ResponseEntity<Comment> postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data) {
         return commentService.postComment(id, data);
+    }
+
+    @PatchMapping("/{idComment}/upvote")
+    public ResponseEntity<Comment> postCommentChild(UUID idComment, UUID idVoter) {
+        return commentService.upvoteComment(idComment, idVoter);
     }
 
     @PostMapping("establishment/{idEstablishment}/parent/{idParent}")
