@@ -31,13 +31,13 @@ public class EstablishmentController {
         return establishmentService.getEstablishments();
     }
 
-    @GetMapping("/best")
-    public ResponseEntity<List<Establishment>> getBestEstablishments(@Nullable @RequestParam String culinary) {
-        if (culinary == null) {
-            return establishmentService.getBestEstablishments();
-        }
-        return establishmentService.getBestEstablishmentsByCulinary(culinary);
-    }
+//    @GetMapping("/best")
+//    public ResponseEntity<List<Establishment>> getBestEstablishments(@Nullable @RequestParam String culinary) {
+//        if (culinary == null) {
+//            return establishmentService.getBestEstablishments();
+//        }
+//        return establishmentService.getBestEstablishmentsByCulinary(culinary);
+//    }
 
     @GetMapping("/most-commented")
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {

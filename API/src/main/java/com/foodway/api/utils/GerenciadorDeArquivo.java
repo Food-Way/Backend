@@ -40,7 +40,7 @@ public class GerenciadorDeArquivo {
                         establishment.getAddress().getCep(),
                         establishment.getAddress().getNumber(),
                         establishment.getAddress().getComplement(),
-                        establishment.getRate(),
+                        establishment.getGeneralRate(),
                         establishment.getCnpj()
 //                        establishment.getCreatedAt(),
 //                        establishment.getUpdatedAt()
@@ -162,7 +162,7 @@ public class GerenciadorDeArquivo {
             corpo += String.format("%-10s", e.getAddress().getCep());
             corpo += String.format("%-8s", e.getAddress().getNumber());
             corpo += String.format("%-15s", e.getAddress().getComplement());
-            corpo += String.format("%5s", e.getRate());
+            corpo += String.format("%5s", e.getGeneralRate());
             corpo += String.format("%-15s", e.getCnpj());
 //            corpo += String.format("%19s", e.getCreatedAt());
 //            corpo += String.format("%19s", e.getUpdatedAt());

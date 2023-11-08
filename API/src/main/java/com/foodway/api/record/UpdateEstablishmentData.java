@@ -14,7 +14,6 @@ public record UpdateEstablishmentData(
         String profilePhoto,
         @NotBlank String establishmentName,
         String description,
-        Double rate,
         @NotBlank String cnpj,
         Address address
 ) {

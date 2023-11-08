@@ -140,7 +140,7 @@ public class ListaObj<T> {
                             Establishment first = (Establishment) list.getElemento(j - 1);
                             Establishment next = (Establishment) list.getElemento(j);
 
-                            if(next.getRate() > first.getRate()){
+                            if(next.getGeneralRate() > first.getGeneralRate()){
                                 list.adicionaNoIndice(j - 1, (T) next);
                                 list.adicionaNoIndice(j, (T) first);
                             }
@@ -165,9 +165,9 @@ public class ListaObj<T> {
         while(inf <= sup){
             mid = (inf + sup) / 2;
             Establishment current = (Establishment) vetor[mid];
-            if(current.getRate().equals(rate)){
+            if(current.getGeneralRate().equals(rate)){
                 return mid;
-            } else if(rate > current.getRate()){
+            } else if(rate > current.getGeneralRate()){
                 sup = mid - 1;
             } else {
                 inf = mid + 1;

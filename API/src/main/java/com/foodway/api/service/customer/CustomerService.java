@@ -53,8 +53,8 @@ public class CustomerService {
         return ResponseEntity.status(404).build();
     }
 
-    public ResponseEntity<Customer> getCustomerProfile(UUID id) {
-        Customer customer = getCustomer(id).getBody();
-        long l = commentRepository.countByIdCustomer(id);
-    }
+//    public ResponseEntity<Customer> getCustomerProfile(UUID id) {
+//        Customer customer = getCustomer(id).getBody();
+//        long l = commentRepository.countByIdCustomer(id);
+//    }
 }

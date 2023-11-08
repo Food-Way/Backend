@@ -1,9 +1,12 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
@@ -12,19 +15,34 @@ import java.util.Optional;
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")
 public class Establishment extends User {
-
     @Column(length = 75)
     private String establishmentName;
     @Column(length = 255)
     private String description;
     @PositiveOrZero
-    private Double rate;
+    @Max(value = 5)
+    @Min(value = 0)
+    private Double generalRate;
+    @PositiveOrZero
+    @Max(value = 5)
+    @Min(value = 0)
+    private Double ambientRate;
+    @PositiveOrZero
+    @Max(value = 5)
+    @Min(value = 0)
+    private Double serviceRate;
+    @PositiveOrZero
+    @Max(value = 5)
+    @Min(value = 0)
+    private Double foodRate;
     @Column(length = 14, unique = true)
     private String cnpj;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+    @JsonIgnore
     @OneToMany
     private List<Rate> rates;
+    @JsonIgnore
     @OneToMany
     private List<Comment> postList;
 
@@ -41,11 +59,10 @@ public class Establishment extends User {
     }
 
     public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto,
-                         List<Culinary> culinary, String establishmentName, String description, Double rate, String cnpj, Address address) {
+                         List<Culinary> culinary, String establishmentName, String description, String cnpj, Address address) {
         super(name, email, password, typeUser, profilePhoto, culinary);
         this.establishmentName = establishmentName;
         this.description = description;
-        this.rate = rate;
         this.cnpj = cnpj;
         this.address = address;
     }
@@ -66,7 +83,6 @@ public class Establishment extends User {
         this.address.setNeighborhood(((UpdateEstablishmentData) optional.get()).address().neighborhood());
         this.address.setCity(((UpdateEstablishmentData) optional.get()).address().city());
         this.address.setState(((UpdateEstablishmentData) optional.get()).address().state());
-        this.rate = ((UpdateEstablishmentData) optional.get()).rate();
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
     }
 
@@ -86,12 +102,16 @@ public class Establishment extends User {
         this.description = description;
     }
 
-    public Double getRate() {
-        return rate;
+    public Double getGeneralRate() {
+        return generalRate;
     }
 
-    public void setRate(Double rate) {
-        this.rate = rate;
+    public void setGeneralRate(Double generalRate) {
+        this.generalRate = generalRate;
+    }
+
+    public List<Comment> getPostList() {
+        return postList;
     }
 
     public String getCnpj() {
@@ -110,8 +130,12 @@ public class Establishment extends User {
         this.address = address;
     }
 
-    public void setRates(List<Rate> rates) {
-        this.rates = rates;
+    public List<Rate> getRates() {
+        return rates;
+    }
+
+    public void addRate(Rate rate) {
+        this.rates.add(rate);
     }
 
     public void setPostList(List<Comment> postList) {
@@ -122,8 +146,27 @@ public class Establishment extends User {
         this.postList.add(comment);
     }
 
-    public void addRate(Rate rate) {
-        this.rates.add(rate);
+    public Double getAmbientRate() {
+        return ambientRate;
     }
 
+    public void setAmbientRate(Double ambientRate) {
+        this.ambientRate = ambientRate;
+    }
+
+    public Double getServiceRate() {
+        return serviceRate;
+    }
+
+    public void setServiceRate(Double serviceRate) {
+        this.serviceRate = serviceRate;
+    }
+
+    public Double getFoodRate() {
+        return foodRate;
+    }
+
+    public void setFoodRate(Double foodRate) {
+        this.foodRate = foodRate;
+    }
 }

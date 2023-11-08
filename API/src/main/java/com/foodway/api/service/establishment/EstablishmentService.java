@@ -39,15 +39,15 @@ public class EstablishmentService {
         return validateIsEmpty(establishments);
     }
 
-    public ResponseEntity<List<Establishment>> getBestEstablishments() {
-        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByRateDesc();
-        return validateIsEmpty(establishments);
-    }
-
-    public ResponseEntity<List<Establishment>> getBestEstablishmentsByCulinary(String culinary) {
-        List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByRateDesc(culinary);
-        return validateIsEmpty(establishments);
-    }
+//    public ResponseEntity<List<Establishment>> getBestEstablishments() {
+//        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByGeneralRateDesc();
+//        return validateIsEmpty(establishments);
+//    }
+//
+//    public ResponseEntity<List<Establishment>> getBestEstablishmentsByCulinary(String culinary) {
+//        List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByGeneralRateDesc(culinary);
+//        return validateIsEmpty(establishments);
+//    }
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments() {
         List<Establishment> establishments = establishmentRepository.findByOrderByPostListDesc();
@@ -90,7 +90,6 @@ public class EstablishmentService {
         MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
-        System.out.println(establishment);
         Establishment establishmentSaved = establishmentRepository.save(establishment);
         return ResponseEntity.status(201).body(establishmentSaved);
     }
@@ -125,4 +124,11 @@ public class EstablishmentService {
         }
         return ResponseEntity.badRequest().build();
     }
+
+//    public double getAverageOfIndicators(List<Establishment> list){
+//        for (Establishment e : list) {
+//
+//        }
+//
+//    }
 }
