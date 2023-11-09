@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FilterOutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -39,7 +40,9 @@ public class EstablishmentService {
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-//        getAverageOfIndicators(establishments);
+        for (Establishment establishment : establishments) {
+            getAverageOfIndicators(establishment);
+        }
         return ResponseEntity.status(200).body(establishments);
     }
 
@@ -134,16 +137,9 @@ public class EstablishmentService {
         return ResponseEntity.badRequest().build();
     }
 
-//    public void getAverageOfIndicators(List<Establishment> establishments) {
-//        double ambient = 0.0;
-//        double service = 0.0;
-//        double food = 0.0;
-//        for (Establishment e : establishments) {
-//            ambient = rateRepository.avgIndicators(ETypeRate.AMBIENT, e.getIdUser());
-//            service = rateRepository.avgIndicators(ETypeRate.SERVICE, e.getIdUser());
-//            food = rateRepository.avgIndicators(ETypeRate.FOOD, e.getIdUser());
-//        }
-//
-//        System.out.println(ambient + service + food);
-//    }
+    public void getAverageOfIndicators(Establishment establishment) {
+        Map<String, Double> current = rateRepository.getIndicators(ETypeRate.AMBIENT, ETypeRate.SERVICE, ETypeRate.FOOD, establishment.getIdUser());
+
+        establishment.setRates(current);
+    }
 }

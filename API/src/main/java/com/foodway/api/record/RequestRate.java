@@ -9,9 +9,5 @@ public record RequestRate(
         @NotNull
         double ratePoint,
         @NotNull
-        ETypeRate typeRate,
-        @NotNull
-        LocalDateTime createdAt,
-        @NotNull
-        LocalDateTime updatedAt
+        ETypeRate typeRate
 ) {}

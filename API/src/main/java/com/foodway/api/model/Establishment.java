@@ -11,6 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Table(name = "tbEstablishment")
@@ -157,23 +158,37 @@ public class Establishment extends User {
         return ambientRate;
     }
 
-    public void setAmbientRate(Double ambientRate) {
-        this.ambientRate = ambientRate;
-    }
-
     public Double getServiceRate() {
         return serviceRate;
-    }
-
-    public void setServiceRate(Double serviceRate) {
-        this.serviceRate = serviceRate;
     }
 
     public Double getFoodRate() {
         return foodRate;
     }
 
-    public void setFoodRate(Double foodRate) {
-        this.foodRate = foodRate;
+    public void setRates(Map<String, Double> map) {
+        String[] rateKeys = { "AMBIENT", "SERVICE", "FOOD" };
+        int count = 0;
+        double totalRate = 0.0;
+
+        for (String key : rateKeys) {
+            Double rateValue = map.get(key);
+            if (rateValue != null) {
+                count++;
+                totalRate += rateValue;
+            } else {
+                rateValue = 0.0;
+            }
+
+            if ("AMBIENT".equals(key)) {
+                this.ambientRate = rateValue;
+            } else if ("SERVICE".equals(key)) {
+                this.serviceRate = rateValue;
+            } else if ("FOOD".equals(key)) {
+                this.foodRate = rateValue;
+            }
+        }
+
+        this.generalRate = (count > 0) ? (totalRate / count) : 0.0;
     }
 }
