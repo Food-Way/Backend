@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-    //    @Id
+//    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
 //    private UUID idCostumer;
     @Column(length = 11, unique = true)
