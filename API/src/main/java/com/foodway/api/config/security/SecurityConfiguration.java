@@ -1,7 +1,6 @@
 package com.foodway.api.config.security;
 import com.foodway.api.config.security.jwt.ManagerToken;
 import com.foodway.api.service.user.authentication.AuthenticationService;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +33,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecutiryConfiguration {
+public class SecurityConfiguration {
     @Autowired
     AuthenticationService authenticationService;
     @Autowired
@@ -63,7 +62,8 @@ public class SecutiryConfiguration {
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
             new AntPathRequestMatcher("/customers/**"),
-            new AntPathRequestMatcher("/establishments/**")
+            new AntPathRequestMatcher("/establishments/**"),
+            new AntPathRequestMatcher("/menu/**")
     };
 
     @Bean
