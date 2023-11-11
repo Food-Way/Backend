@@ -16,11 +16,9 @@ public record RequestUserCustomer(
         String password,
         @Enumerated
         ETypeUser typeUser,
-        @NotBlank
         String profilePhoto,
         String cpf,
         List<Culinary> culinary,
-        @NotBlank
         String bio
 ) {
 }
