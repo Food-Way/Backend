@@ -38,8 +38,8 @@ public class CommentController {
     }
 
     @PostMapping("establishment/{idEstablishment}")
-    public ResponseEntity<Comment> postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data) {
-        return commentService.postComment(id, data);
+    public ResponseEntity<Comment> postComment(@PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
+        return commentService.postComment(idEstablishment, data);
     }
 
     @PatchMapping("/{idComment}/upvote")

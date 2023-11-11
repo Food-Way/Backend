@@ -1,6 +1,6 @@
 package com.foodway.api.model;
 
-import com.foodway.api.record.DTOs.MapsLongLag;
+import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
