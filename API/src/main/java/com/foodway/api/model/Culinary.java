@@ -15,6 +15,7 @@ public class Culinary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String photo;
+    @Column(unique = true)
     private String name;
     @ManyToMany(mappedBy = "culinary")
     List<User> users;
