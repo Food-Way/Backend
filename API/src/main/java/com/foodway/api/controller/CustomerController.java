@@ -3,6 +3,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Customer;
+import com.foodway.api.model.Favorite;
 import com.foodway.api.record.DTOs.CustomerProfileDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
@@ -89,5 +90,16 @@ public class CustomerController {
     })
     public ResponseEntity deleteCustomer(@PathVariable UUID id){
         return customerService.deleteCustomer(id);
+    }
+
+    @PostMapping("/{idCustomer}/establishments/{idEstablishment}")
+    @Operation(summary = "Add favorite establishment to customer", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the created favorite"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
+    public ResponseEntity<Favorite> addFavoriteEstablishment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment){
+        return customerService.addFavoriteEstablishment(idCustomer, idEstablishment);
     }
 }

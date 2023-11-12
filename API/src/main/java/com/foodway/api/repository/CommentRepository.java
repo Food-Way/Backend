@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Optional<Comment> findByIdEstablishment(UUID id);
 
-    List<Comment> findTop4ByIdCustomer(UUID idCustomer);
+    Optional<List<Comment>> findTop4ByIdCustomer(UUID idCustomer);
 
 
 

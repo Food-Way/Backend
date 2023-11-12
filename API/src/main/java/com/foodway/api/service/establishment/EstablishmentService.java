@@ -39,15 +39,16 @@ public class EstablishmentService {
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-        for (Establishment establishment : establishments) {
-            getAverageOfIndicators(establishment);
-        }
         return ResponseEntity.status(200).body(establishments);
     }
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
-        return validateIsEmpty(establishments);
+        ResponseEntity<List<Establishment>> establishments1 = validateIsEmpty(establishments);
+        for (Establishment establishment : establishments1.getBody()) {
+            getAverageOfIndicators(establishment);
+        }
+        return establishments1;
     }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
@@ -78,6 +79,7 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> getEstablishment(UUID paramId) {
         Optional<Establishment> establishment = establishmentRepository.findById(paramId);
+        getAverageOfIndicators(establishment.get());
         return establishment.map(value -> ResponseEntity.status(200).body(value)).orElseGet(() -> ResponseEntity.status(404).build());
     }
 
