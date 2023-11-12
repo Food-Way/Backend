@@ -39,6 +39,12 @@ public class EstablishmentController {
 //        return establishmentService.getBestEstablishmentsByCulinary(culinary);
 //    }
 
+    @GetMapping("/culinary/{id}")
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@PathVariable int idCulinary) {
+        return establishmentService.getEstablishmentsByCulinary(idCulinary);
+    }
+
+
     @GetMapping("/most-commented")
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
         if (culinary == null) {
