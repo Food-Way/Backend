@@ -49,7 +49,7 @@ public class CulinaryController {
     @PutMapping("/{id}")
     @Operation(summary = "Update culinary by ID", method = "PUT")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return the updated viçomstu"),
+            @ApiResponse(responseCode = "200", description = "Return the updated culinary"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = CulinaryNotFoundException.CODE, description = CulinaryNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")

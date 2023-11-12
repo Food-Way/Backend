@@ -37,6 +37,12 @@ public class UserController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
+    @Operation(summary = "Create a new user", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the created user"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<Void> create(@RequestBody @Valid UserCreateDto userCreateDto) {
         String passwordEncrypt = passwordEncoder.encode(userCreateDto.getPassword());
         userCreateDto.setPassword(passwordEncrypt);
@@ -46,6 +52,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Realize a user login", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the user login"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<UserTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
         UserTokenDto userTokenDto = this.userService.authenticate(userLoginDto);
         return ResponseEntity.status(200).body(userTokenDto);
@@ -58,7 +70,6 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "User is not authenticated"),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred while processing the request")
     })
-
     public ResponseEntity get() {
         // Se o usuário está autenticado, retorna um código de status 200
         return ResponseEntity.ok().build();
