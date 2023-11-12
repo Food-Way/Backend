@@ -27,7 +27,7 @@ public class CommentService {
 
     public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
         final Establishment establishment = establishmentService.getEstablishment(id).getBody();
-        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
+//        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
         final Comment comment = new Comment(data);
 
         comment.setIdEstablishment(establishment.getIdUser());

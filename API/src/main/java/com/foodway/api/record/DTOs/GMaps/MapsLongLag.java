@@ -1,4 +1,4 @@
-package com.foodway.api.record.DTOs;
+package com.foodway.api.record.DTOs.GMaps;
 
 import java.util.List;
 

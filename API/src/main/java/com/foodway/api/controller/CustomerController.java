@@ -3,6 +3,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Customer;
+import com.foodway.api.record.DTOs.CustomerProfileDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.service.customer.CustomerService;
@@ -46,15 +47,15 @@ public class CustomerController {
         return customerService.getCustomer(id);
     }
 
-//    @GetMapping("/profile/{id}")
-//    @Operation(summary = "Get customer profile by ID", method = "GET")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
-//            @ApiResponse(responseCode = "500", description = "Internal server error")
-//    })
-//    public ResponseEntity<Customer> getCustomerProfile(@PathVariable UUID id){
-//        return customerService.getCustomerProfile(id);
-//    }
+    @GetMapping("/profile/{id}")
+    @Operation(summary = "Get customer profile by ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<CustomerProfileDTO> getCustomerProfile(@PathVariable UUID id){
+        return customerService.getCustomerProfile(id);
+    }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update customer by ID", method = "PUT")

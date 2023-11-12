@@ -68,8 +68,8 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postComment(@PathVariable UUID id, @RequestBody @Validated RequestComment data) {
-        return commentService.postComment(id, data);
+    public ResponseEntity<Comment> postComment(@PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
+        return commentService.postComment(idEstablishment, data);
     }
 
     @PatchMapping("/{idComment}/upvote")

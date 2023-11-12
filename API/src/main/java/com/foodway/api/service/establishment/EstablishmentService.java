@@ -5,7 +5,7 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 //import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
-import com.foodway.api.record.DTOs.MapsLongLag;
+import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.repository.EstablishmentRepository;
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.FilterOutputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

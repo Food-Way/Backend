@@ -10,8 +10,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface RateRepository extends JpaRepository<Rate, Long> {
+
+    @Query("SELECT AVG(r.ratePoint) FROM com.foodway.api.model.Rate r WHERE r.idCustomer = ?1")
+    Double getAvgIndicatorCustomer(UUID idCustomer);
+
     @Query("SELECT AVG(r.ratePoint) FROM com.foodway.api.model.Rate r WHERE r.idEstablishment = ?1 and r.typeRate = ?2")
-    Double getAvgIndicator(UUID idEstablishment, ETypeRate typeRate);
+    Double getAvgIndicatorEstablishment(UUID idEstablishment, ETypeRate typeRate);
 
     @Query("""
             SELECT
