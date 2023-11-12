@@ -19,5 +19,6 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findByCulinary_NameOrderByPostListDesc(String culinary);
 
+    List<Establishment> findEstablishmentByCulinary_Id(int id);
 
 }
