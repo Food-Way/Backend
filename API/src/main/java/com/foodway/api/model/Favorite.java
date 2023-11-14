@@ -1,10 +1,12 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "tbFavorite")
@@ -13,9 +15,11 @@ public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idFavorite;
-    private UUID idCustomer;
-    private UUID idEstablishment;
+        private Integer idFavorite;
+        private UUID idCustomer;
+        private UUID idEstablishment;
+    @ManyToMany(mappedBy = "favorites")
+    List<Customer> customers;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -51,6 +55,15 @@ public class Favorite {
 
     public void setIdEstablishment(UUID idEstablishment) {
         this.idEstablishment = idEstablishment;
+    }
+
+    @JsonIgnore
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -4,10 +4,7 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,13 @@ public class Customer extends User {
     private String bio;
     @OneToMany
     private List<Rate> rates;
+    @ManyToMany
+    @JoinTable(
+            name = "tbFavoriteEstablishment",
+            joinColumns = @JoinColumn(name = "idCustomer"),
+            inverseJoinColumns = @JoinColumn(name = "idFavorite")
+    )
+    private List<Favorite> favorites;
 
     public Customer() {
     }
