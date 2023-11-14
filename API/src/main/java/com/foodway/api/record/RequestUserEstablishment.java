@@ -2,6 +2,7 @@ package com.foodway.api.record;
 
 import com.foodway.api.model.Culinary;
 import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.record.DTOs.CulinaryDTO;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +22,6 @@ public record RequestUserEstablishment(
         @NotBlank String cnpj,
         Address address,
         List<Culinary> culinary
-
 ) {
     public record Address(
             @NotBlank String cep,

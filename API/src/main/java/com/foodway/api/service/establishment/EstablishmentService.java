@@ -8,6 +8,7 @@ import com.foodway.api.model.MapsClient;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.repository.CulinaryRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.RateRepository;
 import com.foodway.api.repository.UserRepository;
@@ -34,6 +35,8 @@ public class EstablishmentService {
     private MapsClient mapsClient;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CulinaryRepository culinaryRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -99,6 +102,7 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
         Establishment establishment = new Establishment(establishmentRequest);
+
         RequestUserEstablishment.Address address = establishmentRequest.address();
 //        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
         establishment.getAddress().setLatitude(null);
