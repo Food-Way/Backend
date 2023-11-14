@@ -19,7 +19,7 @@ public record RequestUserEstablishment(
         String profilePhoto,
         @NotBlank String establishmentName,
         String description,
-        @NotBlank @CNPJ String cnpj,
+        @NotBlank String cnpj,
         Address address,
         List<Culinary> culinary
 ) {

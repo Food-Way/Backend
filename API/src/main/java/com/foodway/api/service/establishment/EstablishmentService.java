@@ -104,9 +104,9 @@ public class EstablishmentService {
         Establishment establishment = new Establishment(establishmentRequest);
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
-        establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
-        establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
+//        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
+        establishment.getAddress().setLatitude(null);
+        establishment.getAddress().setLongitude(null);
         Establishment establishmentSaved = establishmentRepository.save(establishment);
         return ResponseEntity.status(201).body(establishmentSaved);
     }
