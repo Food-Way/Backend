@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CustomerNotFoundException;
-import com.foodway.api.exceptions.ProductNotFoundException;
+import com.foodway.api.handler.exceptions.ProductNotFoundException;
 import com.foodway.api.model.Product;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;

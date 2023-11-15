@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CulinaryNotFoundException;
-import com.foodway.api.exceptions.CustomerNotFoundException;
+import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Culinary;
 import com.foodway.api.record.RequestCulinary;
 import com.foodway.api.service.culinary.CulinaryService;
@@ -15,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/culinaries")

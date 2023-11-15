@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CustomerNotFoundException;
-import com.foodway.api.exceptions.RateNotFoundException;
+import com.foodway.api.handler.exceptions.RateNotFoundException;
 import com.foodway.api.model.Rate;
 import com.foodway.api.record.RequestRate;
 import com.foodway.api.service.rate.RateService;
@@ -34,6 +33,7 @@ public class RateController {
     public ResponseEntity<List<Rate>> getAll(){
         return rateService.getAll();
     }
+
     @GetMapping("/{id}")
     @Operation(summary = "Get rate by ID", method = "GET")
     @ApiResponses(value = {
@@ -44,6 +44,7 @@ public class RateController {
     public ResponseEntity<Rate> get(@PathVariable Long id){
         return rateService.get(id);
     }
+
     @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
     @Operation(summary = "post a new rate", method = "POST")
     @ApiResponses(value = {
@@ -54,6 +55,7 @@ public class RateController {
     public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Validated RequestRate rate){
         return rateService.post(idCustomer, idEstablishment, rate);
     }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update rate by ID", method = "PUT")
     @ApiResponses(value = {
@@ -65,6 +67,7 @@ public class RateController {
     public ResponseEntity<Rate> put(@PathVariable Long id, @RequestBody @Validated RequestRate rate){
         return rateService.put(id, rate);
     }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete rate by ID", method = "DELETE")
     @ApiResponses(value = {

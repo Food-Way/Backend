@@ -1,5 +1,6 @@
 package com.foodway.api.service.comment;
 
+import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
@@ -40,7 +41,7 @@ public class CommentService {
         final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
 
         if (commentOptional.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new CommentNotFoundException("Comment not found");
         }
         Comment commentParent = commentOptional.get();
         Comment comment = new Comment(idParent, data);
@@ -63,7 +64,7 @@ public class CommentService {
 
     public ResponseEntity<Optional<Comment>> get(UUID id) {
         if (commentRepository.findById(id).isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new CommentNotFoundException("Comment not found");
         }
         return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
@@ -74,13 +75,13 @@ public class CommentService {
             commentRepository.delete(comment.get());
             return ResponseEntity.status(200).build();
         }
-        return ResponseEntity.status(404).build();
+        throw new CommentNotFoundException("Comment not found");
     }
 
     public ResponseEntity putComment(UUID id, UpdateCommentData data) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new CommentNotFoundException("Comment not found");
         }
         comment.get().update(Optional.ofNullable(data));
         return ResponseEntity.status(200).body(commentRepository.save(comment.get()));

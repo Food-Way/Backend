@@ -1,5 +1,6 @@
 package com.foodway.api.service.product;
 
+import com.foodway.api.handler.exceptions.ProductNotFoundException;
 import com.foodway.api.model.Product;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
@@ -25,13 +26,13 @@ public class ProductService {
             productRepository.delete(product.get());
             return ResponseEntity.status(200).build();
         }
-        return ResponseEntity.status(404).build();
+        throw new ProductNotFoundException("Product not found");
     }
 
     public ResponseEntity<Product> putProduct(UUID id, UpdateProductData data) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new ProductNotFoundException("Product not found");
         }
         product.get().update(Optional.ofNullable(data));
         Product savedProduct = product.get();
@@ -52,12 +53,10 @@ public class ProductService {
     public ResponseEntity<Product> getProductById(UUID id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new ProductNotFoundException("Product not found");
         }
         return ResponseEntity.status(200).body(product.get());
     }
-
-
 }
 
 

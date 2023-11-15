@@ -4,5 +4,5 @@ import com.foodway.api.model.Culinary;
 
 import java.util.List;
 
-public record EstablishmentDTO(String establishmentName, Double rate, List<Culinary> culinary, String photo) {
+public record EstablishmentDTO(String establishmentName, Double establishmentRate, List<Culinary> culinary, String photo) {
 }

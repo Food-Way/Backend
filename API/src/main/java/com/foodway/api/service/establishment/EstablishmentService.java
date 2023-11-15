@@ -1,5 +1,6 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
@@ -91,7 +92,7 @@ public class EstablishmentService {
     public ResponseEntity<Establishment> deleteEstablishment(UUID id) {
         Optional<Establishment> establishment = establishmentRepository.findById(id);
         if (establishment.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new EstablishmentNotFoundException("Establishment not found");
         }
         establishmentRepository.delete(establishment.get());
         return ResponseEntity.status(200).build();
