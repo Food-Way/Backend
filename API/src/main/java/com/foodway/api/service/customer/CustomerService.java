@@ -1,5 +1,6 @@
 package com.foodway.api.service.customer;
 
+import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
@@ -49,7 +50,7 @@ public class CustomerService {
     public ResponseEntity<Customer> putCustomer(UUID id, UpdateCustomerData data) {
         Optional<Customer> customerOptional = customerRepository.findById(id);
         if (customerOptional.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new CustomerNotFoundException("Customer not found");
         }
         customerOptional.get().update(Optional.ofNullable(data));
         return ResponseEntity.status(200).body(customerRepository.save(customerOptional.get()));
@@ -66,7 +67,7 @@ public class CustomerService {
             customerRepository.delete(customer.get());
             return ResponseEntity.status(200).build();
         }
-        return ResponseEntity.status(404).build();
+        throw new CustomerNotFoundException("Customer not found");
     }
 
     public ResponseEntity<Favorite> addFavoriteEstablishment(UUID idCustomer, UUID idEstablishment) {

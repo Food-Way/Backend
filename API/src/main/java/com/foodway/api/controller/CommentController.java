@@ -1,7 +1,7 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CommentNotFoundException;
-import com.foodway.api.exceptions.CulinaryNotFoundException;
+import com.foodway.api.handler.exceptions.CommentNotFoundException;
+import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
@@ -14,7 +14,6 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -99,7 +98,7 @@ public class CommentController {
     @Operation(summary = "Delete comment by ID", method = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the deleted comment"),
-            @ApiResponse(responseCode = CulinaryNotFoundException.CODE, description = CulinaryNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {

@@ -1,7 +1,7 @@
 package com.foodway.api.controller;
 
 
-import com.foodway.api.exceptions.CustomerNotFoundException;
+import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Favorite;
 import com.foodway.api.record.DTOs.CustomerProfileDTO;

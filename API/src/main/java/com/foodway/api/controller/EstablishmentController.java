@@ -1,6 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;

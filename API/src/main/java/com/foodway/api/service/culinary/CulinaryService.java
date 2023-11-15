@@ -1,5 +1,6 @@
 package com.foodway.api.service.culinary;
 
+import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Culinary;
 import com.foodway.api.record.RequestCulinary;
 import com.foodway.api.repository.CulinaryRepository;
@@ -31,7 +32,7 @@ public class CulinaryService {
     public ResponseEntity<Culinary> putCulinary(int id, RequestCulinary culinary) {
         Optional<Culinary> culinaryOptional = culinaryRepository.findById(id);
         if(culinaryOptional.isEmpty()){
-            return ResponseEntity.status(404).build();
+            throw new CulinaryNotFoundException("Culinary not found");
         }
         culinaryOptional.get().update(Optional.ofNullable(culinary));
         return ResponseEntity.status(200).body(culinaryRepository.save(culinaryOptional.get()));
@@ -43,6 +44,6 @@ public class CulinaryService {
             culinaryRepository.delete(culinary.get());
             return ResponseEntity.status(200).build();
         }
-        return ResponseEntity.status(404).build();
+        throw new CulinaryNotFoundException("Culinary not found");
     }
 }
