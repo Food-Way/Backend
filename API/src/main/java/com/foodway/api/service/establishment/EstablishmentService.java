@@ -48,11 +48,13 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
-        ResponseEntity<List<Establishment>> establishments1 = validateIsEmpty(establishments);
-        for (Establishment establishment : establishments1.getBody()) {
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        for (Establishment establishment : establishments) {
             getAverageOfIndicators(establishment);
         }
-        return establishments1;
+        return ResponseEntity.status(200).body(establishments);
     }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
