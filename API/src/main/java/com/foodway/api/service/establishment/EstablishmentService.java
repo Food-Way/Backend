@@ -1,5 +1,6 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
@@ -47,11 +48,13 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
-        ResponseEntity<List<Establishment>> establishments1 = validateIsEmpty(establishments);
-        for (Establishment establishment : establishments1.getBody()) {
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        for (Establishment establishment : establishments) {
             getAverageOfIndicators(establishment);
         }
-        return establishments1;
+        return ResponseEntity.status(200).body(establishments);
     }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
@@ -94,7 +97,7 @@ public class EstablishmentService {
     public ResponseEntity<Establishment> deleteEstablishment(UUID id) {
         Optional<Establishment> establishment = establishmentRepository.findById(id);
         if (establishment.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new EstablishmentNotFoundException("Establishment not found");
         }
         establishmentRepository.delete(establishment.get());
         return ResponseEntity.status(200).build();

@@ -1,5 +1,8 @@
 package com.foodway.api.service.rate;
 
+import com.foodway.api.handler.exceptions.CustomerNotFoundException;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.handler.exceptions.RateNotFoundException;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
@@ -33,16 +36,16 @@ public class RateService {
     }
 
     public ResponseEntity<Rate> get(Long id) {
-        if(!rateRepository.existsById(id)) return ResponseEntity.status(404).build();
+        if(!rateRepository.existsById(id)) throw new RateNotFoundException("Rate not found!");
         return ResponseEntity.status(200).body(rateRepository.findById(id).get());
     }
 
     public ResponseEntity<Rate> post(UUID idCustomer, UUID idEstablishment, RequestRate data) {
         if(!customerRepository.existsById(idCustomer)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+            throw new CustomerNotFoundException("Customer not found!");
         }
         if(!establishmentRepository.existsById(idEstablishment)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+            throw new EstablishmentNotFoundException("Establishment not found!");
         }
         final Customer customer = customerRepository.findById(idCustomer).get();
         final Establishment establishment = establishmentRepository.findById(idEstablishment).get();
@@ -59,7 +62,7 @@ public class RateService {
     }
 
     public ResponseEntity<Rate> put(Long id, RequestRate data) {
-        if(!rateRepository.existsById(id)) return ResponseEntity.status(404).build();
+        if(!rateRepository.existsById(id)) throw new RateNotFoundException("Rate not found!");
         final Rate rate = rateRepository.findById(id).get();
         final Rate newRate = new Rate(data);
         rate.update(newRate);
@@ -67,7 +70,7 @@ public class RateService {
     }
 
     public ResponseEntity<Void>delete(Long id) {
-        if(!rateRepository.existsById(id)) return ResponseEntity.status(404).build();
+        if(!rateRepository.existsById(id)) throw new RateNotFoundException("Rate not found!");
         rateRepository.deleteById(id);
         return ResponseEntity.status(200).build();
     }
