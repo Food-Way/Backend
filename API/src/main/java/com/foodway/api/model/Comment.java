@@ -29,8 +29,11 @@ public class Comment {
 //    private List<Tags> tagList;
 //    private List<Costumer> listCostumer;
 
-    // TODO CRIAR CLASSE PARA UPVOTES
     private int upvotes;
+
+    @OneToMany
+    private List<Upvote> upvoteList;
+
     private List<String> images;
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -174,5 +177,13 @@ public class Comment {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Upvote> getUpvoteList() {
+        return upvoteList;
+    }
+
+    public Comment getParentComment() {
+        return parentComment;
     }
 }
