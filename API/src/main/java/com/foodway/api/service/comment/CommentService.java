@@ -8,48 +8,71 @@ import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.CommentRepository;
+import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CommentService {
     @Autowired
     CommentRepository commentRepository;
     @Autowired
+    UserRepository userRepository;
+    @Autowired
     EstablishmentService establishmentService;
     @Autowired
     CustomerService customerService;
 
-    public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
-        final Establishment establishment = establishmentService.getEstablishment(id).getBody();
-//        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
+    public ResponseEntity<Comment> postComment(UUID idCustomer, UUID idEstablishment, RequestComment data) {
+        if (!userRepository.existsById(idCustomer)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+        if (!userRepository.existsById(idEstablishment)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found");
+        }
+        final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
+        final Customer customer = customerService.getCustomer(idCustomer).getBody();
         final Comment comment = new Comment(data);
 
         comment.setIdEstablishment(establishment.getIdUser());
+        comment.setIdCustomer(customer.getIdUser());
         establishment.addComment(comment);
         return ResponseEntity.status(200).body(commentRepository.save(comment));
     }
 
-    public ResponseEntity<Comment> postCommentChild(UUID idEstablishment, UUID idParent, RequestCommentChild data) {
+    public ResponseEntity<Comment> postCommentChild(UUID idCustomer, UUID idEstablishment, UUID idParent, RequestCommentChild data) {
         Optional<Comment> commentOptional = commentRepository.findById(idParent);
-        final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
-
+        if (!userRepository.existsById(idCustomer)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found");
+        }
+        if (!userRepository.existsById(idEstablishment)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found");
+        }
         if (commentOptional.isEmpty()) {
             throw new CommentNotFoundException("Comment not found");
         }
+
+        final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
+        final Customer customer = customerService.getCustomer(idCustomer).getBody();
+
         Comment commentParent = commentOptional.get();
         Comment comment = new Comment(idParent, data);
         comment.setIdEstablishment(establishment.getIdUser());
+        comment.setIdCustomer(customer.getIdUser());
 
         commentParent.addReply(comment);
 
-//        commentRepository.save(commentParent);
         commentRepository.save(comment);
 
         return ResponseEntity.status(200).body(comment);
@@ -69,7 +92,7 @@ public class CommentService {
         return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
 
-    public ResponseEntity deleteComment(UUID id, UUID idOwner) {
+    public ResponseEntity<Void> deleteComment(UUID id, UUID idOwner) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isPresent()) {
             commentRepository.delete(comment.get());
@@ -78,7 +101,7 @@ public class CommentService {
         throw new CommentNotFoundException("Comment not found");
     }
 
-    public ResponseEntity putComment(UUID id, UpdateCommentData data) {
+    public ResponseEntity<Comment> putComment(UUID id, UpdateCommentData data) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isEmpty()) {
             throw new CommentNotFoundException("Comment not found");

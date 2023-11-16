@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.Entity;
@@ -26,14 +27,7 @@ public class Comment {
     private UUID idEstablishment;
     private UUID idCustomer;
     private String comment;
-//    private List<Tags> tagList;
-//    private List<Costumer> listCostumer;
-
     private int upvotes;
-
-    @OneToMany
-    private List<Upvote> upvoteList;
-
     private List<String> images;
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -44,6 +38,9 @@ public class Comment {
     private Comment parentComment;
     @OneToMany(mappedBy = "parentComment")
     List<Comment> replies;
+    @JsonIgnore
+    @OneToMany
+    private List<Upvote> upvoteList;
 
     public Comment() {
     }
@@ -55,40 +52,29 @@ public class Comment {
     public Comment(int upvotes, String comment, List<String> images) {
         this.upvotes = upvotes;
         this.comment = comment;
-//        this.tagList = tagList;
-//        this.listCostumer = listCostumer;
         this.images = images;
-//        this.rate = rate;
         this.replies = new ArrayList<>();
+        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(RequestComment data) {
         this.comment = data.comment();
-        this.upvotes = data.upvotes();
-        this.idCustomer = data.idCustomer();
-        this.upvotes = 0;
         this.images = data.images();
         this.replies = new ArrayList<>();
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
+        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(UUID idParent, RequestCommentChild data) {
         this.idParent = idParent;
         this.comment = data.comment();
-        this.upvotes = 0;
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
         this.images = data.images();
         this.replies = new ArrayList<>();
+        this.upvoteList = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
-        this.setUpvotes(c.upvotes());
-//        this.setTagList(c.tagList());
-//        this.setListCostumer(c.listCostumer());
         this.setImages(c.images());
     }
 
@@ -183,7 +169,4 @@ public class Comment {
         return upvoteList;
     }
 
-    public Comment getParentComment() {
-        return parentComment;
-    }
 }

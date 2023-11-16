@@ -1,14 +1,12 @@
 package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUpvote;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
-@Entity
+@Table(name = "tbUpvote")
+@Entity(name = "upvote")
 public class Upvote {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

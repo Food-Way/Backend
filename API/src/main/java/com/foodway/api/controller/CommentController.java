@@ -56,42 +56,30 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment) {
+    public ResponseEntity<Comment> putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment) {
         return commentService.putComment(id, comment);
     }
 
-    @PostMapping("establishment/{idEstablishment}")
+    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
     @Operation(summary = "Create a new comment", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postComment(@PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
-        return commentService.postComment(idEstablishment, data);
+    public ResponseEntity<Comment> postComment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
+        return commentService.postComment(idCustomer, idEstablishment, data);
     }
 
-    @PatchMapping("/{idComment}/upvote")
-    @Operation(summary = "Add a upvote in comment", method = "PATCH")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return the upvoted comment"),
-            @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-    })
-    public ResponseEntity<Comment> postCommentChild(UUID idComment, UUID idVoter) {
-        return commentService.upvoteComment(idComment, idVoter);
-    }
-
-    @PostMapping("establishment/{idEstablishment}/parent/{idParent}")
+    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}/parent/{idParent}")
     @Operation(summary = "Create a new comment child", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment child"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity postCommentChild(@PathVariable UUID idEstablishment, @PathVariable UUID idParent, @RequestBody RequestCommentChild comment) {
-        return commentService.postCommentChild(idEstablishment, idParent, comment);
+    public ResponseEntity<Comment> postCommentChild(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment, @PathVariable UUID idParent, @RequestBody RequestCommentChild data) {
+        return commentService.postCommentChild(idCustomer, idEstablishment, idParent, data);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")
@@ -101,7 +89,7 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
+    public ResponseEntity<Void> deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
         return commentService.deleteComment(id, idOwner);
     }
 

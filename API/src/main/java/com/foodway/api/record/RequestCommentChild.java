@@ -7,13 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public record RequestCommentChild (
-        @Positive
-        int upvotes,
         @NotBlank
         String comment,
-//  List<Tags> tagList,
-//  List<Costumer> listCostumer,
-        @NotNull
         List<String> images
-//  Rate rate
 ){}
