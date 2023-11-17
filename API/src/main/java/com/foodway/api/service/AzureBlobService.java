@@ -21,8 +21,14 @@ public class AzureBlobService {
     @Autowired
     BlobServiceClient blobServiceClient;
 
-    @Autowired
-    BlobContainerClient blobContainerClient;
+
+    private BlobContainerClient blobContainerClient;
+    private String containerName; // Adicionar variável para o nome do container
+
+    public void setContainerName(String containerName) {
+        this.containerName = containerName;
+        this.blobContainerClient = blobServiceClient.getBlobContainerClient(containerName);
+    }
 
     public String upload(MultipartFile multipartFile)
             throws IOException {
@@ -30,7 +36,7 @@ public class AzureBlobService {
                 .getBlobClient(multipartFile.getOriginalFilename());
         blob.upload(multipartFile.getInputStream(),
                 multipartFile.getSize(), true);
-
+        System.out.println(blob.getContainerName()) ;
         return multipartFile.getOriginalFilename();
     }
 
@@ -63,4 +69,7 @@ public class AzureBlobService {
         return true;
     }
 
+    public String getContainerName() {
+        return containerName;
+    }
 }

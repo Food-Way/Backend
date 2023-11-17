@@ -2,6 +2,8 @@ package com.foodway.api.controller;
 
 
 import com.foodway.api.service.AzureBlobService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -18,6 +20,10 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
 
 @RestController
 @RequestMapping("/files")
@@ -26,47 +32,85 @@ public class AzureController {
   @Autowired
   private AzureBlobService azureBlobAdapter;
 
-  @PostMapping
-  public ResponseEntity<String> upload
-          (@RequestParam List<MultipartFile> file)
-          throws IOException {
-    System.out.println(file);
-    for (int i = 0; i < file.size(); i++) {
-      System.out.println(azureBlobAdapter.upload(file.get(i)) + " uploaded");
+  @Operation(summary = "Upload files to Azure Blob Storage")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Successfully uploaded files"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @PostMapping("/{container}")
+  public ResponseEntity<String> upload(
+          @Parameter(name = "Name of the container", required = true) @PathVariable String container,
+          @Parameter(name = "Files to upload", required = true) @RequestParam List<MultipartFile> files) throws IOException {
+    if (files.isEmpty()) {
+      return ResponseEntity.badRequest().body("Nenhum arquivo foi enviado.");
     }
+
+    String actualContainer = container != null ? container : azureBlobAdapter.getContainerName();
+
+    for (MultipartFile file : files) {
+      if (!file.getContentType().startsWith("image")) {
+        return ResponseEntity.badRequest().body("Um ou mais arquivos não são imagens.");
+      }
+    }
+    for (MultipartFile file : files) {
+      azureBlobAdapter.setContainerName(actualContainer);
+      System.out.println(azureBlobAdapter.upload(file));
+    }
+
+
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping
-  public ResponseEntity<List<String>> getAllBlobs() {
+  @Operation(summary = "Get all blobs from Azure Blob Storage")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Successfully retrieved blobs"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @GetMapping("/{container}")
+  public ResponseEntity<List<String>> getAllBlobs(
+          @Parameter(name = "Name of the container", required = true) @PathVariable String container) {
+    String actualContainer = container != null ? container : azureBlobAdapter.getContainerName();
+    azureBlobAdapter.setContainerName(actualContainer);
     List<String> items = azureBlobAdapter.listBlobs();
     return ResponseEntity.ok(items);
   }
 
-  @DeleteMapping
-  public ResponseEntity<Boolean> delete
-          (@RequestParam String fileName) {
-
+  @Operation(summary = "Delete a blob from Azure Blob Storage")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Blob deleted successfully"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @DeleteMapping("/{container}")
+  public ResponseEntity<Boolean> delete(
+          @Parameter(name = "Name of the container", required = true) @PathVariable String container,
+          @Parameter(name = "Name of the blob to delete", required = true) @RequestParam String fileName) {
+    String actualContainer = container != null ? container : azureBlobAdapter.getContainerName();
+    azureBlobAdapter.setContainerName(actualContainer);
     azureBlobAdapter.deleteBlob(fileName);
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping("/download")
-  public ResponseEntity<Resource> getFile
-          (@RequestParam String fileName)
+  @Operation(summary = "Download a file from Azure Blob Storage")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "File downloaded successfully"),
+          @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @GetMapping("/download/{container}")
+  public ResponseEntity<Resource> getFile(
+          @Parameter(name = "Name of the container", required = true) @PathVariable String container,
+          @Parameter(name = "Name of the file to download", required = true) @RequestParam String fileName)
           throws URISyntaxException {
+    String actualContainer = container != null ? container : azureBlobAdapter.getContainerName();
+    azureBlobAdapter.setContainerName(actualContainer);
 
-    ByteArrayResource resource =
-            new ByteArrayResource(azureBlobAdapter
-                    .getFile(fileName));
+    ByteArrayResource resource = new ByteArrayResource(azureBlobAdapter.getFile(fileName));
 
     HttpHeaders headers = new HttpHeaders();
-    headers.add(HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=\""
-                    + fileName + "\"");
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
 
-    return ResponseEntity.ok().contentType(MediaType
-                    .APPLICATION_OCTET_STREAM)
-            .headers(headers).body(resource);
+    return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .headers(headers)
+            .body(resource);
   }
 }
