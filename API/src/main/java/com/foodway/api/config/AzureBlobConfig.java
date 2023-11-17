@@ -13,8 +13,15 @@ public class AzureBlobConfig {
 
     private String connectionString = "DefaultEndpointsProtocol=https;AccountName=foodway;AccountKey=3iKt59oT0C3dNy0DtRf5KIBDov3C5aqZ6L8CWHPhFvyHUAHbpVXK+TErO0DSSGCGsn5oJyGNeGzX+AStjKQEiQ==;EndpointSuffix=core.windows.net";
 
+   private String containerName = "foodway";
+    public AzureBlobConfig() {
 
-    private String containerName ="user-images";
+    }
+
+    public AzureBlobConfig(String connectionString, String containerName) {
+        this.connectionString = connectionString;
+        this.containerName = containerName;
+    }
 
     @Bean
     public BlobServiceClient clobServiceClient() {
@@ -37,5 +44,13 @@ public class AzureBlobConfig {
 
         return blobContainerClient;
 
+    }
+
+    public String getContainerName() {
+        return containerName;
+    }
+
+    public void setContainerName(String containerName) {
+        this.containerName = containerName;
     }
 }
