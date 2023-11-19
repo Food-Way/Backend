@@ -45,15 +45,15 @@ public class RateController {
         return rateService.get(id);
     }
 
-    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
+    @PostMapping
     @Operation(summary = "post a new rate", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the posted rate"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Validated RequestRate rate){
-        return rateService.post(idCustomer, idEstablishment, rate);
+    public ResponseEntity<Rate> post(@RequestBody @Validated RequestRate rate){
+        return rateService.post(rate);
     }
 
     @PutMapping("/{id}")

@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-//    @Id
+    //    @Id
 //    @GeneratedValue(strategy = GenerationType.UUID)
 //    private UUID idCostumer;
     @Column(length = 11, unique = true)
@@ -33,6 +33,9 @@ public class Customer extends User {
             inverseJoinColumns = @JoinColumn(name = "idFavorite")
     )
     private List<Favorite> favorites;
+
+    @OneToMany
+    private List<Upvote> upvoteList;
 
     public Customer() {
     }
@@ -85,6 +88,14 @@ public class Customer extends User {
 
     public void addRate(Rate rate) {
         this.rates.add(rate);
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public List<Upvote> getUpvoteList() {
+        return upvoteList;
     }
 
     public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
