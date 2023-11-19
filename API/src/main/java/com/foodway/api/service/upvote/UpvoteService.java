@@ -4,9 +4,12 @@ import com.foodway.api.model.Upvote;
 import com.foodway.api.record.RequestUpvote;
 import com.foodway.api.repository.UpvoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +24,7 @@ public class UpvoteService {
                 ResponseEntity.status(200).body(upvoteRepository.findAll());
     }
 
-    public ResponseEntity<Upvote> get(int id) {
+    public ResponseEntity<Upvote> get(long id) {
         if(!upvoteRepository.existsById(id)){
             return ResponseEntity.status(404).build();
         }
@@ -33,10 +36,15 @@ public class UpvoteService {
 
     public ResponseEntity<Upvote> post(RequestUpvote data) {
         Upvote upvote = new Upvote(data);
+        if(existUpvote(upvote)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Upvote already exist");
+        }
+        upvote.setIdComment(data.idComment());
+        upvote.setIdCustomer(data.idCustomer());
         return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
     }
 
-    public ResponseEntity<Upvote> put(int id, RequestUpvote data) {
+    public ResponseEntity<Upvote> put(long id, RequestUpvote data) {
         if(!upvoteRepository.existsById(id)){
             return ResponseEntity.status(404).build();
         }
@@ -46,11 +54,24 @@ public class UpvoteService {
         return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
     }
 
-    public ResponseEntity<Void> delete(int id) {
+    public ResponseEntity<Void> delete(long id) {
         if(!upvoteRepository.existsById(id)){
             return ResponseEntity.status(404).build();
         }
         upvoteRepository.deleteById(id);
         return ResponseEntity.status(200).build();
+    }
+
+    public boolean existUpvote(Upvote upvote){
+        List<Upvote> upvotes = upvoteRepository.findAll();
+        if(upvotes.isEmpty()) {
+            return false;
+        }
+        for (Upvote u : upvotes) {
+            if(u.getIdComment().equals(upvote.getIdComment()) && u.getIdCustomer().equals(upvote.getIdCustomer())){
+                return true;
+            }
+        }
+        return false;
     }
 }

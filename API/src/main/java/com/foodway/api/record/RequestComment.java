@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 public record RequestComment(
+        @NotNull
+        UUID idCustomer,
+        @NotNull
+        UUID idEstablishment,
         @NotBlank
         String comment,
         List<String> images

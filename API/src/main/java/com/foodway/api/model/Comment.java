@@ -58,14 +58,18 @@ public class Comment {
     }
 
     public Comment(RequestComment data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
         this.comment = data.comment();
         this.images = data.images();
         this.replies = new ArrayList<>();
         this.upvoteList = new ArrayList<>();
     }
 
-    public Comment(UUID idParent, RequestCommentChild data) {
-        this.idParent = idParent;
+    public Comment(RequestCommentChild data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
+        this.idParent = data.idParent();
         this.comment = data.comment();
         this.images = data.images();
         this.replies = new ArrayList<>();
@@ -86,10 +90,6 @@ public class Comment {
         this.upvotes = upvotes;
     }
 
-    public void upvote() {
-        this.upvotes++;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -98,31 +98,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    //    public List<Tags> getTagList() {
-//        return tagList;
-//    }
-//
-//    public void setTagList(List<Tags> tagList) {
-//        this.tagList = tagList;
-//    }
-//    public List<Costumer> getListCostumer() {
-//        return listCostumer;
-//    }
-//
-//    public void setListCostumer(List<Costumer> listCostumer) {
-//        this.listCostumer = listCostumer;
-//    }
     public UUID getIdPost() {
         return idPost;
     }
 
     public List<Comment> getReplies() {
         return replies;
-    }
-
-    public void addReply(Comment reply) {
-        this.replies.add(reply);
-        reply.setParentComment(this);
     }
 
     public void setParentComment(Comment parentComment) {
@@ -168,5 +149,11 @@ public class Comment {
     public List<Upvote> getUpvoteList() {
         return upvoteList;
     }
+
+    public void addReply(Comment reply) {
+        this.replies.add(reply);
+        reply.setParentComment(this);
+    }
+
 
 }

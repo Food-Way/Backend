@@ -25,10 +25,12 @@ public class UpvoteController {
     public ResponseEntity<Upvote> get(@PathVariable int id){
         return upvoteService.get(id);
     }
+    //todo por o id do customer e do comentario
     @PostMapping
     public ResponseEntity<Upvote> post(@RequestBody RequestUpvote data){
         return upvoteService.post(data);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Upvote> put(@PathVariable int id, @RequestBody RequestUpvote data){
         return upvoteService.put(id, data);

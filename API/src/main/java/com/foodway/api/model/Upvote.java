@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Upvote {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int idUpvote;
+    private long idUpvote;
     private UUID idCustomer;
     private UUID idComment;
 
@@ -32,7 +32,7 @@ public class Upvote {
         this.idComment = data.idComment();
     }
 
-    public int getIdUpvote() {
+    public long getIdUpvote() {
         return idUpvote;
     }
 

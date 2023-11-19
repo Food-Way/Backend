@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.UUID;
 
 public record RequestCommentChild (
+        @NotNull
+        UUID idCustomer,
+        @NotNull
+        UUID idEstablishment,
+        @NotNull
+        UUID idParent,
         @NotBlank
         String comment,
         List<String> images

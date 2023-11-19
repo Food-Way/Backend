@@ -45,6 +45,8 @@ public class Rate {
     }
 
     public Rate(RequestRate data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
         this.ratePoint = data.ratePoint();
         this.typeRate = data.typeRate();
     }

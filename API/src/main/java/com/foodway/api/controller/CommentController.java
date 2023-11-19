@@ -60,26 +60,26 @@ public class CommentController {
         return commentService.putComment(id, comment);
     }
 
-    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
+    @PostMapping
     @Operation(summary = "Create a new comment", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postComment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
-        return commentService.postComment(idCustomer, idEstablishment, data);
+    public ResponseEntity<Comment> postComment(@RequestBody @Validated RequestComment data) {
+        return commentService.postComment(data);
     }
 
-    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}/parent/{idParent}")
+    @PostMapping("/child")
     @Operation(summary = "Create a new comment child", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment child"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postCommentChild(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment, @PathVariable UUID idParent, @RequestBody RequestCommentChild data) {
-        return commentService.postCommentChild(idCustomer, idEstablishment, idParent, data);
+    public ResponseEntity<Comment> postCommentChild(@RequestBody RequestCommentChild data) {
+        return commentService.postCommentChild(data);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")
