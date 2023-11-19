@@ -14,6 +14,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -56,7 +57,9 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Comment> putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment) {
+
+    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Valid UpdateCommentData comment) {
+
         return commentService.putComment(id, comment);
     }
 
@@ -67,8 +70,10 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postComment(@RequestBody @Validated RequestComment data) {
-        return commentService.postComment(data);
+
+    public ResponseEntity<Comment> postComment(@PathVariable UUID idEstablishment, @RequestBody @Valid RequestComment data) {
+        return commentService.postComment(idEstablishment, data);
+
     }
 
     @PostMapping("/child")

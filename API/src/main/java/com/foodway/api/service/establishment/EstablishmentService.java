@@ -1,18 +1,22 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 //import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
-import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentPersonal;
+import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.CulinaryRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.RateRepository;
 import com.foodway.api.repository.UserRepository;
+import com.foodway.api.service.user.authentication.dto.UserLoginDto;
+import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +42,8 @@ public class EstablishmentService {
     private UserRepository userRepository;
     @Autowired
     private CulinaryRepository culinaryRepository;
+    @Autowired
+    UserController userController;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -154,5 +160,46 @@ public class EstablishmentService {
     public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(int idCulinary) {
         List<Establishment> establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
         return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<Establishment> patchEstablishmentProfile(UUID id, UpdateEstablishmentProfile establishment) {
+        Optional<Establishment> establishment1 = establishmentRepository.findById(id);
+        if (establishment1.isEmpty()) {
+            throw new EstablishmentNotFoundException("Establishment not found");
+        }
+        Establishment establishment2 = establishment1.get();
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail(establishment.email());
+        userLoginDto.setPassword(establishment.password());
+        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+
+        establishment2.updateProfileEstablishment(Optional.of(establishment));
+
+        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
+            return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
+        }else {
+            System.out.println("Erro ao atualizar");
+        }
+        return ResponseEntity.status(401).build();
+
+    }
+
+    public ResponseEntity<Establishment> patchEstablishmenPersonal(UUID id, UpdateEstablishmentPersonal establishment) {
+        Optional<Establishment> establishment1 = establishmentRepository.findById(id);
+        if (establishment1.isEmpty()) {
+            throw new EstablishmentNotFoundException("Establishment not found");
+        }
+        Establishment establishment2 = establishment1.get();
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail(establishment.email());
+        userLoginDto.setPassword(establishment.password());
+        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+        establishment2.updatePersonalEstablishment(Optional.of(establishment));
+        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
+            return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
+        }else {
+            System.out.println("Erro ao atualizar");
+        }
+        return ResponseEntity.status(401).build();
     }
 }
