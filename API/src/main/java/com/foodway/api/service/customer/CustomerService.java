@@ -1,5 +1,8 @@
 package com.foodway.api.service.customer;
 
+import com.foodway.api.controller.UserController;
+import com.foodway.api.record.UpdateCustomerPersonalInfo;
+import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
@@ -15,14 +18,20 @@ import com.foodway.api.repository.CustomerRepository;
 import com.foodway.api.repository.FavoriteRepository;
 import com.foodway.api.repository.RateRepository;
 import com.foodway.api.service.establishment.EstablishmentService;
+import com.foodway.api.service.user.authentication.dto.UserLoginDto;
+import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static com.foodway.api.service.user.authentication.dto.UserMapper.of;
 
 @Service
 public class CustomerService {
@@ -36,6 +45,11 @@ public class CustomerService {
     private RateRepository rateRepository;
     @Autowired
     private FavoriteRepository favoriteRepository;
+    @Autowired
+    UserController userController;
+
+
+
 
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -101,5 +115,41 @@ public class CustomerService {
 
         CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
+    }
+    public ResponseEntity<Customer> patchCustomerProfile(UUID id, UpdateCustomerProfile customer) {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        if (customerOptional.isEmpty()) {
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail(customer.email());
+        userLoginDto.setPassword(customer.password());
+        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+       Customer custumerToUpdate = customerOptional.get();
+       custumerToUpdate.updateProfile(Optional.ofNullable(customer));
+
+        if(userTokenDtoResponseEntity.getStatusCodeValue() == 200){
+            return ResponseEntity.status(200).body(customerRepository.save(custumerToUpdate));
+        }
+        return ResponseEntity.status(401).build();
+    }
+
+    public ResponseEntity<Customer> patchCustomerPersonalInfo(UUID id, UpdateCustomerPersonalInfo customer) {
+        Optional<Customer> customerOptional = customerRepository.findById(id);
+        if (customerOptional.isEmpty()) {
+            throw new CustomerNotFoundException("Customer not found");
+        }
+        UserLoginDto userLoginDto = new UserLoginDto();
+        userLoginDto.setEmail(customerOptional.get().getEmail());
+        userLoginDto.setPassword(customer.password());
+        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+        Customer customerToUpdate = customerOptional.get();
+        customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
+        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
+            return ResponseEntity.status(200).body(customerRepository.save(customerToUpdate));
+        }else {
+            System.out.println("Erro ao atualizar");
+        }
+        return ResponseEntity.status(401).build();
     }
 }
