@@ -18,6 +18,8 @@ public record UpdateCustomerData(
         String profilePhoto,
         @NotBlank @CPF String cpf,
         String bio,
-        List<Culinary> culinary
+        List<Culinary> culinary,
+        @NotNull
+        String profileHeaderImg
 ) {
 }

@@ -7,11 +7,14 @@ import com.foodway.api.model.Favorite;
 import com.foodway.api.record.DTOs.CustomerProfileDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
+import com.foodway.api.record.UpdateCustomerPersonalInfo;
+import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.service.customer.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -79,6 +82,31 @@ public class CustomerController {
     })
     public ResponseEntity<Customer> saveCustomer(@RequestBody @Validated RequestUserCustomer customer){
         return customerService.saveCustomer(customer);
+    }
+
+    @PatchMapping("/profile/{id}")
+    @Operation(summary = "Update customer profile by ID", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerProfile customer){
+        return customerService.patchCustomerProfile(id, customer);
+    }
+    @PatchMapping("/personal/{id}")
+    @Operation(summary = "Update customer profile by email", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerPersonalInfo customer){
+        return customerService.patchCustomerPersonalInfo(id, customer);
     }
 
     @DeleteMapping("/{id}")
