@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentPersonal;
+import com.foodway.api.record.UpdateEstablishmentProfile;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,5 +193,33 @@ public class Establishment extends User {
         }
 
         this.generalRate = (count > 0) ? (totalRate / count) : 0.0;
+    }
+
+    private String encodePassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
+    }
+    public void updateProfileEstablishment(Optional<UpdateEstablishmentProfile> establishment) {
+
+        if (establishment.get().establishmentName() != null && !establishment.get().establishmentName().isEmpty()) {
+            this.establishmentName = establishment.get().establishmentName();
+        }
+        if (establishment.get().description() != null && !establishment.get().description().isEmpty()) {
+            this.description = establishment.get().description();
+        }
+
+
+    }
+
+    public void updatePersonalEstablishment(Optional<UpdateEstablishmentPersonal> establishment) {
+        if (establishment.get().name() != null && !establishment.get().name().isEmpty()) {
+            super.setName(establishment.get().name());
+        }
+        if (establishment.get().email() != null && !establishment.get().email().isEmpty()) {
+            super.setEmail(establishment.get().email());
+        }
+        if (establishment.get().novaPassword() != null && !establishment.get().novaPassword().isEmpty()) {
+            super.setPassword(encodePassword(establishment.get().novaPassword()));
+        }
     }
 }

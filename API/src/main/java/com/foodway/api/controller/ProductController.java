@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -53,7 +54,7 @@ public class ProductController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Product> postProduct(@RequestBody @Validated RequestProduct product) {
+    public ResponseEntity<Product> postProduct(@RequestBody @Valid RequestProduct product) {
         return productService.postProduct(product);
     }
 
@@ -65,7 +66,7 @@ public class ProductController {
             @ApiResponse(responseCode = ProductNotFoundException.CODE, description = ProductNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Product> putProduct(@PathVariable UUID id, @RequestBody @Validated UpdateProductData product) {
+    public ResponseEntity<Product> putProduct(@PathVariable UUID id, @RequestBody @Valid UpdateProductData product) {
         return productService.putProduct(id, product);
     }
 

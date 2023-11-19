@@ -11,8 +11,7 @@ public record UpdateCustomerPersonalInfo(
         @NotBlank
         String password,
         @NotBlank
-        String novaSenha,
-        @CPF
-        String cpf
+        String novaSenha
+
 ) {
 }

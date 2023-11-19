@@ -149,8 +149,6 @@ public class Customer extends User {
         if (customer.get().novaSenha() != null && !customer.get().novaSenha().isBlank()) {
             this.setPassword(encodePassword(customer.get().novaSenha()));
         }
-        if (customer.get().cpf() != null && !customer.get().cpf().isBlank()) {
-            this.setCpf(customer.get().cpf());
-        }
+
     }
 }

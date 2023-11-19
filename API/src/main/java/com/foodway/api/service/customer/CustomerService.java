@@ -47,8 +47,7 @@ public class CustomerService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     UserController userController;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
 
 

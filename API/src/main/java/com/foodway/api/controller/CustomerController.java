@@ -69,7 +69,7 @@ public class CustomerController {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Customer> putCustomer(@PathVariable UUID id, @RequestBody @Validated UpdateCustomerData customer){
+    public ResponseEntity<Customer> putCustomer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerData customer){
         return customerService.putCustomer(id, customer);
     }
 
@@ -80,7 +80,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Customer> saveCustomer(@RequestBody @Validated RequestUserCustomer customer){
+    public ResponseEntity<Customer> saveCustomer(@RequestBody @Valid RequestUserCustomer customer){
         return customerService.saveCustomer(customer);
     }
 
