@@ -71,8 +71,11 @@ public class CommentController {
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
 
-    public ResponseEntity<Comment> postComment(  @RequestBody @Valid RequestComment data) {
+
+    public ResponseEntity<Comment> postComment(@RequestBody @Valid RequestComment data) {
         return commentService.postComment(data);
+
+
     }
 
     @PostMapping("/child")

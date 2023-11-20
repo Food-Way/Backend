@@ -54,8 +54,10 @@ public class RateController {
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
 
-    public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Valid RequestRate rate){
-        return rateService.post( rate);
+
+    public ResponseEntity<Rate> post(@RequestBody @Valid RequestRate rate){
+        return rateService.post(rate);
+
 
     }
 
