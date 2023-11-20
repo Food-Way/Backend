@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,27 +39,27 @@ public class AzureController {
           @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @PostMapping("/{container}")
-  public ResponseEntity<String> upload(
+  public ResponseEntity<List<String>> upload(
           @Parameter(name = "Name of the container", required = true) @PathVariable String container,
           @Parameter(name = "Files to upload", required = true) @RequestParam List<MultipartFile> files) throws IOException {
     if (files.isEmpty()) {
-      return ResponseEntity.badRequest().body("Nenhum arquivo foi enviado.");
+      throw new IllegalArgumentException("No files to upload");
     }
 
     String actualContainer = container != null ? container : azureBlobAdapter.getContainerName();
 
     for (MultipartFile file : files) {
       if (!file.getContentType().startsWith("image")) {
-        return ResponseEntity.badRequest().body("Um ou mais arquivos não são imagens.");
+        throw new IllegalArgumentException("Only images are allowed");
       }
     }
+    List<String> itensName = new ArrayList<String>() ;
     for (MultipartFile file : files) {
+      itensName.add(file.getOriginalFilename());
       azureBlobAdapter.setContainerName(actualContainer);
       System.out.println(azureBlobAdapter.upload(file));
     }
-
-
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok().body(itensName);
   }
 
   @Operation(summary = "Get all blobs from Azure Blob Storage")
