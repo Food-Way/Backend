@@ -6,18 +6,17 @@ import jakarta.validation.constraints.NotBlank;
 
 
 public record UpdateCustomerProfile(
-        @NotBlank
+        
         String name,
-        @NotBlank
+         
         String profilePhoto,
-        @NotBlank
+         
         String profileHeaderImg,
-        @NotBlank
+         
         String password,
 
-        @Email
         String email,
-        @NotBlank
+         
         String bio
 ) {
 }

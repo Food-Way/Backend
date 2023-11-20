@@ -93,7 +93,7 @@ public class CustomerController {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerProfile customer){
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody  UpdateCustomerProfile customer){
         return customerService.patchCustomerProfile(id, customer);
     }
     @PatchMapping("/personal/{id}")

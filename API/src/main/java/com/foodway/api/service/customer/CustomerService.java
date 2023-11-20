@@ -109,11 +109,11 @@ public class CustomerService {
 
         favorites.forEach(favorite -> {
             Establishment establishment = establishmentService.getEstablishment(favorite.getIdEstablishment()).getBody();
-            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getEstablishmentName(), establishment.getGeneralRate(), establishment.getCulinary(), establishment.getProfilePhoto());
+            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getEstablishmentName(),  establishment.getGeneralRate(), establishment.getCulinary(), establishment.getProfilePhoto());
             favoriteEstablishments.add(establishmentDTO);
         });
 
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
+        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(),customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
     }
     public ResponseEntity<Customer> patchCustomerProfile(UUID id, UpdateCustomerProfile customer) {

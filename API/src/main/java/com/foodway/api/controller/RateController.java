@@ -55,7 +55,7 @@ public class RateController {
     })
 
     public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Valid RequestRate rate){
-        return rateService.post(idCustomer, idEstablishment, rate);
+        return rateService.post( rate);
 
     }
 
