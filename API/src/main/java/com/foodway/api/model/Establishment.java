@@ -47,6 +47,8 @@ public class Establishment extends User {
     @JsonIgnore
     @OneToMany
     private List<Comment> postList;
+    @OneToMany
+    private List<Product> menu;
 
 
     public Establishment() {
@@ -164,6 +166,18 @@ public class Establishment extends User {
 
     public Double getFoodRate() {
         return foodRate;
+    }
+
+    public List<Product> getMenu() {
+        return menu;
+    }
+
+    public void setMenu(List<Product> menu) {
+        this.menu = menu;
+    }
+
+    public void addProduct(Product product) {
+        this.menu.add(product);
     }
 
     public void setRates(Map<String, Double> map) {

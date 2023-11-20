@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
-import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;

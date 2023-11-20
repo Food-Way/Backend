@@ -1,10 +1,14 @@
 package com.foodway.api.service.product;
 
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.handler.exceptions.ProductNotFoundException;
+import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Product;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
+import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.ProductRepository;
+import com.foodway.api.service.establishment.EstablishmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -19,6 +23,12 @@ import java.util.UUID;
 public class ProductService {
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    EstablishmentService establishmentService;
+
+    @Autowired
+    EstablishmentRepository establishmentRepository;
 
     public ResponseEntity deleteProduct(UUID id) {
         Optional<Product> product = productRepository.findById(id);
@@ -40,8 +50,17 @@ public class ProductService {
         return ResponseEntity.status(200).body(savedProduct);
     }
 
-    public ResponseEntity<Product> postProduct(RequestProduct product) {
+    public ResponseEntity<Product> postProduct(RequestProduct product, UUID idEstablishment) {
+        ResponseEntity<Establishment> establishment = establishmentService.getEstablishment(idEstablishment);
+
+        if(establishment.getStatusCode().value() == 404) {
+            throw new EstablishmentNotFoundException("Establishment not found");
+        }
+
         Product createdProduct = new Product(product);
+        establishment.getBody().addProduct(createdProduct);
+        createdProduct.setIdEstablishment(idEstablishment);
+
         return ResponseEntity.status(201).body(productRepository.save(createdProduct));
     }
 
@@ -49,7 +68,17 @@ public class ProductService {
         if (productRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(productRepository.findAll());
     }
+    public ResponseEntity<List<Product>> getProductsByEstablishment(UUID idEstablishment) {
+        ResponseEntity<Establishment> establishment = establishmentService.getEstablishment(idEstablishment);
+        if(establishment.getStatusCode().value() == 404) {
+            throw new EstablishmentNotFoundException("Establishment not found");
+        }
 
+        List<Product> products = establishmentRepository.findProductsByIdUser(idEstablishment);
+
+        if (products.isEmpty()) return ResponseEntity.status(204).build();
+        return ResponseEntity.status(200).body(products);
+    }
     public ResponseEntity<Product> getProductById(UUID id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {

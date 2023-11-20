@@ -1,14 +1,23 @@
 package com.foodway.api.utils;
 
 import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Product;
+import com.foodway.api.repository.EstablishmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GerenciadorDeArquivo {
-    public static void gravaArquivoCsv(ListaObj<Establishment> lista, String nomeArq) {
+
+    @Autowired
+    private static EstablishmentRepository establishmentRepository;
+
+    public static void gravaArquivoCsv(ListaObj<Establishment> listaEstab, String nomeArq) {
+
         FileWriter arq = null;
         Formatter saida = null;
         Boolean deuRuim = false;
@@ -26,11 +35,14 @@ public class GerenciadorDeArquivo {
 
         // Bloco try-catch para gravar o arquivo
         try {
-            for (int i = 0; i < lista.getTamanho(); i++) {
+            Establishment establishment = listaEstab.getElemento(0);
+            String menu = establishment.getMenu().toString();
+            menu = menu.substring(1, menu.length() - 1);
+            menu = menu.replaceAll(",\\s*", ";");
+//            for (int i = 0; i < listaEstab.getTamanho(); i++) {
 
                 //Recupere um elemento da lista e formate aqui:
-                Establishment establishment = lista.getElemento(i);
-                saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%.2f;%s;%s;%s\n",
+                saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%.2f;%s;%s\n",
 
                         establishment.getIdUser(),
                         establishment.getName(),
@@ -41,11 +53,11 @@ public class GerenciadorDeArquivo {
                         establishment.getAddress().getNumber(),
                         establishment.getAddress().getComplement(),
                         establishment.getGeneralRate(),
-                        establishment.getCnpj()
-//                        establishment.getCreatedAt(),
-//                        establishment.getUpdatedAt()
+                        establishment.getCnpj(),
+                        menu
                 );
-            }
+
+//            }
         } catch (FormatterClosedException erro) {
             System.out.println("Erro ao gravar o arquivo");
             deuRuim = true;
@@ -67,6 +79,7 @@ public class GerenciadorDeArquivo {
         FileReader arq = null;
         Scanner entrada = null;
         Boolean deuRuim = false;
+        int count = 0;
 
         nomeArq += ".csv";
 
@@ -83,25 +96,46 @@ public class GerenciadorDeArquivo {
         try {
             //Leia e formate a saída no console aqui:
             // Cabeçalho
-            System.out.printf("%-40s %-20s %-30s %-30s %-15s %-10s %-8s %-15s %-5s %-15s %-28s %-28s\n",
-                    "ID", "NAME", "ESTABLISHMENT NAME", "EMAIL", "TYPE USER", "CEP", "NUMBER", "COMPLEMENT", "RATE", "CNPJ", "CREATED AT", "UPDATED AT");
+            System.out.printf("%-40s %-20s %-30s %-30s %-15s %10s %8s %-15s %5s %-15s %-40s %-30s %15s %-28s %-28s\n",
+                    "ID", "USERNAME", "ESTABLISHMENT", "EMAIL", "TYPE USER", "CEP", "NUMBER", "COMPLEMENT", "RATE", "CNPJ", "PRODUCT ID", "NAME", "PRICE", "CREATED AT", "UPDATED AT");
             while (entrada.hasNext()) {
 
-                String id = entrada.next();
-                String name = entrada.next();
-                String establishmentName = entrada.next();
-                String email = entrada.next();
-                String typeUser = entrada.next();
-                String cep = entrada.next();
-                String number = entrada.next();
-                String complement = entrada.next();
-                Double rate = entrada.nextDouble();
-                String cnpj = entrada.next();
+                String idEstablishment = "N/A";
+                String name = "N/A";
+                String establishmentName = "N/A";
+                String email = "N/A";
+                String typeUser = "N/A";
+                String cep = "N/A";
+                String number = "N/A";
+                String complement = "N/A";
+                Double rate = 0.0;
+                String cnpj = "N/A";
+
+                if (count == 0) {
+                    idEstablishment = entrada.next();
+                    name = entrada.next();
+                    establishmentName = entrada.next();
+                    email = entrada.next();
+                    typeUser = entrada.next();
+                    cep = entrada.next();
+                    number = entrada.next();
+                    complement = entrada.next();
+                    rate = entrada.nextDouble();
+                    cnpj = entrada.next();
+                }
+
+                String idProduct = entrada.next();
+                String productName = entrada.next();
+                Double productPrice = Double.valueOf(entrada.next());
                 String createdAt = entrada.next();
                 String updatedAt = entrada.next();
 
-                System.out.printf("%-40s %-20s %-30s %-30s %-15s %-10s %-8s %-15s %-5.2f %-15s %-28s %-28s\n",
-                        id, name, establishmentName, email, typeUser, cep, number, complement, rate, cnpj, createdAt, updatedAt);
+
+                System.out.printf("%-40s %-20s %-30s %-30s %-15s %10s %8s %-15s %5.2f %15s %-40s %-30s %15.2f %-28s %-28s\n",
+                        idEstablishment, name, establishmentName, email, typeUser, cep, number, complement, rate, cnpj,
+                        idProduct, productName, productPrice, createdAt, updatedAt);
+
+                count++;
             }
         } catch (NoSuchElementException erro) {
             System.out.println("Arquivo com problemas");
@@ -145,7 +179,7 @@ public class GerenciadorDeArquivo {
         int contaRegDados = 0;
 
         // Monta o registro de header
-        String header = "00ESTABLISHMENTS"; //Verificar documento de layout
+        String header = "00ESTABLISHMENTSPRODUCTS"; //Verificar documento de layout
         header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         header += "01";
 
