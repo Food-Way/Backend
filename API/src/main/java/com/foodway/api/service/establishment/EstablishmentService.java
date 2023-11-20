@@ -202,4 +202,9 @@ public class EstablishmentService {
         }
         return ResponseEntity.status(401).build();
     }
+
+    public ResponseEntity<List<Establishment>> getEstablishmentsByName(String name) {
+        List<Establishment> establishments = establishmentRepository.findByEstablishmentNameLike(name);
+        return validateIsEmpty(establishments);
+    }
 }

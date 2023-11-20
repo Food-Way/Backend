@@ -44,8 +44,11 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getEstablishments() {
-        return establishmentService.getEstablishments();
+    public ResponseEntity<List<Establishment>> getEstablishments(@RequestParam(required = false) String establishmentName) {
+        if (establishmentName == null) {
+            return establishmentService.getEstablishments();
+        }
+        return establishmentService.getEstablishmentsByName(establishmentName);
     }
 
     @GetMapping("/culinary/{id}")
@@ -58,7 +61,6 @@ public class EstablishmentController {
     public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@PathVariable int idCulinary) {
         return establishmentService.getEstablishmentsByCulinary(idCulinary);
     }
-
 
     @GetMapping("/most-commented")
     @Operation(summary = "Get most commented establishment", method = "GET")
@@ -124,8 +126,6 @@ public class EstablishmentController {
         return establishmentService.deleteEstablishment(id);
     }
 
-
-
     @PostMapping
     @Operation(summary = "Create a new establishment", method = "POST")
     @ApiResponses(value = {
@@ -133,7 +133,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-        public ResponseEntity<Establishment> postEstablishment(@RequestBody @Valid RequestUserEstablishment establishment) {
+    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Valid RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }
 
