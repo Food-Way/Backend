@@ -2,6 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -44,11 +45,22 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getEstablishments(@RequestParam(required = false) String establishmentName) {
+    public ResponseEntity<List<Establishment>> getEstablishments() {
+        return establishmentService.getEstablishments();
+
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search all establishments", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
         if (establishmentName == null) {
-            return establishmentService.getEstablishments();
+            return establishmentService.searchAllEstablishments();
         }
-        return establishmentService.getEstablishmentsByName(establishmentName);
+        return establishmentService.searchEstablishmentsByName(establishmentName);
     }
 
     @GetMapping("/culinary/{id}")
@@ -172,7 +184,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<Establishment> patchEstablishmentPersonal(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentPersonal establishment) {
-        return establishmentService.patchEstablishmenPersonal(id, establishment);
+        return establishmentService.patchEstablishmentPersonal(id, establishment);
     }
 
 

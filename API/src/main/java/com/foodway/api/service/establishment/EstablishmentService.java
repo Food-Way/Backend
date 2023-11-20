@@ -5,8 +5,9 @@ import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
-//import com.foodway.api.model.MapsClient;
 import com.foodway.api.model.MapsClient;
+import com.foodway.api.record.DTOs.EstablishmentDTO;
+import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -18,20 +19,21 @@ import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
 @Service
 public class EstablishmentService {
 
+    @Autowired
+    UserController userController;
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
@@ -42,8 +44,6 @@ public class EstablishmentService {
     private UserRepository userRepository;
     @Autowired
     private CulinaryRepository culinaryRepository;
-    @Autowired
-    UserController userController;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -56,9 +56,6 @@ public class EstablishmentService {
         List<Establishment> establishments = establishmentRepository.findAll();
         if (establishments.isEmpty()) {
             return ResponseEntity.status(204).build();
-        }
-        for (Establishment establishment : establishments) {
-            getAverageOfIndicators(establishment);
         }
         return ResponseEntity.status(200).body(establishments);
     }
@@ -177,14 +174,14 @@ public class EstablishmentService {
 
         if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
             return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
-        }else {
+        } else {
             System.out.println("Erro ao atualizar");
         }
         return ResponseEntity.status(401).build();
 
     }
 
-    public ResponseEntity<Establishment> patchEstablishmenPersonal(UUID id, UpdateEstablishmentPersonal establishment) {
+    public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishment) {
         Optional<Establishment> establishment1 = establishmentRepository.findById(id);
         if (establishment1.isEmpty()) {
             throw new EstablishmentNotFoundException("Establishment not found");
@@ -195,16 +192,69 @@ public class EstablishmentService {
         userLoginDto.setPassword(establishment.password());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
         establishment2.updatePersonalEstablishment(Optional.of(establishment));
-        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
+        if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
-        }else {
+        } else {
             System.out.println("Erro ao atualizar");
         }
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<Establishment>> getEstablishmentsByName(String name) {
+    public ResponseEntity<List<SeachEstablishmentDTO>> getEstablishmentsByName(String name) {
         List<Establishment> establishments = establishmentRepository.findByEstablishmentNameLike(name);
-        return validateIsEmpty(establishments);
+        List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
+    }
+
+    public ResponseEntity<List<SeachEstablishmentDTO>> searchAllEstablishments() {
+        List<Establishment> establishments = establishmentRepository.findAll();
+//        if (establishments.isEmpty()) {
+//            return ResponseEntity.status(204).build();
+//        }
+        List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
+        for (Establishment establishment : establishments) {
+            SeachEstablishmentDTO seachEstablishmentDTO = getSeachEstablishmentDTO(establishment);
+            searchEstablishmentDTOs.add(seachEstablishmentDTO);
+        }
+
+        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
+    }
+
+    @NotNull
+    private static SeachEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment) {
+        int sizeCulinary = establishment.getCulinary().size();
+        int sizeComment = establishment.getPostList().size();
+        String culinary = null;
+        String comment = null;
+        if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
+            culinary = "Nenhuma culinária";
+        } else {
+            culinary = establishment.getCulinary().get(sizeCulinary-1).getName();
+        }
+        if (sizeComment == 0 || establishment.getPostList().get(sizeComment-1).getComment() == null) {
+            comment = "Nenhum comment";
+        } else {
+            comment = establishment.getPostList().get(sizeComment-1).getComment();
+        }
+
+        SeachEstablishmentDTO seachEstablishmentDTO = new SeachEstablishmentDTO(establishment.getEstablishmentName(), culinary , establishment.getGeneralRate(), establishment.getDescription(), 10, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
+        return seachEstablishmentDTO;
+    }
+
+    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishmentsByName(String establishmentName) {
+        List<Establishment> establishments = establishmentRepository.findByEstablishmentNameLike(establishmentName);
+        if (establishments.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+        List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
+        for (Establishment establishment : establishments) {
+            SeachEstablishmentDTO seachEstablishmentDTO = new SeachEstablishmentDTO(establishment.getEstablishmentName(), establishment.getCulinary().get(establishment.getCulinary().size()-1).getName(), establishment.getGeneralRate(), establishment.getDescription(), 10, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), establishment.getPostList().get(establishment.getPostList().size()-1).getComment());
+            searchEstablishmentDTOs.add(seachEstablishmentDTO);
+        }
+
+        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
     }
 }
