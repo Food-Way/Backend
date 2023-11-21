@@ -40,6 +40,7 @@ public class UpvoteService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Upvote already exist");
         }
         upvote.setIdComment(data.idComment());
+        upvote.setIdEstablishment(data.idEstablishment());
         upvote.setIdCustomer(data.idCustomer());
         return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
     }

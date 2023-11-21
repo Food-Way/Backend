@@ -12,6 +12,7 @@ public class Upvote {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idUpvote;
     private UUID idCustomer;
+    private UUID idEstablishment;
     private UUID idComment;
 
     public Upvote() {
@@ -24,11 +25,13 @@ public class Upvote {
 
     public Upvote(RequestUpvote data) {
         this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
         this.idComment = data.idComment();
     }
 
     public void update(RequestUpvote data) {
         this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
         this.idComment = data.idComment();
     }
 
@@ -42,6 +45,14 @@ public class Upvote {
 
     public void setIdCustomer(UUID idCustomer) {
         this.idCustomer = idCustomer;
+    }
+
+    public UUID getIdEstablishment() {
+        return idEstablishment;
+    }
+
+    public void setIdEstablishment(UUID idEstablishment) {
+        this.idEstablishment = idEstablishment;
     }
 
     public UUID getIdComment() {

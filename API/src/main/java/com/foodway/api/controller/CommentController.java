@@ -74,8 +74,6 @@ public class CommentController {
 
     public ResponseEntity<Comment> postComment(@RequestBody @Valid RequestComment data) {
         return commentService.postComment(data);
-
-
     }
 
     @PostMapping("/child")
