@@ -1,4 +1,4 @@
-package com.foodway.api.exceptions;
+package com.foodway.api.handler.exceptions;
 
 public class CustomerNotFoundException extends RuntimeException {
     public static final String CODE = "404";

@@ -3,9 +3,11 @@ package com.foodway.api.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.record.RequestCulinary;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;

@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CulinaryNotFoundException;
-import com.foodway.api.exceptions.CustomerNotFoundException;
+import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Culinary;
 import com.foodway.api.record.RequestCulinary;
 import com.foodway.api.service.culinary.CulinaryService;
@@ -9,13 +8,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/culinaries")
@@ -42,7 +41,7 @@ public class CulinaryController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Culinary> saveCulinary(@RequestBody @Validated RequestCulinary culinary){
+    public ResponseEntity<Culinary> saveCulinary(@RequestBody @Valid RequestCulinary culinary){
         return culinaryService.saveCulinary(culinary);
     }
 
@@ -54,7 +53,7 @@ public class CulinaryController {
             @ApiResponse(responseCode = CulinaryNotFoundException.CODE, description = CulinaryNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Culinary> putCulinary(@PathVariable int id, @RequestBody @Validated RequestCulinary culinary){
+    public ResponseEntity<Culinary> putCulinary(@PathVariable int id, @RequestBody @Valid RequestCulinary culinary){
         return culinaryService.putCulinary(id, culinary);
     }
 

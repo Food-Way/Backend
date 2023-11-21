@@ -1,18 +1,21 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentPersonal;
+import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.utils.ListaObj;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,15 +47,21 @@ public class EstablishmentController {
     })
     public ResponseEntity<List<Establishment>> getEstablishments() {
         return establishmentService.getEstablishments();
+
     }
 
-//    @GetMapping("/best")
-//    public ResponseEntity<List<Establishment>> getBestEstablishments(@Nullable @RequestParam String culinary) {
-//        if (culinary == null) {
-//            return establishmentService.getBestEstablishments();
-//        }
-//        return establishmentService.getBestEstablishmentsByCulinary(culinary);
-//    }
+    @GetMapping("/search")
+    @Operation(summary = "Search all establishments", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
+        if (establishmentName == null) {
+            return establishmentService.searchAllEstablishments();
+        }
+        return establishmentService.searchEstablishmentsByName(establishmentName);
+    }
 
     @GetMapping("/culinary/{id}")
     @Operation(summary = "Get all establishments by culinary", method = "GET")
@@ -64,7 +73,6 @@ public class EstablishmentController {
     public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@PathVariable int idCulinary) {
         return establishmentService.getEstablishmentsByCulinary(idCulinary);
     }
-
 
     @GetMapping("/most-commented")
     @Operation(summary = "Get most commented establishment", method = "GET")
@@ -137,7 +145,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-        public ResponseEntity<Establishment> postEstablishment(@RequestBody @Validated RequestUserEstablishment establishment) {
+    public ResponseEntity<Establishment> postEstablishment(@RequestBody @Valid RequestUserEstablishment establishment) {
         return establishmentService.saveEstablishment(establishment);
     }
 
@@ -149,15 +157,35 @@ public class EstablishmentController {
             @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Establishment> putEstablishment(@PathVariable UUID id, @RequestBody @Validated UpdateEstablishmentData establishment) {
+    public ResponseEntity<Establishment> putEstablishment(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentData establishment) {
         return establishmentService.putEstablishment(id, establishment);
     }
 
-//    @PostMapping("/t")
-//    public ResponseEntity<List<Estabelecimento>> postEstabelecimentos(@RequestBody List<Estabelecimento> estabelecimentos){
-//        if(estabelecimentos.isEmpty())  return ResponseEntity.status(204).build();
-//
-//        return ResponseEntity.status(201).body(estabelecimentoRepository.saveAll(estabelecimentos));
-//    }
+    @PatchMapping("/profile/{id}")
+    @Operation(summary = "Update establishment profile by ID", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated establishment"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Establishment> patchEstablishmentProfile(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentProfile establishment) {
+        return establishmentService.patchEstablishmentProfile(id, establishment);
+    }
+
+    @PatchMapping("/personal/{id}")
+    @Operation(summary = "Update establishment profile by email", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated establishment"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Establishment> patchEstablishmentPersonal(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentPersonal establishment) {
+        return establishmentService.patchEstablishmentPersonal(id, establishment);
+    }
+
 
 }
