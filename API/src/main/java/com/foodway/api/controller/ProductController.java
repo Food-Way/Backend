@@ -57,7 +57,7 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @PostMapping("/establishment/{idEstablishment}")
+    @PostMapping("/establishments/{idEstablishment}")
     @Operation(summary = "Create a new product", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created product"),

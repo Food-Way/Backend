@@ -41,21 +41,21 @@ public class GerenciadorDeArquivo {
             menu = menu.replaceAll(",\\s*", ";");
 //            for (int i = 0; i < listaEstab.getTamanho(); i++) {
 
-                //Recupere um elemento da lista e formate aqui:
-                saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%.2f;%s;%s\n",
+            //Recupere um elemento da lista e formate aqui:
+            saida.format("%s;%s;%s;%s;%s;%s;%s;%s;%.2f;%s;%s\n",
 
-                        establishment.getIdUser(),
-                        establishment.getName(),
-                        establishment.getEstablishmentName(),
-                        establishment.getEmail(),
-                        establishment.getTypeUser(),
-                        establishment.getAddress().getCep(),
-                        establishment.getAddress().getNumber(),
-                        establishment.getAddress().getComplement(),
-                        establishment.getGeneralRate(),
-                        establishment.getCnpj(),
-                        menu
-                );
+                    establishment.getIdUser(),
+                    establishment.getName(),
+                    establishment.getEstablishmentName(),
+                    establishment.getEmail(),
+                    establishment.getTypeUser(),
+                    establishment.getAddress().getCep(),
+                    establishment.getAddress().getNumber(),
+                    establishment.getAddress().getComplement(),
+                    establishment.getGeneralRate(),
+                    establishment.getCnpj(),
+                    menu
+            );
 
 //            }
         } catch (FormatterClosedException erro) {
@@ -178,36 +178,44 @@ public class GerenciadorDeArquivo {
     public static void gravaArquivoTxt(List<Establishment> lista, String nomeArq) {
         int contaRegDados = 0;
 
-        // Monta o registro de header
-        String header = "00ESTABLISHMENTSPRODUCTS"; //Verificar documento de layout
+        String header = "00ESTABLISHMENTS";
         header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         header += "01";
+        int count = 0;
 
-        // Grava o registro de header
         gravaRegistro(header, nomeArq);
 
-        // Grava os registros de dados (ou registros de corpo)
         for (Establishment e : lista) {
-            String corpo = "02";
-            corpo += String.format("%-40s", e.getIdUser());
-            corpo += String.format("%-40s", e.getEstablishmentName());
-            corpo += String.format("%-30s", e.getEmail());
-            corpo += String.format("%-15s", e.getTypeUser());
-            corpo += String.format("%-10s", e.getAddress().getCep());
-            corpo += String.format("%-8s", e.getAddress().getNumber());
-            corpo += String.format("%-15s", e.getAddress().getComplement());
-            corpo += String.format("%5s", e.getGeneralRate());
-            corpo += String.format("%-15s", e.getCnpj());
-//            corpo += String.format("%19s", e.getCreatedAt());
-//            corpo += String.format("%19s", e.getUpdatedAt());
+            String corpo = null;
+            if (count == 0) {
+                corpo = "02";
+                corpo += String.format("%-40s", e.getIdUser());
+                corpo += String.format("%-40s", e.getEstablishmentName());
+                corpo += String.format("%-30s", e.getEmail());
+                corpo += String.format("%-15s", e.getTypeUser());
+                corpo += String.format("%-10s", e.getAddress().getCep());
+                corpo += String.format("%-8s", e.getAddress().getNumber());
+                corpo += String.format("%-15s", e.getAddress().getComplement());
+                corpo += String.format("%5s", e.getGeneralRate());
+                corpo += String.format("%-15s", e.getCnpj());
+                //Gravando corpo no arquivo:
+                gravaRegistro(corpo, nomeArq);
+                gravaRegistro("", nomeArq);
+                contaRegDados++;
+            }
 
-            //Gravando corpo no arquivo:
-            gravaRegistro(corpo, nomeArq);
-            // Incrementa o contador de registros de dados gravados
-            contaRegDados++;
+            for (int i = 0; i < e.getMenu().size(); i++) {
+                corpo = "03";
+                corpo += String.format("%-40s", e.getMenu().get(i).getIdProduct());
+                corpo += String.format("%-30s", e.getMenu().get(i).getName());
+                corpo += String.format("%15s", e.getMenu().get(i).getPrice());
+                corpo += String.format("%28s", e.getMenu().get(i).getCreatedAt());
+                corpo += String.format("%28s", e.getMenu().get(i).getUpdatedAt());
+                gravaRegistro(corpo, nomeArq);
+                contaRegDados++;
+            }
+            count++;
         }
-
-        // Monta e grava o registro de trailer
         String trailer = "01";
         trailer += String.format("%010d", contaRegDados);
 
@@ -232,55 +240,65 @@ public class GerenciadorDeArquivo {
         try {
             registro = entrada.readLine();
             while (registro != null) {
-                tipoRegistro = registro.substring(0, 2);
 
-                if (tipoRegistro.equals("00")) {
-
-                    System.out.printf("Contexto: " + registro.substring(2, 16) + "\n");
-                    System.out.printf("Data e Hora: " + registro.substring(16, 35) + "\n");
-                    System.out.printf("Versão do Layout: " + registro.substring(35, 37) + "\n");
-                } else if (tipoRegistro.equals("01")) {
-                    System.out.printf("Quantidade de registros: " + registro.substring(2, 12) + "\n");
-                } else if (tipoRegistro.equals("02")) {
-                    String idUser = registro.substring(2,42).trim();
-                    String name = registro.substring(42,82).trim();
-                    String email = registro.substring(82,112).trim();
-                    String typeUser = registro.substring(112,127).trim();
-                    String cep = registro.substring(127,137).trim();
-                    String number = registro.substring(137,145).trim();
-                    String complement = registro.substring(145,160).trim();
-                    Double rate = Double.valueOf(registro.substring(160,165).trim().replace(",","."));
-                    String cnpj = registro.substring(165,180).trim();
-                    String createdAt = registro.substring(180,199).trim();
-                    String updatedAt = registro.substring(199,218).trim();
-
-                    System.out.printf("idUser: " + idUser + "\n");
-                    System.out.printf("Nome: " + name + "\n");
-                    System.out.printf("Email: " + email + "\n");
-                    System.out.printf("Tipo de usuário: " + typeUser + "\n");
-                    System.out.printf("CEP: " + cep + "\n");
-                    System.out.printf("Número: " + number + "\n");
-                    System.out.printf("Complemento: " + complement + "\n");
-                    System.out.printf("Avaliação: " + rate + "\n");
-                    System.out.printf("CNPJ: " + cnpj + "\n");
-                    System.out.printf("Criado em: " + createdAt + "\n");
-                    System.out.printf("Atualizado em: " + updatedAt + "\n");
-                    contaRegDadosLidos++;
-
+                if (registro.equals("")) {
+                    registro = entrada.readLine();
                 } else {
-                    System.out.println("Registro inválido");
+                    tipoRegistro = registro.substring(0, 2);
+
+                    if (tipoRegistro.equals("00")) {
+                        System.out.printf("Contexto: " + registro.substring(2, 16) + "\n");
+                        System.out.printf("Data e Hora: " + registro.substring(16, 35) + "\n");
+                        System.out.printf("Versão do Layout: " + registro.substring(35, 37) + "\n");
+                    } else if (tipoRegistro.equals("01")) {
+                        System.out.printf("Quantidade de registros: " + registro.substring(2, 12) + "\n");
+                    } else if (tipoRegistro.equals("02")) {
+                        String idUser = registro.substring(2, 42).trim();
+                        String name = registro.substring(42, 82).trim();
+                        String email = registro.substring(82, 112).trim();
+                        String typeUser = registro.substring(112, 127).trim();
+                        String cep = registro.substring(127, 137).trim();
+                        String number = registro.substring(137, 145).trim();
+                        String complement = registro.substring(145, 160).trim();
+                        Double rate = Double.valueOf(registro.substring(160, 165).trim().replace(",", "."));
+                        String cnpj = registro.substring(165, 180).trim();
+
+                        System.out.printf("idUser: " + idUser + "\n");
+                        System.out.printf("Nome: " + name + "\n");
+                        System.out.printf("Email: " + email + "\n");
+                        System.out.printf("Tipo de usuário: " + typeUser + "\n");
+                        System.out.printf("CEP: " + cep + "\n");
+                        System.out.printf("Número: " + number + "\n");
+                        System.out.printf("Complemento: " + complement + "\n");
+                        System.out.printf("Avaliação: " + rate + "\n");
+                        System.out.printf("CNPJ: " + cnpj + "\n");
+
+                    } else if (tipoRegistro.equals("03")) {
+
+                        String idProduct = registro.substring(2, 42).trim();
+                        String productName = registro.substring(42, 72).trim();
+                        Double productPrice = Double.valueOf(registro.substring(72, 87).trim().replace(",", "."));
+                        String createdAt = registro.substring(87, 115).trim();
+                        String updatedAt = registro.substring(115, 142).trim();
+
+                        System.out.printf("ID do produto: " + idProduct + "\n");
+                        System.out.printf("Nome do produto: " + productName + "\n");
+                        System.out.printf("Preço do produto: " + productPrice + "\n");
+                        System.out.printf("Criado em: " + createdAt + "\n");
+                        System.out.printf("Atualizado em: " + updatedAt + "\n");
+
+                        contaRegDadosLidos++;
+
+                    } else {
+                        System.out.println("Registro inválido");
+                    }
+                    registro = entrada.readLine();
                 }
-                registro = entrada.readLine();
             }
             entrada.close();
         } catch (IOException erro) {
             System.out.println("Erro ao ler o arquivo");
             erro.printStackTrace();
-        }
-
-        System.out.println("\nLista lida do arquivo:");
-        for (Establishment e : listaLida) {
-            System.out.println(e);
         }
 
         // Aqui tb seria possível salvar a lista no BD
