@@ -18,5 +18,7 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findByEstablishmentNameLike(String establishmentName);
 
+    long countByPostList_UpvoteList_IdEstablishment(UUID idEstablishment);
+
 
 }
