@@ -1,7 +1,9 @@
 package com.foodway.api.service.upvote;
 
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Upvote;
 import com.foodway.api.record.RequestUpvote;
+import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.UpvoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.Optional;
 public class UpvoteService {
     @Autowired
     private UpvoteRepository upvoteRepository;
+    @Autowired
+    CommentRepository commentRepository;
 
     public ResponseEntity<List<Upvote>> getAll() {
         return upvoteRepository.findAll().isEmpty() ?
@@ -36,12 +40,15 @@ public class UpvoteService {
 
     public ResponseEntity<Upvote> post(RequestUpvote data) {
         Upvote upvote = new Upvote(data);
+        final Comment comment = commentRepository.findById(data.idComment()).get();
         if(existUpvote(upvote)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Upvote already exist");
         }
+        comment.addUpvote(upvote);
         upvote.setIdComment(data.idComment());
         upvote.setIdEstablishment(data.idEstablishment());
         upvote.setIdCustomer(data.idCustomer());
+
         return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
     }
 

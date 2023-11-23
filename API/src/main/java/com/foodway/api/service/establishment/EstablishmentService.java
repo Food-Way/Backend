@@ -224,9 +224,10 @@ public class EstablishmentService {
     }
 
     @NotNull
-    private static SeachEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment) {
+    private SeachEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment) {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
+        final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
         String culinary = null;
         String comment = null;
         if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
@@ -239,9 +240,7 @@ public class EstablishmentService {
         } else {
             comment = establishment.getPostList().get(sizeComment-1).getComment();
         }
-
-        SeachEstablishmentDTO seachEstablishmentDTO = new SeachEstablishmentDTO(establishment.getEstablishmentName(), culinary , establishment.getGeneralRate(), establishment.getDescription(), 10, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
-        return seachEstablishmentDTO;
+        return new SeachEstablishmentDTO(establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
     }
 
     public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishmentsByName(String establishmentName) {

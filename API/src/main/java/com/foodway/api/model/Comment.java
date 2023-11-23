@@ -155,5 +155,7 @@ public class Comment {
         reply.setParentComment(this);
     }
 
-
+    public void addUpvote(Upvote upvote) {
+        this.upvoteList.add(upvote);
+    }
 }
