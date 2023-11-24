@@ -124,25 +124,38 @@ public class EstablishmentService {
         return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
     }
 
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(String archiveType) {
-        List<Establishment> establishments = getEstablishments().getBody();
-        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(establishments.size(), establishments);
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(String archiveType, UUID id) {
+        ResponseEntity<Establishment> establishment = getEstablishment(id);
+
+
+        if(establishment.getStatusCode().value() == 404) {
+            throw new EstablishmentNotFoundException("Establishment not found");
+        }
+
+        List<Establishment> establishments = new ArrayList();
+        establishments.add(establishment.getBody());
+
+        ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(1, establishments);
+        String archiveName = String.valueOf(id);
+
         if (archiveType.equals("csv")) {
-            gravaArquivoCsv(listaObjEstablishments, "establishments");
+            gravaArquivoCsv(listaObjEstablishments, archiveName);
             return ResponseEntity.ok().build();
         } else if (archiveType.equals("txt")) {
-            gravaArquivoTxt(establishments, "establishments.txt");
+            gravaArquivoTxt(establishments, archiveName+".txt");
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
     }
 
-    public ResponseEntity<ListaObj<Establishment>> importEstablishments(String archiveType) {
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments(String archiveType, UUID id) {
+        String archiveName = String.valueOf(id);
+
         if (archiveType.equals("csv")) {
-            leArquivoCsv("establishments");
+            leArquivoCsv(archiveName);
             return ResponseEntity.ok().build();
         } else if (archiveType.equals("txt")) {
-            leArquivoTxt("establishments.txt");
+            leArquivoTxt(archiveName+".txt");
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

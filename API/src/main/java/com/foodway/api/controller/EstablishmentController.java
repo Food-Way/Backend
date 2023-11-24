@@ -107,24 +107,24 @@ public class EstablishmentController {
         return establishmentService.getBinarySearch(rate);
     }
 
-    @GetMapping("/export")
+    @GetMapping("{idEstablishment}/export")
     @Operation(summary = "Export all establishments", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all establishments exported"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {
-        return establishmentService.exportEstablishments(archiveType);
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType, @PathVariable UUID idEstablishment) {
+        return establishmentService.exportEstablishments(archiveType, idEstablishment);
     }
 
-    @GetMapping("/import")
+    @GetMapping("{idEstablishment}/import")
     @Operation(summary = "Import all establishments", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all establishments imported"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
-        return establishmentService.importEstablishments(archiveType);
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType, @PathVariable UUID idEstablishment) {
+        return establishmentService.importEstablishments(archiveType, idEstablishment);
     }
 
     @DeleteMapping("/{id}")

@@ -4,3 +4,6 @@
 02899acdda-d635-4dae-accf-b5a45a8a7e8f    teste teste teste                       teste@gmail.com               ESTABLISHMENT  08914568  236     null             0.0201365578912                  null               null
 02836096c0-f87d-47bf-890e-ffd85902f839    marcelo uga uga                         marcelo@gmail.com             ESTABLISHMENT  03214568  451     null             5.012365578912                   null               null
 010000000004
+00ESTABLISHMENTS19-11-2023 23:15:1601
+02e964ad2b-4ed7-41d6-8e97-506ddb780999    celocelo da cocada preta                celocelo2@gmail.com           ESTABLISHMENT  08210540  50      null             5.075424815000105 
+010000000001

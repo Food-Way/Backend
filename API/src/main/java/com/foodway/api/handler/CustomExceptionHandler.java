@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.net.URI;
 
-//@RestControllerAdvice
+@RestControllerAdvice
 public class CustomExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)

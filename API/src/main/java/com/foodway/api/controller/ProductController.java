@@ -1,5 +1,6 @@
 package com.foodway.api.controller;
 
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.handler.exceptions.ProductNotFoundException;
 import com.foodway.api.model.Product;
 import com.foodway.api.record.RequestProduct;
@@ -35,6 +36,16 @@ public class ProductController {
     public ResponseEntity<List<Product>> getProducts() {
         return productService.getProducts();
     }
+    @GetMapping("/establishment/{idEstablishment}")
+    @Operation(summary = "Get all products by an establishment", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return all products by an establishment"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Product>> getProductsByEstablishment(@PathVariable UUID idEstablishment) {
+        return productService.getProductsByEstablishment(idEstablishment);
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get product by ID", method = "GET")
@@ -47,15 +58,15 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @PostMapping
+    @PostMapping("/establishments/{idEstablishment}")
     @Operation(summary = "Create a new product", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created product"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Product> postProduct(@RequestBody @Valid RequestProduct product) {
-        return productService.postProduct(product);
+    public ResponseEntity<Product> postProduct(@RequestBody @Validated RequestProduct product, @PathVariable UUID idEstablishment) {
+        return productService.postProduct(product, idEstablishment);
     }
 
     @PutMapping("/{id}")

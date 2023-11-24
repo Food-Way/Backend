@@ -2,11 +2,7 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +18,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idProduct;
+    private UUID idEstablishment;
     private String name;
     private String description;
     private BigDecimal price;
@@ -30,6 +27,7 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 
     public Product() {
     }
@@ -105,6 +103,14 @@ public class Product {
         return updatedAt;
     }
 
+    public UUID getIdEstablishment() {
+        return idEstablishment;
+    }
+
+    public void setIdEstablishment(UUID idEstablishment) {
+        this.idEstablishment = idEstablishment;
+    }
+
     //     {
 //         "name": "nome do produto",
 //         "description": "descrição do produto",
@@ -113,4 +119,8 @@ public class Product {
 //         "photo": "url da foto"
 //     }
 
+    @Override
+    public String toString() {
+        return String.format(idProduct +";"+ name +";"+ price +";"+ createdAt +";"+ updatedAt);
+    }
 }
