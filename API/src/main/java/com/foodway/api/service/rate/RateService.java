@@ -40,24 +40,24 @@ public class RateService {
         return ResponseEntity.status(200).body(rateRepository.findById(id).get());
     }
 
-    public ResponseEntity<Rate> post(UUID idCustomer, UUID idEstablishment, RequestRate data) {
-        if(!customerRepository.existsById(idCustomer)){
+    public ResponseEntity<Rate> post(RequestRate data) {
+        if(!customerRepository.existsById(data.idCustomer())){
             throw new CustomerNotFoundException("Customer not found!");
         }
-        if(!establishmentRepository.existsById(idEstablishment)){
+        if(!establishmentRepository.existsById(data.idEstablishment())){
             throw new EstablishmentNotFoundException("Establishment not found!");
         }
-        final Customer customer = customerRepository.findById(idCustomer).get();
-        final Establishment establishment = establishmentRepository.findById(idEstablishment).get();
+        final Customer customer = customerRepository.findById(data.idCustomer()).get();
+        final Establishment establishment = establishmentRepository.findById(data.idEstablishment()).get();
         final Rate newRate = new Rate(data);
 
-        if(customer.validateTypeRate(newRate.getTypeRate(), idEstablishment)){
+        if(customer.validateTypeRate(newRate.getTypeRate(), newRate.getIdEstablishment())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Rate type already exist!");
         }
         customer.addRate(newRate);
         establishment.addRate(newRate);
-        newRate.setIdCustomer(idCustomer);
-        newRate.setIdEstablishment(idEstablishment);
+        newRate.setIdCustomer(newRate.getIdCustomer());
+        newRate.setIdEstablishment(newRate.getIdEstablishment());
         return ResponseEntity.status(201).body(rateRepository.save(newRate));
     }
 

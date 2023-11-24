@@ -1,5 +1,7 @@
 package com.foodway.api.model;
 
+import com.foodway.api.record.UpdateCustomerPersonalInfo;
+import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserCustomer;
@@ -11,21 +13,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import lombok.EqualsAndHashCode;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.UUID)
-//    private UUID idCostumer;
+
+
     @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
     private String bio;
     @OneToMany
     private List<Rate> rates;
+    @NotNull
+    private String profileHeaderImg;
     @ManyToMany
     @JoinTable(
             name = "tbFavoriteEstablishment",
@@ -34,6 +39,9 @@ public class Customer extends User {
     )
     private List<Favorite> favorites;
 
+    @OneToMany
+    private List<Upvote> upvoteList;
+
     public Customer() {
     }
 
@@ -41,14 +49,18 @@ public class Customer extends User {
         super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto(), customer.culinary());
         this.cpf = customer.cpf();
         this.bio = customer.bio();
+        this.profileHeaderImg = customer.profileHeaderImg();
     }
 
-    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio, List<Culinary> culinary) {
+    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio, List<Culinary> culinary, String profileHeaderImg) {
         super(name, email, password, typeUser, profilePhoto, culinary);
         this.cpf = cpf;
         this.bio = bio;
+        this.profileHeaderImg = profileHeaderImg;
         this.rates = new ArrayList<>();
     }
+
+
 
     @Override
     public void update(@NotNull Optional<?> optional) {
@@ -61,6 +73,16 @@ public class Customer extends User {
         this.setCpf(c.cpf());
         this.setBio(c.bio());
         this.setCulinary(c.culinary());
+        this.setProfileHeaderImg(c.profileHeaderImg());
+    }
+
+
+    public String getProfileHeaderImg() {
+        return profileHeaderImg;
+    }
+
+    public void setProfileHeaderImg(String profileHeaderImg) {
+        this.profileHeaderImg = profileHeaderImg;
     }
 
     public String getCpf() {
@@ -87,6 +109,14 @@ public class Customer extends User {
         this.rates.add(rate);
     }
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public List<Upvote> getUpvoteList() {
+        return upvoteList;
+    }
+
     public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
         boolean existTypeRate = false;
         switch (typeRate) {
@@ -102,17 +132,36 @@ public class Customer extends User {
         return existTypeRate;
     }
 
-    /*
-    {
-        "name": "string",
-        "email": "string",
-        "password": "string",
-        "ETypeUser": "COSTUMER",
-        "profilePhoto": "string",
-        "cpf": "string",
-        "bio": "string"
+    public void updateProfile(Optional<UpdateCustomerProfile> customer) {
+        UpdateCustomerProfile c = customer.get();
+        if (c.email() != null && !c.email().isBlank()) {
+            this.setEmail(c.email());
+        }
+        if (c.bio() != null && !c.bio().isBlank()) {
+            this.setBio(c.bio());
+        }
+        if (c.profilePhoto() != null && !c.profilePhoto().isBlank()) {
+            this.setProfilePhoto(c.profilePhoto());
+        }
+
+        if (c.profileHeaderImg() != null && !c.profileHeaderImg().isBlank()) {
+            this.setProfileHeaderImg(c.profileHeaderImg());
+        }
+
+
     }
-    * */
+    private String encodePassword(String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.encode(password);
+    }
+    public void updatePersonalInfo(Optional<UpdateCustomerPersonalInfo> customer) {
 
+        if (customer.get().email() != null && !customer.get().email().isBlank()) {
+            this.setEmail(customer.get().email());
+        }
+        if (customer.get().novaSenha() != null && !customer.get().novaSenha().isBlank()) {
+            this.setPassword(encodePassword(customer.get().novaSenha()));
+        }
 
+    }
 }

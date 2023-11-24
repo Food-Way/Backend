@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -45,15 +46,19 @@ public class RateController {
         return rateService.get(id);
     }
 
-    @PostMapping("/customer/{idCustomer}/establishment/{idEstablishment}")
+    @PostMapping
     @Operation(summary = "post a new rate", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the posted rate"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Rate> post(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment,@RequestBody @Validated RequestRate rate){
-        return rateService.post(idCustomer, idEstablishment, rate);
+
+
+    public ResponseEntity<Rate> post(@RequestBody @Valid RequestRate rate){
+        return rateService.post(rate);
+
+
     }
 
     @PutMapping("/{id}")
@@ -64,7 +69,7 @@ public class RateController {
             @ApiResponse(responseCode = RateNotFoundException.CODE, description = RateNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Rate> put(@PathVariable Long id, @RequestBody @Validated RequestRate rate){
+    public ResponseEntity<Rate> put(@PathVariable Long id, @RequestBody @Valid RequestRate rate){
         return rateService.put(id, rate);
     }
 

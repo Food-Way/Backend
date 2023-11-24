@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.Entity;
@@ -26,10 +27,6 @@ public class Comment {
     private UUID idEstablishment;
     private UUID idCustomer;
     private String comment;
-//    private List<Tags> tagList;
-//    private List<Costumer> listCostumer;
-
-    // TODO CRIAR CLASSE PARA UPVOTES
     private int upvotes;
     private List<String> images;
     @CreationTimestamp
@@ -41,6 +38,9 @@ public class Comment {
     private Comment parentComment;
     @OneToMany(mappedBy = "parentComment")
     List<Comment> replies;
+    @JsonIgnore
+    @OneToMany
+    private List<Upvote> upvoteList;
 
     public Comment() {
     }
@@ -52,40 +52,33 @@ public class Comment {
     public Comment(int upvotes, String comment, List<String> images) {
         this.upvotes = upvotes;
         this.comment = comment;
-//        this.tagList = tagList;
-//        this.listCostumer = listCostumer;
         this.images = images;
-//        this.rate = rate;
         this.replies = new ArrayList<>();
+        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(RequestComment data) {
-        this.comment = data.comment();
-        this.upvotes = data.upvotes();
         this.idCustomer = data.idCustomer();
-        this.upvotes = 0;
+        this.idEstablishment = data.idEstablishment();
+        this.comment = data.comment();
         this.images = data.images();
         this.replies = new ArrayList<>();
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
+        this.upvoteList = new ArrayList<>();
     }
 
-    public Comment(UUID idParent, RequestCommentChild data) {
-        this.idParent = idParent;
+    public Comment(RequestCommentChild data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
+        this.idParent = data.idParent();
         this.comment = data.comment();
-        this.upvotes = 0;
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
         this.images = data.images();
         this.replies = new ArrayList<>();
+        this.upvoteList = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
-        this.setUpvotes(c.upvotes());
-//        this.setTagList(c.tagList());
-//        this.setListCostumer(c.listCostumer());
         this.setImages(c.images());
     }
 
@@ -97,10 +90,6 @@ public class Comment {
         this.upvotes = upvotes;
     }
 
-    public void upvote() {
-        this.upvotes++;
-    }
-
     public String getComment() {
         return comment;
     }
@@ -109,31 +98,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    //    public List<Tags> getTagList() {
-//        return tagList;
-//    }
-//
-//    public void setTagList(List<Tags> tagList) {
-//        this.tagList = tagList;
-//    }
-//    public List<Costumer> getListCostumer() {
-//        return listCostumer;
-//    }
-//
-//    public void setListCostumer(List<Costumer> listCostumer) {
-//        this.listCostumer = listCostumer;
-//    }
     public UUID getIdPost() {
         return idPost;
     }
 
     public List<Comment> getReplies() {
         return replies;
-    }
-
-    public void addReply(Comment reply) {
-        this.replies.add(reply);
-        reply.setParentComment(this);
     }
 
     public void setParentComment(Comment parentComment) {
@@ -174,5 +144,18 @@ public class Comment {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
+    }
+
+    public List<Upvote> getUpvoteList() {
+        return upvoteList;
+    }
+
+    public void addReply(Comment reply) {
+        this.replies.add(reply);
+        reply.setParentComment(this);
+    }
+
+    public void addUpvote(Upvote upvote) {
+        this.upvoteList.add(upvote);
     }
 }

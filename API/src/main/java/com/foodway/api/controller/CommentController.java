@@ -13,6 +13,7 @@ import java.util.UUID;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -55,42 +56,34 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Validated UpdateCommentData comment) {
+
+    public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Valid UpdateCommentData comment) {
+
         return commentService.putComment(id, comment);
     }
 
-    @PostMapping("establishment/{idEstablishment}")
+    @PostMapping
     @Operation(summary = "Create a new comment", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Comment> postComment(@PathVariable UUID idEstablishment, @RequestBody @Validated RequestComment data) {
-        return commentService.postComment(idEstablishment, data);
+
+
+    public ResponseEntity<Comment> postComment(@RequestBody @Valid RequestComment data) {
+        return commentService.postComment(data);
     }
 
-    @PatchMapping("/{idComment}/upvote")
-    @Operation(summary = "Add a upvote in comment", method = "PATCH")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return the upvoted comment"),
-            @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "500", description = "Internal server error"),
-    })
-    public ResponseEntity<Comment> postCommentChild(UUID idComment, UUID idVoter) {
-        return commentService.upvoteComment(idComment, idVoter);
-    }
-
-    @PostMapping("establishment/{idEstablishment}/parent/{idParent}")
+    @PostMapping("/child")
     @Operation(summary = "Create a new comment child", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created comment child"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity postCommentChild(@PathVariable UUID idEstablishment, @PathVariable UUID idParent, @RequestBody RequestCommentChild comment) {
-        return commentService.postCommentChild(idEstablishment, idParent, comment);
+    public ResponseEntity<Comment> postCommentChild(@RequestBody RequestCommentChild data) {
+        return commentService.postCommentChild(data);
     }
 
     @DeleteMapping("/{idComment}/{idOwner}")
@@ -100,7 +93,7 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
+    public ResponseEntity<Void> deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
         return commentService.deleteComment(id, idOwner);
     }
 
