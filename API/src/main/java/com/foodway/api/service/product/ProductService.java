@@ -9,12 +9,13 @@ import com.foodway.api.record.UpdateProductData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.ProductRepository;
 import com.foodway.api.service.establishment.EstablishmentService;
+import com.foodway.api.utils.Pilha;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,16 +55,16 @@ public class ProductService {
         return ResponseEntity.status(200).body(savedProduct);
     }
 
-    public ResponseEntity<Product> postProduct(RequestProduct product, UUID idEstablishment) {
-        ResponseEntity<Establishment> establishment = establishmentService.getEstablishment(idEstablishment);
+    public ResponseEntity<Product> postProduct(RequestProduct product) {
+        Optional<Establishment> establishment = establishmentRepository.findById(product.idEstablishment());
 
-        if(establishment.getStatusCode().value() == 404) {
+        if(establishment.isEmpty()) {
             throw new EstablishmentNotFoundException("Establishment not found");
         }
 
         Product createdProduct = new Product(product);
-        establishment.getBody().addProduct(createdProduct);
-        createdProduct.setIdEstablishment(idEstablishment);
+        establishment.get().addProduct(createdProduct);
+        createdProduct.setEstablishment(establishment.get());
 
         return ResponseEntity.status(201).body(productRepository.save(createdProduct));
     }
@@ -86,6 +87,25 @@ public class ProductService {
         }
         return ResponseEntity.status(200).body(product.get());
     }
+
+    public ResponseEntity<Product> deleteLastProduct(UUID idEstablishment) {
+        if (!establishmentRepository.existsById(idEstablishment)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not found");
+        }
+        List<Product> products = productRepository.findLastProductAdded(idEstablishment);
+        if(products.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no products yet");
+        }
+
+        Pilha<Product> productPilha = new Pilha<>(1);
+
+        productPilha.push(products.get(0));
+        Product removed = productPilha.peek();
+        productRepository.delete(productPilha.pop());
+
+        return ResponseEntity.status(200).body(removed);
+    }
+
 }
 
 
