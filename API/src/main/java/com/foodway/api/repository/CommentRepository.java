@@ -14,5 +14,4 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Optional<List<Comment>> findTop4ByIdCustomer(UUID idCustomer);
 
     long countByIdCustomer(UUID idCustomer);
-
 }

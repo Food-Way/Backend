@@ -49,8 +49,6 @@ public class CustomerService {
     UserController userController;
 
 
-
-
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(customerRepository.findAll());

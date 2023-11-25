@@ -15,9 +15,9 @@ public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer idFavorite;
-        private UUID idCustomer;
-        private UUID idEstablishment;
+    private Integer idFavorite;
+    private UUID idCustomer;
+    private UUID idEstablishment;
     @ManyToMany(mappedBy = "favorites")
     List<Customer> customers;
     @CreationTimestamp

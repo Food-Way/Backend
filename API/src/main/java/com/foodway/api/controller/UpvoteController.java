@@ -3,6 +3,7 @@ package com.foodway.api.controller;
 import com.foodway.api.model.Upvote;
 import com.foodway.api.record.RequestUpvote;
 import com.foodway.api.service.upvote.UpvoteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +29,12 @@ public class UpvoteController {
 
     //todo por o id do customer e do comentario
     @PostMapping
-    public ResponseEntity<Upvote> post(@RequestBody RequestUpvote data){
+    public ResponseEntity<Upvote> post(@RequestBody @Valid RequestUpvote data){
         return upvoteService.post(data);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Upvote> put(@PathVariable int id, @RequestBody RequestUpvote data){
+    public ResponseEntity<Upvote> put(@PathVariable int id, @RequestBody @Valid RequestUpvote data){
         return upvoteService.put(id, data);
     }
 

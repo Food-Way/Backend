@@ -4,10 +4,12 @@ import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Rate;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.CommentRepository;
+import com.foodway.api.repository.RateRepository;
 import com.foodway.api.repository.UpvoteRepository;
 import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.customer.CustomerService;
@@ -36,6 +38,8 @@ public class CommentService {
     EstablishmentService establishmentService;
     @Autowired
     CustomerService customerService;
+    @Autowired
+    private RateRepository rateRepository;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         if (!userRepository.existsById(data.idCustomer())) {
@@ -48,6 +52,7 @@ public class CommentService {
         final Comment comment = new Comment(data);
 
         establishment.addComment(comment);
+        comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         return ResponseEntity.status(200).body(commentRepository.save(comment));
     }
 
@@ -66,9 +71,9 @@ public class CommentService {
         Comment comment = new Comment(data);
 
         commentParent.addReply(comment);
+        comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
 
         commentRepository.save(comment);
-
         return ResponseEntity.status(200).body(comment);
     }
 
@@ -78,9 +83,11 @@ public class CommentService {
         }
 
         List<Comment> comments = commentRepository.findAll();
-        for(Comment comment : comments){
+        for (Comment comment : comments) {
             countUpvotesOfComment(comment);
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         }
+
         return ResponseEntity.status(200).body(comments);
     }
 
@@ -89,9 +96,9 @@ public class CommentService {
             throw new CommentNotFoundException("Comment not found");
         }
         List<Comment> comments = commentRepository.findAll();
-        for(Comment comment : comments){
+        for (Comment comment : comments) {
             countUpvotesOfComment(comment);
-        }
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));        }
         return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
 
@@ -114,8 +121,20 @@ public class CommentService {
     }
 
 
-    public void countUpvotesOfComment(Comment comment){
+    public void countUpvotesOfComment(Comment comment) {
         Integer countUpvotes = upvoteRepository.countUpvotesByComment(comment.getIdPost());
         comment.setUpvotes(countUpvotes);
+    }
+
+    public double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
+        List<Rate> rates = rateRepository.findByCommentOfCustomer(idCustomer, idEstablishment);
+        int count = 0;
+        double sum = 0.0;
+        for (Rate rate: rates) {
+            sum += rate.getRatePoint();
+            count++;
+        }
+        if (count == 0) return 0.0;
+        return sum / count;
     }
 }
