@@ -78,10 +78,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
-        if (culinary == null) {
-            return establishmentService.getMoreCommentedEstablishments();
-        }
-        return establishmentService.getMoreCommentedEstablishmentsByCulinary(culinary);
+        return establishmentService.getMoreCommentedEstablishments(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")

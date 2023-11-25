@@ -75,15 +75,11 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable String culinary) {
         List<Establishment> establishments;
-        if (culinary != null) {
-            establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
-        } else {
+        if (culinary == null) {
             establishments = establishmentRepository.findTop10ByOrderByPostListDesc();
+        } else {
+            establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
         }
-        return validateIsEmpty(establishments);
-    }
-
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishmentsByCulinary() {
         return validateIsEmpty(establishments);
     }
 
