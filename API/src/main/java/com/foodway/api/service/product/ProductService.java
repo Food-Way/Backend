@@ -75,7 +75,7 @@ public class ProductService {
             products = productRepository.findAll();
         } else {
             establishmentService.getEstablishment(idEstablishment);
-            products = productRepository.findByIdEstablishment(idEstablishment);
+            products = productRepository.findByEstablishment_IdUser(idEstablishment);
         }
         return ResponseEntity.status(200).body(products);
     }
