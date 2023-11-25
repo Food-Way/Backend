@@ -80,7 +80,7 @@ public class EstablishmentService {
         } else {
             establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
         }
-        return validateIsEmpty(establishments);
+        return ResponseEntity.ok(establishments);
     }
 
     public ResponseEntity<ListaObj<Establishment>> getEstablishmentOrderByRate() {
