@@ -77,7 +77,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return a most commented establishment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@RequestParam(required = false) String culinary) {
         return establishmentService.getMoreCommentedEstablishments(culinary);
     }
 

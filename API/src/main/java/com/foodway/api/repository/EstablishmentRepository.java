@@ -12,7 +12,7 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findTop10ByOrderByPostListDesc();
 
-    List<Establishment> findByCulinary_NameOrderByPostListDesc(String culinary);
+    List<Establishment> findTop10ByCulinary_NameOrderByPostListDesc(String culinary);
 
     List<Establishment> findEstablishmentByCulinary_Id(int id);
 

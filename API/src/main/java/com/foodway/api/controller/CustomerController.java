@@ -5,6 +5,8 @@ import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Favorite;
 import com.foodway.api.record.DTOs.CustomerProfileDTO;
+import com.foodway.api.record.DTOs.SearchCustomerDTO;
+import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.record.UpdateCustomerPersonalInfo;
@@ -50,6 +52,16 @@ public class CustomerController {
     public ResponseEntity<Customer> getCustomer(@PathVariable UUID id){
         return customerService.getCustomer(id);
     }
+
+//    @GetMapping("/search")
+//    @Operation(summary = "Search all customers", method = "GET")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Return all searched customers"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")
+//    })
+//    public ResponseEntity<List<SearchCustomerDTO>> searchEstablishments(@RequestParam(required = false) String customerName) {
+//        return customerService.searchAllCustomers(customerName);
+//    }
 
     @GetMapping("/profile/{id}")
     @Operation(summary = "Get customer profile by ID", method = "GET")

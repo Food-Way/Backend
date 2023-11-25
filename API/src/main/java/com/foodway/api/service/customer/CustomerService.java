@@ -1,6 +1,7 @@
 package com.foodway.api.service.customer;
 
 import com.foodway.api.controller.UserController;
+import com.foodway.api.record.DTOs.*;
 import com.foodway.api.record.UpdateCustomerPersonalInfo;
 import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.handler.exceptions.CustomerNotFoundException;
@@ -8,9 +9,6 @@ import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Favorite;
-import com.foodway.api.record.DTOs.CommentDTO;
-import com.foodway.api.record.DTOs.CustomerProfileDTO;
-import com.foodway.api.record.DTOs.EstablishmentDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.repository.CommentRepository;
@@ -20,11 +18,11 @@ import com.foodway.api.repository.RateRepository;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,8 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static com.foodway.api.service.user.authentication.dto.UserMapper.of;
 
 @Service
 public class CustomerService {
@@ -49,9 +45,6 @@ public class CustomerService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     UserController userController;
-
-
-
 
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -155,4 +148,38 @@ public class CustomerService {
         }
         return ResponseEntity.status(401).build();
     }
+
+//    public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(@Nullable String customerName) {
+//        List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
+//        if (customers.isEmpty()) {
+//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");
+//        }
+//        List<SearchCustomerDTO> searchCustomerDTOS = new ArrayList<>();
+//        for (Customer customer : customers) {
+//            SearchCustomerDTO searchEstablishmentDTO = getSeachCustomerDTO(customer);
+//            searchCustomerDTOS.add(searchEstablishmentDTO);
+//        }
+//
+//        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
+//    }
+//
+//    @NotNull
+//    private SearchCustomerDTO getSeachCustomerDTO(Customer customer) {
+//        int sizeCulinary = establishment.getCulinary().size();
+//        int sizeComment = establishment.getPostList().size();
+//        final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
+//        String culinary = null;
+//        String comment = null;
+//        if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
+//            culinary = "Nenhuma culinária";
+//        } else {
+//            culinary = establishment.getCulinary().get(sizeCulinary-1).getName();
+//        }
+//        if (sizeComment == 0 || establishment.getPostList().get(sizeComment-1).getComment() == null) {
+//            comment = "Nenhum comment";
+//        } else {
+//            comment = establishment.getPostList().get(sizeComment-1).getComment();
+//        }
+//        return new SearchEstablishmentDTO(establishment.getIdUser(),establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
+//    }
 }

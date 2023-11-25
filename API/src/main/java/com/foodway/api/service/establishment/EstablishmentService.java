@@ -75,10 +75,10 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable String culinary) {
         List<Establishment> establishments;
-        if (culinary == null) {
+        if (culinary == null || culinary.isEmpty()) {
             establishments = establishmentRepository.findTop10ByOrderByPostListDesc();
         } else {
-            establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
+            establishments = establishmentRepository.findTop10ByCulinary_NameOrderByPostListDesc(culinary);
         }
         return ResponseEntity.ok(establishments);
     }
@@ -238,7 +238,7 @@ public class EstablishmentService {
         if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {
-            culinary = establishment.getCulinary().get(sizeCulinary-1).getName();
+            culinary = establishment.getCulinary().get(0).getName();
         }
         if (sizeComment == 0 || establishment.getPostList().get(sizeComment-1).getComment() == null) {
             comment = "Nenhum comment";
