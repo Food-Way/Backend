@@ -57,7 +57,7 @@ public class CustomerController {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<CustomerProfileDTO> getCustomerProfile(@PathVariable UUID id){
+    public ResponseEntity<CustomerProfileDTO> getCustomerProfile(@PathVariable @Valid UUID id){
         return customerService.getCustomerProfile(id);
     }
 

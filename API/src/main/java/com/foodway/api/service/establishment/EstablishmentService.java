@@ -20,10 +20,13 @@ import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -47,7 +50,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No content");
         }
         return ResponseEntity.status(200).body(establishments);
     }
@@ -213,20 +216,9 @@ public class EstablishmentService {
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<SeachEstablishmentDTO>> getEstablishmentsByName(String name) {
-        List<Establishment> establishments = establishmentRepository.findByEstablishmentNameLike(name);
-        List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
-    }
-
-    public ResponseEntity<List<SeachEstablishmentDTO>> searchAllEstablishments() {
-        List<Establishment> establishments = establishmentRepository.findAll();
-//        if (establishments.isEmpty()) {
-//            return ResponseEntity.status(204).build();
-//        }
+    public ResponseEntity<List<SeachEstablishmentDTO>> searchAllEstablishments(@Nullable String establishmentName) {
+        List<Establishment> establishments = establishmentName != null ? establishmentRepository.findByEstablishmentNameContainsIgnoreCase(establishmentName) : establishmentRepository.findAll();
+        validateIsEmpty(establishments);
         List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
         for (Establishment establishment : establishments) {
             SeachEstablishmentDTO seachEstablishmentDTO = getSeachEstablishmentDTO(establishment);
@@ -253,20 +245,6 @@ public class EstablishmentService {
         } else {
             comment = establishment.getPostList().get(sizeComment-1).getComment();
         }
-        return new SeachEstablishmentDTO(establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
-    }
-
-    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishmentsByName(String establishmentName) {
-        List<Establishment> establishments = establishmentRepository.findByEstablishmentNameLike(establishmentName);
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        List<SeachEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
-        for (Establishment establishment : establishments) {
-            SeachEstablishmentDTO seachEstablishmentDTO = new SeachEstablishmentDTO(establishment.getEstablishmentName(), establishment.getCulinary().get(establishment.getCulinary().size()-1).getName(), establishment.getGeneralRate(), establishment.getDescription(), 10, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), establishment.getPostList().get(establishment.getPostList().size()-1).getComment());
-            searchEstablishmentDTOs.add(seachEstablishmentDTO);
-        }
-
-        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
+        return new SeachEstablishmentDTO(establishment.getIdUser(),establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
     }
 }

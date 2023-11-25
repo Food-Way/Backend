@@ -21,10 +21,12 @@ import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +60,7 @@ public class CustomerService {
 
     public ResponseEntity<Customer> getCustomer(UUID id) {
         Optional<Customer> customer = customerRepository.findById(id);
-        return customer.map(value -> ResponseEntity.status(200).body(value)).orElseGet(() -> ResponseEntity.status(404).build());
+        return customer.map(value -> ResponseEntity.status(200).body(value)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
     }
 
     public ResponseEntity<Customer> putCustomer(UUID id, UpdateCustomerData data) {
