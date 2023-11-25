@@ -9,15 +9,19 @@ import com.foodway.api.record.UpdateProductData;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.ProductRepository;
 import com.foodway.api.service.establishment.EstablishmentService;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @Service
 public class ProductService {
@@ -64,21 +68,17 @@ public class ProductService {
         return ResponseEntity.status(201).body(productRepository.save(createdProduct));
     }
 
-    public ResponseEntity<List<Product>> getProducts() {
-        if (productRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(productRepository.findAll());
-    }
-    public ResponseEntity<List<Product>> getProductsByEstablishment(UUID idEstablishment) {
-        ResponseEntity<Establishment> establishment = establishmentService.getEstablishment(idEstablishment);
-        if(establishment.getStatusCode().value() == 404) {
-            throw new EstablishmentNotFoundException("Establishment not found");
+    public ResponseEntity<List<Product>> getProducts(@Nullable UUID idEstablishment) {
+        List<Product> products;
+        if (idEstablishment == null) {
+            products = productRepository.findAll();
+        } else {
+            establishmentService.getEstablishment(idEstablishment);
+            products = productRepository.findByIdEstablishment(idEstablishment);
         }
-
-        List<Product> products = establishmentRepository.findProductsByIdUser(idEstablishment);
-
-        if (products.isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(products);
     }
+
     public ResponseEntity<Product> getProductById(UUID id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isEmpty()) {
