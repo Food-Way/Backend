@@ -34,9 +34,10 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<Product>> getProducts() {
-        return productService.getProducts();
+        return productService.getProducts(null);
     }
-    @GetMapping("/establishment/{idEstablishment}")
+
+    @GetMapping("/establishments/{idEstablishment}")
     @Operation(summary = "Get all products by an establishment", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all products by an establishment"),
@@ -44,7 +45,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<Product>> getProductsByEstablishment(@PathVariable UUID idEstablishment) {
-        return productService.getProductsByEstablishment(idEstablishment);
+        return productService.getProducts(idEstablishment);
     }
 
     @GetMapping("/{id}")
