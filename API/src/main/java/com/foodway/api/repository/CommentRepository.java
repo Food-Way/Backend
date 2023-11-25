@@ -1,6 +1,7 @@
 package com.foodway.api.repository;
 
 import com.foodway.api.model.Comment;
+import com.foodway.api.utils.Fila;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -14,4 +15,9 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     Optional<List<Comment>> findTop4ByIdCustomer(UUID idCustomer);
 
     long countByIdCustomer(UUID idCustomer);
+
+    @Query("""
+            SELECT c FROM com.foodway.api.model.Comment c ORDER BY c.generalRate DESC
+            """)
+    List<Comment> findAllOrderByGeneralRateDesc();
 }

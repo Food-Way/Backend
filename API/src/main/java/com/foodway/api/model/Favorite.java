@@ -12,7 +12,6 @@ import java.util.UUID;
 @Table(name = "tbFavorite")
 @Entity(name = "favorite")
 public class Favorite {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idFavorite;

@@ -15,14 +15,19 @@ import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.foodway.api.utils.Fila;
+import com.foodway.api.utils.Pilha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -137,4 +142,22 @@ public class CommentService {
         if (count == 0) return 0.0;
         return sum / count;
     }
+
+    public ResponseEntity<Fila<Comment>> getBetterAvaliated() {
+        List<Comment> comments = commentRepository.findAllOrderByGeneralRateDesc();
+        if(comments.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        }
+
+       Fila<Comment> fila = new Fila<>(comments.size());
+
+        for (int i = 0; i < comments.size(); i++) {
+            Comment current = comments.get(i);
+            fila.insert(current);
+        }
+
+        return ResponseEntity.status(200).body(fila);
+    }
+
+
 }

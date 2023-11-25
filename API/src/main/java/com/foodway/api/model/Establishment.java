@@ -52,8 +52,6 @@ public class Establishment extends User {
     private List<Comment> postList;
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.REMOVE)
     private List<Product> menu;
-
-
     public Establishment() {
     }
 

@@ -21,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-
-
     @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
