@@ -73,13 +73,17 @@ public class EstablishmentService {
 //        return validateIsEmpty(establishments);
 //    }
 
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments() {
-        List<Establishment> establishments = establishmentRepository.findTop10ByOrderByPostListDesc();
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable String culinary) {
+        List<Establishment> establishments;
+        if (culinary != null) {
+            establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
+        } else {
+            establishments = establishmentRepository.findTop10ByOrderByPostListDesc();
+        }
         return validateIsEmpty(establishments);
     }
 
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishmentsByCulinary(String culinary) {
-        List<Establishment> establishments = establishmentRepository.findByCulinary_NameOrderByPostListDesc(culinary);
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishmentsByCulinary() {
         return validateIsEmpty(establishments);
     }
 
