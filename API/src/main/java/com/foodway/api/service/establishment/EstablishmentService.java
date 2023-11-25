@@ -80,6 +80,9 @@ public class EstablishmentService {
         } else {
             establishments = establishmentRepository.findTop10ByCulinary_NameOrderByPostListDesc(culinary);
         }
+        if (establishments.isEmpty()) {
+            establishments = establishmentRepository.findAll();
+        }
         return ResponseEntity.ok(establishments);
     }
 
