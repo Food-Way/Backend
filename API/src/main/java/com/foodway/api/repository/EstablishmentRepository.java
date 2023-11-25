@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface EstablishmentRepository extends JpaRepository<Establishment,UUID> {
 
-    List<Establishment> findByOrderByPostListDesc();
+    List<Establishment> findTop10ByOrderByPostListDesc();
 
     List<Establishment> findByCulinary_NameOrderByPostListDesc(String culinary);
 
@@ -22,9 +22,6 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findByEstablishmentNameContainsIgnoreCase(String establishmentName);
 
-
-
     long countByPostList_UpvoteList_IdEstablishment(UUID idEstablishment);
-
 
 }

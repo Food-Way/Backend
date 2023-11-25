@@ -74,7 +74,7 @@ public class EstablishmentService {
 //    }
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments() {
-        List<Establishment> establishments = establishmentRepository.findByOrderByPostListDesc();
+        List<Establishment> establishments = establishmentRepository.findTop10ByOrderByPostListDesc();
         return validateIsEmpty(establishments);
     }
 
