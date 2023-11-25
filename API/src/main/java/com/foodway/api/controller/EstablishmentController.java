@@ -2,7 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
+import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -56,7 +56,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
         return establishmentService.searchAllEstablishments(establishmentName);
     }
 

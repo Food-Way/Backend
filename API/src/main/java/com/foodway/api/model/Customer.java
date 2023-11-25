@@ -21,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-
-
     @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
@@ -31,14 +29,8 @@ public class Customer extends User {
     private List<Rate> rates;
     @NotNull
     private String profileHeaderImg;
-    @ManyToMany
-    @JoinTable(
-            name = "tbFavoriteEstablishment",
-            joinColumns = @JoinColumn(name = "idCustomer"),
-            inverseJoinColumns = @JoinColumn(name = "idFavorite")
-    )
+    @OneToMany
     private List<Favorite> favorites;
-
     @OneToMany
     private List<Upvote> upvoteList;
 
@@ -60,8 +52,6 @@ public class Customer extends User {
         this.rates = new ArrayList<>();
     }
 
-
-
     @Override
     public void update(@NotNull Optional<?> optional) {
         UpdateCustomerData c = (UpdateCustomerData) optional.get();
@@ -75,7 +65,6 @@ public class Customer extends User {
         this.setCulinary(c.culinary());
         this.setProfileHeaderImg(c.profileHeaderImg());
     }
-
 
     public String getProfileHeaderImg() {
         return profileHeaderImg;
@@ -150,10 +139,12 @@ public class Customer extends User {
 
 
     }
+
     private String encodePassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+
     public void updatePersonalInfo(Optional<UpdateCustomerPersonalInfo> customer) {
 
         if (customer.get().email() != null && !customer.get().email().isBlank()) {
@@ -163,5 +154,9 @@ public class Customer extends User {
             this.setPassword(encodePassword(customer.get().novaSenha()));
         }
 
+    }
+
+    public void addFavorite(Favorite saved) {
+        this.favorites.add(saved);
     }
 }

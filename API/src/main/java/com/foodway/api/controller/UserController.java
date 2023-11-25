@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -62,4 +64,15 @@ public class UserController {
         // Se o usuário está autenticado, retorna um código de status 200
         return ResponseEntity.ok().build();
     }
+
+//    @GetMapping("/search")
+//    @Operation(summary = "Search all users", method = "GET")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Return all searched users"),
+//            @ApiResponse(responseCode = "204", description = "No content"),
+//            @ApiResponse(responseCode = "500", description = "Internal server error")
+//    })
+//    public ResponseEntity<List<SeachUserDTO>> searchUsers(@RequestParam(required = false) String userName) {
+//        return userService.searchAll(userName);
+//    }
 }

@@ -59,8 +59,8 @@ public class CustomerService {
     }
 
     public ResponseEntity<Customer> getCustomer(UUID id) {
-        Optional<Customer> customer = customerRepository.findById(id);
-        return customer.map(value -> ResponseEntity.status(200).body(value)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        return ResponseEntity.status(200).body(customer);
     }
 
     public ResponseEntity<Customer> putCustomer(UUID id, UpdateCustomerData data) {
@@ -87,10 +87,11 @@ public class CustomerService {
     }
 
     public ResponseEntity<Favorite> addFavoriteEstablishment(UUID idCustomer, UUID idEstablishment) {
-        UUID customerId = getCustomer(idCustomer).getBody().getIdUser();
-        UUID establishmentId = establishmentService.getEstablishment(idEstablishment).getBody().getIdUser();
-        Favorite favorite = new Favorite(customerId, establishmentId);
+        Customer customer = getCustomer(idCustomer).getBody();
+        Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
+        Favorite favorite = new Favorite(customer.getIdUser(), establishment.getIdUser());
         Favorite saved = favoriteRepository.save(favorite);
+        customer.addFavorite(saved);
         return ResponseEntity.status(201).body(saved);
     }
 

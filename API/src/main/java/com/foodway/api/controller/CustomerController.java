@@ -120,7 +120,7 @@ public class CustomerController {
         return customerService.deleteCustomer(id);
     }
 
-    @PostMapping("/{idCustomer}/establishments/{idEstablishment}")
+    @PostMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
     @Operation(summary = "Add favorite establishment to customer", method = "POST")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created favorite"),
