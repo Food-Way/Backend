@@ -7,6 +7,7 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.MapsClient;
 import com.foodway.api.record.DTOs.EstablishmentDTO;
+import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
@@ -113,9 +114,9 @@ public class EstablishmentService {
         Establishment establishment = new Establishment(establishmentRequest);
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-//        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAzEwtZ4fQ-3qu6McrI5MoleuC8PNJ3F4w");
-        establishment.getAddress().setLatitude(null);
-        establishment.getAddress().setLongitude(null);
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyBdmmGVqp3SOAYkQ8ef1SN9PDBkm8JjD_s");
+        establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
+        establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
         Establishment establishmentSaved = establishmentRepository.save(establishment);
         return ResponseEntity.status(201).body(establishmentSaved);
     }
