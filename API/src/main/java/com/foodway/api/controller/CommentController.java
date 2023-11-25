@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.foodway.api.utils.Fila;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -45,6 +46,16 @@ public class CommentController {
     })
     public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
         return commentService.get(id);
+    }
+
+    @GetMapping("/better-avaliated")
+    @Operation(summary = "Get a list of comments better avaliated", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return a list of comment"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Fila<Comment>> getBetterAvaliated() {
+        return commentService.getBetterAvaliated();
     }
 
 

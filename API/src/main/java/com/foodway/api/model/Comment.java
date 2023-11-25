@@ -27,6 +27,7 @@ public class Comment {
     private UUID idEstablishment;
     private UUID idCustomer;
     private String comment;
+    private double generalRate;
     private int upvotes;
     private List<String> images;
     @CreationTimestamp
@@ -53,6 +54,7 @@ public class Comment {
         this.upvotes = upvotes;
         this.comment = comment;
         this.images = images;
+        this.generalRate = 0.0;
         this.replies = new ArrayList<>();
         this.upvoteList = new ArrayList<>();
     }
@@ -62,6 +64,7 @@ public class Comment {
         this.idEstablishment = data.idEstablishment();
         this.comment = data.comment();
         this.images = data.images();
+        this.generalRate = 0.0;
         this.replies = new ArrayList<>();
         this.upvoteList = new ArrayList<>();
     }
@@ -72,6 +75,7 @@ public class Comment {
         this.idParent = data.idParent();
         this.comment = data.comment();
         this.images = data.images();
+        this.generalRate = 0.0;
         this.replies = new ArrayList<>();
         this.upvoteList = new ArrayList<>();
     }
@@ -148,6 +152,14 @@ public class Comment {
 
     public List<Upvote> getUpvoteList() {
         return upvoteList;
+    }
+
+    public double getGeneralRate() {
+        return generalRate;
+    }
+
+    public void setGeneralRate(double generalRate) {
+        this.generalRate = generalRate;
     }
 
     public void addReply(Comment reply) {
