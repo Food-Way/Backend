@@ -126,16 +126,6 @@ public class Product {
         return establishment.getIdUser();
     }
 
-
-
-//     {
-//         "name": "nome do produto",
-//         "description": "descrição do produto",
-//         "price": 10.00,
-//         "updatedAt": "2021-10-10T10:10:10",
-//         "photo": "url da foto"
-//     }
-
     @Override
     public String toString() {
         return String.format(idProduct +";"+ name +";"+ price +";"+ createdAt +";"+ updatedAt);
