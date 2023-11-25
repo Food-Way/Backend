@@ -1,5 +1,6 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
 import jakarta.persistence.*;
@@ -18,7 +19,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idProduct;
-    private UUID idEstablishment;
+    @JsonIgnore
+    @ManyToOne
+    private Establishment establishment;
     private String name;
     private String description;
     private BigDecimal price;
@@ -27,6 +30,14 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Establishment getEstablishment() {
+        return establishment;
+    }
+
+    public void setEstablishment(Establishment establishment) {
+        this.establishment = establishment;
+    }
 
 
     public Product() {
@@ -103,15 +114,21 @@ public class Product {
         return updatedAt;
     }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public UUID getIdEstablishment() {
-        return idEstablishment;
+        return establishment.getIdUser();
     }
 
-    public void setIdEstablishment(UUID idEstablishment) {
-        this.idEstablishment = idEstablishment;
-    }
 
-    //     {
+
+//     {
 //         "name": "nome do produto",
 //         "description": "descrição do produto",
 //         "price": 10.00,

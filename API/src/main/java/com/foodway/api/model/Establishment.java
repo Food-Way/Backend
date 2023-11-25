@@ -50,7 +50,7 @@ public class Establishment extends User {
     @JsonIgnore
     @OneToMany
     private List<Comment> postList;
-    @OneToMany
+    @OneToMany(mappedBy = "establishment", cascade = CascadeType.REMOVE)
     private List<Product> menu;
 
 
