@@ -149,37 +149,38 @@ public class CustomerService {
         return ResponseEntity.status(401).build();
     }
 
-//    public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(@Nullable String customerName) {
-//        List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
-//        if (customers.isEmpty()) {
-//            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");
-//        }
-//        List<SearchCustomerDTO> searchCustomerDTOS = new ArrayList<>();
-//        for (Customer customer : customers) {
-//            SearchCustomerDTO searchEstablishmentDTO = getSeachCustomerDTO(customer);
-//            searchCustomerDTOS.add(searchEstablishmentDTO);
-//        }
-//
-//        return ResponseEntity.status(200).body(searchEstablishmentDTOs);
-//    }
-//
-//    @NotNull
-//    private SearchCustomerDTO getSeachCustomerDTO(Customer customer) {
-//        int sizeCulinary = establishment.getCulinary().size();
-//        int sizeComment = establishment.getPostList().size();
-//        final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
-//        String culinary = null;
-//        String comment = null;
-//        if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
-//            culinary = "Nenhuma culinária";
-//        } else {
-//            culinary = establishment.getCulinary().get(sizeCulinary-1).getName();
-//        }
-//        if (sizeComment == 0 || establishment.getPostList().get(sizeComment-1).getComment() == null) {
-//            comment = "Nenhum comment";
-//        } else {
-//            comment = establishment.getPostList().get(sizeComment-1).getComment();
-//        }
-//        return new SearchEstablishmentDTO(establishment.getIdUser(),establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
-//    }
+    public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(@Nullable String customerName) {
+        List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
+        if (customers.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");
+        }
+        List<SearchCustomerDTO> searchCustomerDTOS = new ArrayList<>();
+        for (Customer customer : customers) {
+            SearchCustomerDTO searchEstablishmentDTO = getSearchCustomerDTO(customer);
+            searchCustomerDTOS.add(searchEstablishmentDTO);
+        }
+
+        return ResponseEntity.status(200).body(searchCustomerDTOS);
+    }
+
+    @NotNull
+    private SearchCustomerDTO getSearchCustomerDTO(Customer customer) {
+        int sizeCulinary = customer.getCulinary().size();
+        final long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(customer.getIdUser());
+        String culinary = null;
+        if (sizeCulinary == 0 || customer.getCulinary().get(sizeCulinary-1).getName() == null) {
+            culinary = "Nenhuma culinária";
+        } else {
+            culinary = customer.getCulinary().get(sizeCulinary-1).getName();
+        }
+        return new SearchCustomerDTO(
+                customer.getIdUser(),
+                customer.getName(),
+                culinary,
+                customerAvgRate,
+                customer.getBio(),
+                countUpvotes,
+                customer.getProfilePhoto());
+    }
 }
