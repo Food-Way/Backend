@@ -13,6 +13,8 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByNameContaining(String query);
 
+    List<Product> findByIdEstablishment(UUID idEstablishment);
+
     @Query("""
             SELECT p FROM com.foodway.api.model.Product p WHERE p.establishment.idUser = ?1
             ORDER BY p.createdAt DESC

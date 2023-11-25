@@ -211,6 +211,7 @@ public class Establishment extends User {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+
     public void updateProfileEstablishment(Optional<UpdateEstablishmentProfile> establishment) {
 
         if (establishment.get().establishmentName() != null && !establishment.get().establishmentName().isEmpty()) {

@@ -12,13 +12,12 @@ import java.util.UUID;
 @Table(name = "tbFavorite")
 @Entity(name = "favorite")
 public class Favorite {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idFavorite;
     private UUID idCustomer;
     private UUID idEstablishment;
-    @ManyToMany(mappedBy = "favorites")
-    List<Customer> customers;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -54,15 +53,6 @@ public class Favorite {
 
     public void setIdEstablishment(UUID idEstablishment) {
         this.idEstablishment = idEstablishment;
-    }
-
-    @JsonIgnore
-    public List<Customer> getCustomers() {
-        return customers;
-    }
-
-    public void setCustomers(List<Customer> customers) {
-        this.customers = customers;
     }
 
     public LocalDateTime getCreatedAt() {

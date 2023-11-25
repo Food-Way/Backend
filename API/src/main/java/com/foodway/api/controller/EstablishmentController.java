@@ -2,7 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
+import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -56,11 +56,8 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
-        if (establishmentName == null) {
-            return establishmentService.searchAllEstablishments();
-        }
-        return establishmentService.searchEstablishmentsByName(establishmentName);
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
+        return establishmentService.searchAllEstablishments(establishmentName);
     }
 
     @GetMapping("/culinary/{id}")
@@ -80,11 +77,8 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return a most commented establishment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
-        if (culinary == null) {
-            return establishmentService.getMoreCommentedEstablishments();
-        }
-        return establishmentService.getMoreCommentedEstablishmentsByCulinary(culinary);
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@RequestParam(required = false) String culinary) {
+        return establishmentService.getMoreCommentedEstablishments(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")
