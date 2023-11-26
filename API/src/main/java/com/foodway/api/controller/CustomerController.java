@@ -61,7 +61,9 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Return all searched customers"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public ResponseEntity<List<SearchCustomerDTO>> searchCustomers(@RequestParam(required = false) String customerName) {
+
         return customerService.searchAllCustomers(customerName);
     }
 

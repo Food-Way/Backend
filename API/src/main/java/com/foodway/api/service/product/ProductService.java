@@ -17,12 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @Service
 public class ProductService {
@@ -69,15 +66,31 @@ public class ProductService {
         return ResponseEntity.status(201).body(productRepository.save(createdProduct));
     }
 
-    public ResponseEntity<List<Product>> getProducts(@Nullable UUID idEstablishment) {
-        List<Product> products;
-        if (idEstablishment == null) {
-            products = productRepository.findAll();
+    public ResponseEntity<List<Product>> getProducts(@Nullable UUID establishmentId, @Nullable String orderBy) {
+        List<Product> menu;
+        if ("price".equals(orderBy)) {
+            menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
+        } else if ("name".equals(orderBy)) {
+            System.out.println("name");
+            menu = productRepository.findByEstablishment_IdUserOrderByNameAsc(establishmentId);
+        }else if ("nameDesc".equals(orderBy)) {
+            System.out.println("name");
+            menu = productRepository.findByEstablishment_IdUserOrderByNameDesc(establishmentId);
+        } else if ("maxPrice".equals(orderBy)) {
+            menu = productRepository.findByEstablishment_IdUserOrderByPriceDesc(establishmentId);
+        } else if ("minPrice".equals(orderBy)) {
+            menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
         } else {
-            establishmentService.getEstablishment(idEstablishment);
-            products = productRepository.findByEstablishment_IdUser(idEstablishment);
+
+            menu = productRepository.findByIdProductOrderByNameAsc(establishmentId);
+
         }
-        return ResponseEntity.status(200).body(products);
+
+        if (menu.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(menu);
+        }
+
+        return ResponseEntity.ok(menu);
     }
 
     public ResponseEntity<Product> getProductById(UUID id) {
@@ -106,6 +119,14 @@ public class ProductService {
         return ResponseEntity.status(200).body(removed);
     }
 
+    public ResponseEntity<List<Product>> getAllProduct(UUID idEstablishment) {
+        System.out.println(idEstablishment);
+        List<Product> products = productRepository.findByEstablishment_IdUser(idEstablishment);
+        if (products.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no products yet");
+        }
+        return ResponseEntity.status(200).body(products);
+    }
 }
 
 

@@ -159,7 +159,9 @@ public class CustomerService {
         return ResponseEntity.status(401).build();
     }
 
+
     public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {
+
         List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
         if (customers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");
