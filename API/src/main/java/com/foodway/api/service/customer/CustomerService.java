@@ -79,13 +79,22 @@ public class CustomerService {
         throw new CustomerNotFoundException("Customer not found");
     }
 
-    public ResponseEntity<Favorite> addFavoriteEstablishment(UUID idCustomer, UUID idEstablishment) {
+    public ResponseEntity<Favorite> toggleFavoriteEstablishment(UUID idCustomer, UUID idEstablishment) {
         Customer customer = getCustomer(idCustomer).getBody();
-        Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
-        Favorite favorite = new Favorite(customer.getIdUser(), establishment.getIdUser());
-        Favorite saved = favoriteRepository.save(favorite);
-        customer.addFavorite(saved);
-        return ResponseEntity.status(201).body(saved);
+
+        Favorite favoriteFound = favoriteRepository.findByIdCustomerAndIdEstablishment(idCustomer, idEstablishment);
+
+        if (favoriteFound == null) {
+            Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
+            Favorite favorite = new Favorite(customer.getIdUser(), establishment.getIdUser());
+            Favorite saved = favoriteRepository.save(favorite);
+            customer.addFavorite(saved);
+            return ResponseEntity.status(201).body(saved);
+        }
+
+        customer.getFavorites().remove(favoriteFound);
+        favoriteRepository.delete(favoriteFound);
+        return ResponseEntity.status(200).build();
     }
 
     public ResponseEntity<CustomerProfileDTO> getCustomerProfile(UUID idCustomer) {
@@ -105,13 +114,14 @@ public class CustomerService {
 
         favorites.forEach(favorite -> {
             Establishment establishment = establishmentService.getEstablishment(favorite.getIdEstablishment()).getBody();
-            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getEstablishmentName(),  establishment.getGeneralRate(), establishment.getCulinary(), establishment.getProfilePhoto());
+            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(), establishment.getGeneralRate(), establishment.getCulinary(), establishment.getProfilePhoto());
             favoriteEstablishments.add(establishmentDTO);
         });
 
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(),customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
+        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
     }
+
     public ResponseEntity<Customer> patchCustomerProfile(UUID id, UpdateCustomerProfile customer) {
         Optional<Customer> customerOptional = customerRepository.findById(id);
         if (customerOptional.isEmpty()) {
@@ -121,10 +131,10 @@ public class CustomerService {
         userLoginDto.setEmail(customer.email());
         userLoginDto.setPassword(customer.password());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
-       Customer custumerToUpdate = customerOptional.get();
-       custumerToUpdate.updateProfile(Optional.ofNullable(customer));
+        Customer custumerToUpdate = customerOptional.get();
+        custumerToUpdate.updateProfile(Optional.ofNullable(customer));
 
-        if(userTokenDtoResponseEntity.getStatusCodeValue() == 200){
+        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
             return ResponseEntity.status(200).body(customerRepository.save(custumerToUpdate));
         }
         return ResponseEntity.status(401).build();
@@ -143,13 +153,15 @@ public class CustomerService {
         customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
         if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
             return ResponseEntity.status(200).body(customerRepository.save(customerToUpdate));
-        }else {
+        } else {
             System.out.println("Erro ao atualizar");
         }
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(@Nullable String customerName) {
+
+    public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {
+
         List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
         if (customers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");

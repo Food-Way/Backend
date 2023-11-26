@@ -81,7 +81,9 @@ public class ProductService {
         } else if ("minPrice".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
         } else {
+
             menu = productRepository.findByIdProductOrderByNameAsc(establishmentId);
+
         }
 
         if (menu.isEmpty()) {
