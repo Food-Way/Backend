@@ -200,19 +200,15 @@ public class EstablishmentService {
 
     }
 
-    public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishment) {
-        Optional<Establishment> establishment1 = establishmentRepository.findById(id);
-        if (establishment1.isEmpty()) {
-            throw new EstablishmentNotFoundException("Establishment not found");
-        }
-        Establishment establishment2 = establishment1.get();
+    public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishmentUpdate) {
+        Establishment establishment = getEstablishment(id).getBody();
         UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(establishment.email());
-        userLoginDto.setPassword(establishment.password());
+        userLoginDto.setEmail(establishmentUpdate.emailActual());
+        userLoginDto.setPassword(establishmentUpdate.passwordActual());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
-        establishment2.updatePersonalEstablishment(Optional.of(establishment));
+        establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
-            return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
+            return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
         } else {
             System.out.println("Erro ao atualizar");
         }

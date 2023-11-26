@@ -42,6 +42,7 @@ public class Establishment extends User {
     private Double foodRate;
     @Column(length = 14, unique = true)
     private String cnpj;
+    private String phone;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @JsonIgnore
@@ -55,19 +56,22 @@ public class Establishment extends User {
     public Establishment() {
     }
 
+
+
     public Establishment(RequestUserEstablishment establishment) {
-        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto(), establishment.culinary());
+        super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto(), establishment.profileHeaderImg(), establishment.culinary());
         this.establishmentName = establishment.establishmentName();
         this.description = establishment.description();
+        this.phone = establishment.phone();
         this.address = new Address(establishment.address().cep(), establishment.address().number(), establishment.address().complement(), establishment.address().street(), establishment.address().neighborhood(), establishment.address().city(), establishment.address().state());
         this.cnpj = establishment.cnpj();
         this.rates = new ArrayList<>();
         this.postList = new ArrayList<>();
     }
 
-    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto,
+    public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg,
                          List<Culinary> culinary, String establishmentName, String description, String cnpj, Address address) {
-        super(name, email, password, typeUser, profilePhoto, culinary);
+        super(name, email, password, typeUser, profilePhoto, profileHeaderImg, culinary);
         this.establishmentName = establishmentName;
         this.description = description;
         this.cnpj = cnpj;
@@ -213,26 +217,23 @@ public class Establishment extends User {
     }
 
     public void updateProfileEstablishment(Optional<UpdateEstablishmentProfile> establishment) {
-
         if (establishment.get().establishmentName() != null && !establishment.get().establishmentName().isEmpty()) {
             this.establishmentName = establishment.get().establishmentName();
         }
         if (establishment.get().description() != null && !establishment.get().description().isEmpty()) {
             this.description = establishment.get().description();
         }
-
-
     }
 
     public void updatePersonalEstablishment(Optional<UpdateEstablishmentPersonal> establishment) {
         if (establishment.get().name() != null && !establishment.get().name().isEmpty()) {
             super.setName(establishment.get().name());
         }
-        if (establishment.get().email() != null && !establishment.get().email().isEmpty()) {
-            super.setEmail(establishment.get().email());
+        if (establishment.get().emailNew() != null && !establishment.get().emailNew().isEmpty()) {
+            super.setEmail(establishment.get().emailNew());
         }
-        if (establishment.get().novaPassword() != null && !establishment.get().novaPassword().isEmpty()) {
-            super.setPassword(encodePassword(establishment.get().novaPassword()));
+        if (establishment.get().passwordNew() != null && !establishment.get().passwordNew().isEmpty()) {
+            super.setPassword(encodePassword(establishment.get().passwordNew()));
         }
     }
 }

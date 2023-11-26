@@ -33,6 +33,7 @@ public abstract class User {
     @Enumerated
     private ETypeUser typeUser;
     private String profilePhoto;
+    private String profileHeaderImg;
     @ManyToMany
     @JoinTable(
             name = "tbUserCulinary",
@@ -48,12 +49,13 @@ public abstract class User {
     public User() {
     }
 
-    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, List<Culinary> culinary) {
+    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg, List<Culinary> culinary) {
         this.name = name;
         this.email = email;
         this.password = encodePassword(password);
         this.typeUser = typeUser;
         this.profilePhoto = profilePhoto;
+        this.profileHeaderImg = profileHeaderImg;
         this.culinary = culinary;
     }
 
@@ -110,6 +112,14 @@ public abstract class User {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public String getProfileHeaderImg() {
+        return profileHeaderImg;
+    }
+
+    public void setProfileHeaderImg(String profileHeaderImg) {
+        this.profileHeaderImg = profileHeaderImg;
     }
 
     public List<Culinary> getCulinary() {
