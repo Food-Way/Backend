@@ -38,13 +38,13 @@ class EstablishmentServiceTest {
     void should_return_all_establishments() {
         when(establishmentRepository.findAll()).thenReturn(Collections.singletonList(new Establishment()));
         List<Establishment> establishments = establishmentService.getEstablishments().getBody();
+        assertNotNull(establishments);
         assertEquals(1, establishments.size());
-        assertNotNull(establishments.get(0));
     }
 
     @Test
     void should_throw_ResponseStatusException_when_findAll_is_empty() {
-        when(establishmentRepository.findAll()).thenThrow(new ResponseStatusException(HttpStatus.NO_CONTENT, "No content"));
+        when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> establishmentService.getEstablishments().getBody());
         assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
         assertEquals("No content", exception.getReason());
