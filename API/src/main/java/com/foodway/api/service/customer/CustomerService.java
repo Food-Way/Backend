@@ -189,6 +189,7 @@ public class CustomerService {
         return new SearchCustomerDTO(
                 customer.getIdUser(),
                 customer.getName(),
+                customer.getTypeUser(),
                 culinary,
                 customerAvgRate,
                 customer.getBio(),
