@@ -12,7 +12,7 @@ public record UpdateCustomerPersonalInfo(
         String emailNew,
         @NotBlank
         String password,
-        @NotBlank
+
         String passwordNew
 
 ) {
