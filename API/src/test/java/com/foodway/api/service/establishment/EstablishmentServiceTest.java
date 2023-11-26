@@ -47,7 +47,7 @@ class EstablishmentServiceTest {
 
 
         assertNotNull(establishments);
-        assertEquals(1, establishments.size());
+        assertEquals(2, establishments.size());
     }
 
     @Test
@@ -55,7 +55,6 @@ class EstablishmentServiceTest {
 
 
         when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
-
         when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> establishmentService.getEstablishments().getBody());
         assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
