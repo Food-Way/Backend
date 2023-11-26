@@ -2,11 +2,11 @@ package com.foodway.api.service.establishment;
 
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
-import com.foodway.api.model.Establishment;
-import com.foodway.api.model.Favorite;
-import com.foodway.api.model.MapsClient;
+import com.foodway.api.record.DTOs.CommentEstablishmentProfileDTO;
+import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
@@ -14,17 +14,16 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -35,6 +34,8 @@ public class EstablishmentService {
 
     @Autowired
     UserController userController;
+    @Autowired
+    CustomerRepository customerRepository;
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
@@ -47,10 +48,12 @@ public class EstablishmentService {
     private CulinaryRepository culinaryRepository;
     @Autowired
     private FavoriteRepository favoriteRepository;
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No content");
+            throw new EstablishmentNotFoundException("Establishment not found");
         }
         return ResponseEntity.status(200).body(establishments);
     }
@@ -58,6 +61,55 @@ public class EstablishmentService {
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
         return validateIsEmpty(establishments);
+    }
+
+    public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(UUID idEstablishment) {
+        Establishment establishment = getEstablishment(idEstablishment).getBody();
+        List<Comment> comments = establishment.getPostList();
+        List<CommentEstablishmentProfileDTO> commentDTOs = createCommentDTO(comments);
+
+        EstablishmentProfileDTO establishmentProfileDTO = new EstablishmentProfileDTO(
+                establishment.getEstablishmentName(),
+                establishment.getCulinary().get(0).getName(),
+                establishment.getGeneralRate(),
+                establishment.getFoodRate(),
+                establishment.getAmbientRate(),
+                establishment.getServiceRate(),
+                establishment.getAddress().getLatitude(),
+                establishment.getAddress().getLongitude(),
+                upvoteRepository.countByIdEstablishment(idEstablishment),
+                establishment.getPostList().size(),
+                rateRepository.countByIdEstablishment(idEstablishment),
+                commentDTOs
+        );
+        return ResponseEntity.status(200).body(establishmentProfileDTO);
+    }
+
+    private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
+        List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
+        List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
+
+        for (Comment comment : comments) {
+            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
+            for (Comment reply : comment.getReplies()) {
+                repliesDTOs.add(new CommentEstablishmentProfileDTO(
+                        customer.getName(),
+                        customer.getProfilePhoto(),
+                        comment.getGeneralRate(),
+                        comment.getUpvotes(),
+                        null
+                ));
+            }
+            commentDTOs.add(new CommentEstablishmentProfileDTO(
+                    customer.getName(),
+                    customer.getProfilePhoto(),
+                    comment.getGeneralRate(),
+                    comment.getUpvotes(),
+                    repliesDTOs
+                )
+            );
+        }
+        return commentDTOs;
     }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
@@ -90,7 +142,7 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<Establishment> getEstablishment(UUID paramId) {
-        Establishment establishment = establishmentRepository.findById(paramId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found"));
+        Establishment establishment = establishmentRepository.findById(paramId).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
         getAverageOfIndicators(establishment);
         return ResponseEntity.status(200).body(establishment);
     }

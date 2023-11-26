@@ -112,6 +112,7 @@ public class CustomerController {
     public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody  UpdateCustomerProfile customer){
         return customerService.patchCustomerProfile(id, customer);
     }
+
     @PatchMapping("/personal/{id}")
     @Operation(summary = "Update customer profile by email", method = "PATCH")
     @ApiResponses(value = {

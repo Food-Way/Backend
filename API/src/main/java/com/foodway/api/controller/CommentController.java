@@ -58,7 +58,6 @@ public class CommentController {
         return commentService.getBetterAvaliated();
     }
 
-
     @PutMapping("/{id}")
     @Operation(summary = "Update comment by ID", method = "PUT")
     @ApiResponses(value = {
@@ -67,7 +66,6 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-
     public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Valid UpdateCommentData comment) {
 
         return commentService.putComment(id, comment);
@@ -80,8 +78,6 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-
-
     public ResponseEntity<Comment> postComment(@RequestBody @Valid RequestComment data) {
         return commentService.postComment(data);
     }
