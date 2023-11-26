@@ -7,11 +7,13 @@ import org.hibernate.validator.constraints.br.CPF;
 public record UpdateCustomerPersonalInfo(
 
         @Email
-        String email,
+        String emailActual,
+        @Email
+        String emailNew,
         @NotBlank
         String password,
         @NotBlank
-        String novaSenha
+        String passwordNew
 
 ) {
 }

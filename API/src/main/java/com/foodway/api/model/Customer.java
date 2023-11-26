@@ -128,11 +128,11 @@ public class Customer extends User {
 
     public void updatePersonalInfo(Optional<UpdateCustomerPersonalInfo> customer) {
 
-        if (customer.get().email() != null && !customer.get().email().isBlank()) {
-            this.setEmail(customer.get().email());
+        if (customer.get().emailNew() != null && !customer.get().emailNew().isBlank()) {
+            this.setEmail(customer.get().emailNew());
         }
-        if (customer.get().novaSenha() != null && !customer.get().novaSenha().isBlank()) {
-            this.setPassword(encodePassword(customer.get().novaSenha()));
+        if (customer.get().passwordNew() != null && !customer.get().passwordNew().isBlank()) {
+            this.setPassword(encodePassword(customer.get().passwordNew()));
         }
 
     }
