@@ -81,11 +81,11 @@ public class CustomerService {
 
     public ResponseEntity<Favorite> toggleFavoriteEstablishment(UUID idCustomer, UUID idEstablishment) {
         Customer customer = getCustomer(idCustomer).getBody();
+        Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
 
         Favorite favoriteFound = favoriteRepository.findByIdCustomerAndIdEstablishment(idCustomer, idEstablishment);
 
         if (favoriteFound == null) {
-            Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
             Favorite favorite = new Favorite(customer.getIdUser(), establishment.getIdUser());
             Favorite saved = favoriteRepository.save(favorite);
             customer.addFavorite(saved);

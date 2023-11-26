@@ -4,13 +4,16 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.RateRepository;
+import org.h2.mvstore.Page;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -27,23 +30,32 @@ import static org.mockito.Mockito.when;
 class EstablishmentServiceTest {
 
     @Mock
-    EstablishmentRepository establishmentRepository;
+    private EstablishmentRepository establishmentRepository;
     @Mock
-    RateRepository rateRepository;
+    private RateRepository rateRepository;
 
     @InjectMocks
     EstablishmentService establishmentService;
 
     @Test
     void should_return_all_establishments() {
-        when(establishmentRepository.findAll()).thenReturn(Collections.singletonList(new Establishment()));
+//        setup
+        when(establishmentRepository.findAll()).thenReturn(List.of(new Establishment(), new Establishment()));
+
+
         List<Establishment> establishments = establishmentService.getEstablishments().getBody();
+
+
         assertNotNull(establishments);
         assertEquals(1, establishments.size());
     }
 
     @Test
     void should_throw_ResponseStatusException_when_findAll_is_empty() {
+
+
+        when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
+
         when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> establishmentService.getEstablishments().getBody());
         assertEquals(HttpStatus.NO_CONTENT, exception.getStatusCode());
