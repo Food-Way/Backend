@@ -59,7 +59,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Return all searched customers"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SearchCustomerDTO>> searchEstablishments(@RequestParam(required = false) String customerName) {
+    public ResponseEntity<List<SearchCustomerDTO>> searchCustomers(@RequestParam(required = false) String customerName) {
         return customerService.searchAllCustomers(customerName);
     }
 
@@ -132,14 +132,14 @@ public class CustomerController {
         return customerService.deleteCustomer(id);
     }
 
-    @PostMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
-    @Operation(summary = "Add favorite establishment to customer", method = "POST")
+    @PatchMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
+    @Operation(summary = "Add favorite establishment to customer", method = "PATCH")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created favorite"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
     public ResponseEntity<Favorite> addFavoriteEstablishment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment){
-        return customerService.addFavoriteEstablishment(idCustomer, idEstablishment);
+        return customerService.toggleFavoriteEstablishment(idCustomer, idEstablishment);
     }
 }

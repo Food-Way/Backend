@@ -10,5 +10,7 @@ import java.util.UUID;
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
     Optional<List<Favorite>> findTop4ByIdCustomer(UUID idCustomer);
 
+    Favorite findByIdCustomerAndIdEstablishment(UUID idCustomer, UUID idEstablishment);
+
 
 }
