@@ -5,6 +5,7 @@ import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Favorite;
 import com.foodway.api.model.MapsClient;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
@@ -12,10 +13,7 @@ import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
-import com.foodway.api.repository.CulinaryRepository;
-import com.foodway.api.repository.EstablishmentRepository;
-import com.foodway.api.repository.RateRepository;
-import com.foodway.api.repository.UserRepository;
+import com.foodway.api.repository.*;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
@@ -47,6 +45,8 @@ public class EstablishmentService {
     private UserRepository userRepository;
     @Autowired
     private CulinaryRepository culinaryRepository;
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -134,7 +134,7 @@ public class EstablishmentService {
         ResponseEntity<Establishment> establishment = getEstablishment(id);
 
 
-        if(establishment.getStatusCode().value() == 404) {
+        if (establishment.getStatusCode().value() == 404) {
             throw new EstablishmentNotFoundException("Establishment not found");
         }
 
@@ -148,7 +148,7 @@ public class EstablishmentService {
             gravaArquivoCsv(listaObjEstablishments, archiveName);
             return ResponseEntity.ok().build();
         } else if (archiveType.equals("txt")) {
-            gravaArquivoTxt(establishments, archiveName+".txt");
+            gravaArquivoTxt(establishments, archiveName + ".txt");
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
@@ -161,7 +161,7 @@ public class EstablishmentService {
             leArquivoCsv(archiveName);
             return ResponseEntity.ok().build();
         } else if (archiveType.equals("txt")) {
-            leArquivoTxt(archiveName+".txt");
+            leArquivoTxt(archiveName + ".txt");
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();
@@ -219,12 +219,15 @@ public class EstablishmentService {
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(@Nullable String establishmentName) {
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession, String establishmentName) {
         List<Establishment> establishments = establishmentName != null ? establishmentRepository.findByEstablishmentNameContainsIgnoreCase(establishmentName) : establishmentRepository.findAll();
+
         validateIsEmpty(establishments);
         List<SearchEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
+
         for (Establishment establishment : establishments) {
-            SearchEstablishmentDTO searchEstablishmentDTO = getSeachEstablishmentDTO(establishment);
+            boolean isFavorite = favoriteRepository.existsByIdCustomerAndIdEstablishment(idSession, establishment.getIdUser());
+            SearchEstablishmentDTO searchEstablishmentDTO = getSeachEstablishmentDTO(establishment, isFavorite);
             searchEstablishmentDTOs.add(searchEstablishmentDTO);
         }
 
@@ -232,22 +235,22 @@ public class EstablishmentService {
     }
 
     @NotNull
-    private SearchEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment) {
+    private SearchEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment, boolean isFavorite) {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
         final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
         String culinary = null;
         String comment = null;
-        if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary-1).getName() == null) {
+        if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary - 1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {
             culinary = establishment.getCulinary().get(0).getName();
         }
-        if (sizeComment == 0 || establishment.getPostList().get(sizeComment-1).getComment() == null) {
+        if (sizeComment == 0 || establishment.getPostList().get(sizeComment - 1).getComment() == null) {
             comment = "Nenhum comment";
         } else {
-            comment = establishment.getPostList().get(sizeComment-1).getComment();
+            comment = establishment.getPostList().get(sizeComment - 1).getComment();
         }
-        return new SearchEstablishmentDTO(establishment.getIdUser(),establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment);
+        return new SearchEstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment, isFavorite);
     }
 }

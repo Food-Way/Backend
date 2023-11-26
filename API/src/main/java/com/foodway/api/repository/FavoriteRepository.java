@@ -12,5 +12,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 
     Favorite findByIdCustomerAndIdEstablishment(UUID idCustomer, UUID idEstablishment);
 
+    boolean existsByIdCustomerAndIdEstablishment(UUID idCustomer, UUID idEstablishment);
 
 }

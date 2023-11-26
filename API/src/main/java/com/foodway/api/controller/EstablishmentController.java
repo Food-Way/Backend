@@ -56,8 +56,8 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SearchEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
-        return establishmentService.searchAllEstablishments(establishmentName);
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchEstablishments(@RequestHeader(value = "ID_SESSION") UUID idSession, @RequestParam(required = false) String establishmentName) {
+        return establishmentService.searchAllEstablishments(idSession, establishmentName);
     }
 
     @GetMapping("/culinary/{id}")
