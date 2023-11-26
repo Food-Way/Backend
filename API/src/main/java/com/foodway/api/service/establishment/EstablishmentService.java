@@ -57,10 +57,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getEstablishments() {
         List<Establishment> establishments = establishmentRepository.findAll();
-        if (establishments.isEmpty()) {
-            return ResponseEntity.status(204).build();
-        }
-        return ResponseEntity.status(200).body(establishments);
+        return validateIsEmpty(establishments);
     }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
