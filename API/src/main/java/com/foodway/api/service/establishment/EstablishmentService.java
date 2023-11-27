@@ -4,6 +4,7 @@ import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
+import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.record.DTOs.CommentEstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
@@ -14,7 +15,6 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
-import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
@@ -264,9 +264,26 @@ public class EstablishmentService {
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession, String establishmentName) {
-        List<Establishment> establishments = establishmentName != null ? establishmentRepository.findByEstablishmentNameContainsIgnoreCase(establishmentName) : establishmentRepository.findAll();
-
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession, String establishmentName, ESearchFilter filter) {
+        List<Establishment> establishments;
+        if (establishmentName != null && filter != null) {
+            establishments = switch (filter) {
+                case COMMENTS ->
+                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByPostListDesc(establishmentName);
+                case RELEVANCE ->
+                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByGeneralRateDesc(establishmentName);
+                case UPVOTES ->
+                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByPostList_UpvoteListDesc(establishmentName);
+            };
+        } else if (filter != null) {
+            establishments = switch (filter) {
+                case COMMENTS -> establishmentRepository.findByOrderByPostListDesc();
+                case RELEVANCE -> establishmentRepository.findByOrderByGeneralRateDesc() ;
+                case UPVOTES -> establishmentRepository.findByOrderByPostList_UpvoteListDesc();
+            };
+        } else {
+            establishments = establishmentRepository.findByEstablishmentNameContainsIgnoreCase(establishmentName);
+        }
         validateIsEmpty(establishments);
         List<SearchEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
 
@@ -284,8 +301,8 @@ public class EstablishmentService {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
         final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
-        String culinary = null;
-        String comment = null;
+        String culinary;
+        String comment;
         if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary - 1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {

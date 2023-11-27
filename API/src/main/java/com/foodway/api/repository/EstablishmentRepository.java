@@ -3,7 +3,6 @@ package com.foodway.api.repository;
 import com.foodway.api.model.Establishment;
 import java.util.List;
 
-import com.foodway.api.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
@@ -19,5 +18,22 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
     List<Establishment> findByEstablishmentNameContainsIgnoreCase(String establishmentName);
 
     long countByPostList_UpvoteList_IdEstablishment(UUID idEstablishment);
+
+    List<Establishment> findByEstablishmentNameContainsIgnoreCaseOrderByPostListDesc(String establishmentName);
+
+    List<Establishment> findByEstablishmentNameContainsIgnoreCaseOrderByGeneralRateDesc(String establishmentName);
+
+    List<Establishment> findByEstablishmentNameContainsIgnoreCaseOrderByPostList_UpvoteListDesc(String establishmentName);
+
+    List<Establishment> findByOrderByPostListDesc();
+
+    List<Establishment> findByOrderByGeneralRateDesc();
+
+    List<Establishment> findByOrderByPostList_UpvoteListDesc();
+
+
+
+
+
 
 }
