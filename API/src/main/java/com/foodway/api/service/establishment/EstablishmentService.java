@@ -21,9 +21,11 @@ import com.foodway.api.utils.ListaObj;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -53,7 +55,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
-            throw new EstablishmentNotFoundException("Establishment not found");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No contentgit ");
         }
         return ResponseEntity.status(200).body(establishments);
     }
@@ -266,7 +268,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession, String establishmentName, ESearchFilter filter) {
         List<Establishment> establishments;
-        if (establishmentName != null && filter != null) {
+        if (establishmentName != null  && filter != null) {
             establishments = switch (filter) {
                 case COMMENTS ->
                         establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByPostListDesc(establishmentName);
@@ -282,7 +284,7 @@ public class EstablishmentService {
                 case UPVOTES -> establishmentRepository.findByOrderByPostList_UpvoteListDesc();
             };
         } else {
-            establishments = establishmentRepository.findByEstablishmentNameContainsIgnoreCase(establishmentName);
+            establishments = establishmentRepository.findAll();
         }
         validateIsEmpty(establishments);
         List<SearchEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
