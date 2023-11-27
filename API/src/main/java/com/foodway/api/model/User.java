@@ -54,8 +54,8 @@ public abstract class User {
         this.email = email;
         this.password = encodePassword(password);
         this.typeUser = typeUser;
-        this.profilePhoto = profilePhoto;
-        this.profileHeaderImg = profileHeaderImg;
+        this.profilePhoto = profilePhoto == null || profilePhoto.isEmpty() ? "https://foodway.blob.core.windows.net/public/default-user-image.png" : profilePhoto;
+        this.profileHeaderImg = profileHeaderImg == null || profileHeaderImg.isEmpty() ? "https://foodway.blob.core.windows.net/public/default-banner.png" : profileHeaderImg;
         this.culinary = culinary;
     }
 
