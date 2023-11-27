@@ -9,7 +9,7 @@ public class UserTokenDto {
     private String name;
     private String email;
     private String token;
-
+    private String profilePhoto;
     private ETypeUser typeUser;
 
     public UUID getIdUser() {
@@ -52,4 +52,11 @@ public class UserTokenDto {
         this.name = name;
     }
 
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
 }
