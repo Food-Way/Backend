@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -27,19 +28,19 @@ public class Establishment extends User {
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private Double generalRate;
+    private double generalRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private Double ambientRate;
+    private double ambientRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private Double serviceRate;
+    private double serviceRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private Double foodRate;
+    private double foodRate;
     @Column(length = 14, unique = true)
     private String cnpj;
     private String phone;
