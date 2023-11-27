@@ -6,6 +6,7 @@ import java.util.UUID;
 
 public class UserTokenDto {
     private UUID idUser;
+    private String name;
     private String email;
     private String token;
 
@@ -42,4 +43,13 @@ public class UserTokenDto {
     public void setTypeUser(ETypeUser typeUser) {
         this.typeUser = typeUser;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
