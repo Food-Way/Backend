@@ -17,9 +17,11 @@ public record RequestUserEstablishment(
         @NotBlank String password,
         @Enumerated @NotNull ETypeUser typeUser,
         String profilePhoto,
+        String profileHeaderImg,
         @NotBlank String establishmentName,
         String description,
         @NotBlank String cnpj,
+        String phone,
         Address address,
         List<Culinary> culinary
 ) {

@@ -1,8 +1,10 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.DTOs.SeachEstablishmentDTO;
+import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
+import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -12,7 +14,6 @@ import com.foodway.api.utils.ListaObj;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -56,11 +57,20 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return all searched establishments"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SeachEstablishmentDTO>> searchEstablishments(@RequestParam(required = false) String establishmentName) {
-        if (establishmentName == null) {
-            return establishmentService.searchAllEstablishments();
-        }
-        return establishmentService.searchEstablishmentsByName(establishmentName);
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchEstablishments(@RequestHeader(value = "ID_SESSION") UUID idSession,
+                                                                             @RequestParam(required = false) String establishmentName,
+                                                                             @RequestParam(required = false) ESearchFilter searchFilter) {
+        return establishmentService.searchAllEstablishments(idSession, establishmentName, searchFilter);
+    }
+
+    @GetMapping("/profile/{id}")
+    @Operation(summary = "Get establishment profile by ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(@PathVariable UUID id) {
+        return establishmentService.getEstablishmentProfile(id);
     }
 
     @GetMapping("/culinary/{id}")
@@ -80,11 +90,8 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return a most commented establishment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable @RequestParam String culinary) {
-        if (culinary == null) {
-            return establishmentService.getMoreCommentedEstablishments();
-        }
-        return establishmentService.getMoreCommentedEstablishmentsByCulinary(culinary);
+    public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@RequestParam(required = false) String culinary) {
+        return establishmentService.getMoreCommentedEstablishments(culinary);
     }
 
     @GetMapping("/order-by-greater-rate")
@@ -107,24 +114,24 @@ public class EstablishmentController {
         return establishmentService.getBinarySearch(rate);
     }
 
-    @GetMapping("/export")
+    @GetMapping("{idEstablishment}/export")
     @Operation(summary = "Export all establishments", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all establishments exported"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType) {
-        return establishmentService.exportEstablishments(archiveType);
+    public ResponseEntity<ListaObj<Establishment>> exportEstablishments(@RequestParam String archiveType, @PathVariable UUID idEstablishment) {
+        return establishmentService.exportEstablishments(archiveType, idEstablishment);
     }
 
-    @GetMapping("/import")
+    @GetMapping("{idEstablishment}/import")
     @Operation(summary = "Import all establishments", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all establishments imported"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType) {
-        return establishmentService.importEstablishments(archiveType);
+    public ResponseEntity<ListaObj<Establishment>> importEstablishments(@RequestParam String archiveType, @PathVariable UUID idEstablishment) {
+        return establishmentService.importEstablishments(archiveType, idEstablishment);
     }
 
     @DeleteMapping("/{id}")

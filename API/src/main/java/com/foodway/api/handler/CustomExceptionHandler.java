@@ -5,11 +5,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.net.URI;
 
-//@RestControllerAdvice
+@RestControllerAdvice
 public class CustomExceptionHandler {
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ProblemDetail exception(ResponseStatusException e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(e.getStatusCode(), e.getMessage());
+        problemDetail.setType(URI.create(""));
+        problemDetail.setTitle(e.getReason());
+        problemDetail.setDetail(e.getMessage());
+        return problemDetail;
+    }
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ProblemDetail customerNotFound(CustomerNotFoundException e) {

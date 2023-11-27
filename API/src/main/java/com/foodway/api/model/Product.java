@@ -1,12 +1,9 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +19,9 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idProduct;
+    @JsonIgnore
+    @ManyToOne
+    private Establishment establishment;
     private String name;
     private String description;
     private BigDecimal price;
@@ -30,6 +30,15 @@ public class Product {
     private LocalDateTime createdAt;
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public Establishment getEstablishment() {
+        return establishment;
+    }
+
+    public void setEstablishment(Establishment establishment) {
+        this.establishment = establishment;
+    }
+
 
     public Product() {
     }
@@ -105,12 +114,20 @@ public class Product {
         return updatedAt;
     }
 
-    //     {
-//         "name": "nome do produto",
-//         "description": "descrição do produto",
-//         "price": 10.00,
-//         "updatedAt": "2021-10-10T10:10:10",
-//         "photo": "url da foto"
-//     }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public UUID getIdEstablishment() {
+        return establishment.getIdUser();
+    }
+
+    @Override
+    public String toString() {
+        return String.format(idProduct +";"+ name +";"+ price +";"+ createdAt +";"+ updatedAt);
+    }
 }

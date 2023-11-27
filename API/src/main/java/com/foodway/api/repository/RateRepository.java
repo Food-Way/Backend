@@ -1,5 +1,6 @@
 package com.foodway.api.repository;
 
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Rate;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,14 @@ public interface RateRepository extends JpaRepository<Rate, Long> {
             WHERE r.idEstablishment = ?4
                         """)
     Map<String, Double> getIndicators(ETypeRate ambient, ETypeRate service, ETypeRate food, UUID idEstablishment);
+
+
+    @Query("""
+            SELECT r FROM com.foodway.api.model.Rate r
+            WHERE r.idCustomer = ?1 and r.idEstablishment = ?2
+            """)
+    List<Rate> findByCommentOfCustomer(UUID idCustomer, UUID idEstablishment);
+
+    long countByIdEstablishment(UUID idEstablishment);
+
 }

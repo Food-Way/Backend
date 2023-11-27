@@ -1,7 +1,6 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
-import com.foodway.api.handler.exceptions.CulinaryNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.foodway.api.utils.Fila;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -48,6 +48,15 @@ public class CommentController {
         return commentService.get(id);
     }
 
+    @GetMapping("/better-avaliated")
+    @Operation(summary = "Get a list of comments better avaliated", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return a list of comment"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Fila<Comment>> getBetterAvaliated() {
+        return commentService.getBetterAvaliated();
+    }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update comment by ID", method = "PUT")
@@ -57,7 +66,6 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-
     public ResponseEntity putComment(@PathVariable UUID id, @RequestBody @Valid UpdateCommentData comment) {
 
         return commentService.putComment(id, comment);
@@ -70,8 +78,6 @@ public class CommentController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-
-
     public ResponseEntity<Comment> postComment(@RequestBody @Valid RequestComment data) {
         return commentService.postComment(data);
     }

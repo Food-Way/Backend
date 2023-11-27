@@ -21,24 +21,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Table(name = "tbCustomer")
 @Entity(name = "customer")
 public class Customer extends User {
-
-
     @Column(length = 11, unique = true)
     private String cpf;
     @Column(length = 254)
     private String bio;
     @OneToMany
     private List<Rate> rates;
-    @NotNull
-    private String profileHeaderImg;
-    @ManyToMany
-    @JoinTable(
-            name = "tbFavoriteEstablishment",
-            joinColumns = @JoinColumn(name = "idCustomer"),
-            inverseJoinColumns = @JoinColumn(name = "idFavorite")
-    )
+    @OneToMany
     private List<Favorite> favorites;
-
     @OneToMany
     private List<Upvote> upvoteList;
 
@@ -46,21 +36,10 @@ public class Customer extends User {
     }
 
     public Customer(RequestUserCustomer customer) {
-        super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto(), customer.culinary());
+        super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto(), customer.profileHeaderImg(), customer.culinary());
         this.cpf = customer.cpf();
         this.bio = customer.bio();
-        this.profileHeaderImg = customer.profileHeaderImg();
     }
-
-    public Customer(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String cpf, String bio, List<Culinary> culinary, String profileHeaderImg) {
-        super(name, email, password, typeUser, profilePhoto, culinary);
-        this.cpf = cpf;
-        this.bio = bio;
-        this.profileHeaderImg = profileHeaderImg;
-        this.rates = new ArrayList<>();
-    }
-
-
 
     @Override
     public void update(@NotNull Optional<?> optional) {
@@ -74,15 +53,6 @@ public class Customer extends User {
         this.setBio(c.bio());
         this.setCulinary(c.culinary());
         this.setProfileHeaderImg(c.profileHeaderImg());
-    }
-
-
-    public String getProfileHeaderImg() {
-        return profileHeaderImg;
-    }
-
-    public void setProfileHeaderImg(String profileHeaderImg) {
-        this.profileHeaderImg = profileHeaderImg;
     }
 
     public String getCpf() {
@@ -150,18 +120,24 @@ public class Customer extends User {
 
 
     }
+
     private String encodePassword(String password) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.encode(password);
     }
+
     public void updatePersonalInfo(Optional<UpdateCustomerPersonalInfo> customer) {
 
-        if (customer.get().email() != null && !customer.get().email().isBlank()) {
-            this.setEmail(customer.get().email());
+        if (customer.get().emailNew() != null && !customer.get().emailNew().isBlank()) {
+            this.setEmail(customer.get().emailNew());
         }
-        if (customer.get().novaSenha() != null && !customer.get().novaSenha().isBlank()) {
-            this.setPassword(encodePassword(customer.get().novaSenha()));
+        if (customer.get().passwordNew() != null && !customer.get().passwordNew().isBlank()) {
+            this.setPassword(encodePassword(customer.get().passwordNew()));
         }
 
+    }
+
+    public void addFavorite(Favorite saved) {
+        this.favorites.add(saved);
     }
 }
