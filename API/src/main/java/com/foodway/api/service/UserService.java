@@ -1,13 +1,19 @@
 package com.foodway.api.service;
 
 import com.foodway.api.config.security.jwt.ManagerToken;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.model.Establishment;
 import com.foodway.api.model.User;
+import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.UserRepository;
+import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserCreateDto;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserMapper;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +33,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private EstablishmentRepository establishmentRepository;
 
 
     public void create(UserCreateDto userCreateDto) {
@@ -40,12 +48,19 @@ public class UserService {
     public UserTokenDto authenticate(UserLoginDto userLoginDto) {
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(userLoginDto.getEmail(), userLoginDto.getPassword());
 
+        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new ResponseStatusException(404, "Email não cadastrado", null));
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
-        User userAuthenticate = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new ResponseStatusException(404, "Email não cadastrado", null));
+        String establishmentName = null;
+
+        if(user.getTypeUser() == ETypeUser.ESTABLISHMENT) {
+            Establishment establishment = establishmentRepository.findById(user.getIdUser()).orElseThrow(() -> new EstablishmentNotFoundException("Estabelecimento não encontrado"));
+            establishmentName = establishment.getEstablishmentName();
+        }
+
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = managerToken.generateToken(authentication);
-        return UserMapper.of(userAuthenticate, token);
+        return UserMapper.of(user, token, establishmentName);
 
     }
 }
