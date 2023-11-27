@@ -11,6 +11,7 @@ public class UserTokenDto {
     private String token;
     private String profilePhoto;
     private ETypeUser typeUser;
+    private String establishmentName;
 
     public UUID getIdUser() {
         return idUser;
@@ -58,5 +59,13 @@ public class UserTokenDto {
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public String getEstablishmentName() {
+        return establishmentName;
+    }
+
+    public void setEstablishmentName(String establishmentName) {
+        this.establishmentName = establishmentName;
     }
 }
