@@ -55,7 +55,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No contentgit ");
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No content");
         }
         return ResponseEntity.status(200).body(establishments);
     }

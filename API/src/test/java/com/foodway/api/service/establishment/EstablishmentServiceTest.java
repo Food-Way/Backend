@@ -39,12 +39,9 @@ class EstablishmentServiceTest {
 
     @Test
     void should_return_all_establishments() {
-//        setup
         when(establishmentRepository.findAll()).thenReturn(List.of(new Establishment(), new Establishment()));
 
-
         List<Establishment> establishments = establishmentService.getEstablishments().getBody();
-
 
         assertNotNull(establishments);
         assertEquals(2, establishments.size());
@@ -52,8 +49,6 @@ class EstablishmentServiceTest {
 
     @Test
     void should_throw_ResponseStatusException_when_findAll_is_empty() {
-
-
         when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
         when(establishmentRepository.findAll()).thenReturn(Collections.emptyList());
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> establishmentService.getEstablishments().getBody());
