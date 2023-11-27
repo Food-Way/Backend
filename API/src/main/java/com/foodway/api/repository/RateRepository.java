@@ -35,4 +35,6 @@ public interface RateRepository extends JpaRepository<Rate, Long> {
             """)
     List<Rate> findByCommentOfCustomer(UUID idCustomer, UUID idEstablishment);
 
+    long countByIdEstablishment(UUID idEstablishment);
+
 }

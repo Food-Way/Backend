@@ -11,6 +11,7 @@ import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.record.UpdateCustomerPersonalInfo;
 import com.foodway.api.record.UpdateCustomerProfile;
+import com.foodway.api.repository.FavoriteRepository;
 import com.foodway.api.service.customer.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +61,9 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Return all searched customers"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<SearchCustomerDTO>> searchEstablishments(@RequestParam(required = false) String customerName) {
+
+    public ResponseEntity<List<SearchCustomerDTO>> searchCustomers(@RequestParam(required = false) String customerName) {
+
         return customerService.searchAllCustomers(customerName);
     }
 
@@ -108,6 +112,7 @@ public class CustomerController {
     public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody  UpdateCustomerProfile customer){
         return customerService.patchCustomerProfile(id, customer);
     }
+
     @PatchMapping("/personal/{id}")
     @Operation(summary = "Update customer profile by email", method = "PATCH")
     @ApiResponses(value = {
@@ -117,7 +122,7 @@ public class CustomerController {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerPersonalInfo customer){
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody UpdateCustomerPersonalInfo customer){
         return customerService.patchCustomerPersonalInfo(id, customer);
     }
 
@@ -132,14 +137,14 @@ public class CustomerController {
         return customerService.deleteCustomer(id);
     }
 
-    @PostMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
-    @Operation(summary = "Add favorite establishment to customer", method = "POST")
+    @PatchMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
+    @Operation(summary = "Add favorite establishment to customer", method = "PATCH")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the created favorite"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
     public ResponseEntity<Favorite> addFavoriteEstablishment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment){
-        return customerService.addFavoriteEstablishment(idCustomer, idEstablishment);
+        return customerService.toggleFavoriteEstablishment(idCustomer, idEstablishment);
     }
 }

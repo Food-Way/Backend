@@ -28,25 +28,26 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
+    @GetMapping("/establishmentsAll/{idEstablishment}")
     @Operation(summary = "Get all products", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all products"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Product>> getProducts() {
-        return productService.getProducts(null);
+    public ResponseEntity<List<Product>> getProducts(@PathVariable UUID idEstablishment) {
+        System.out.println("idEstablishment: " + idEstablishment);
+        return productService.getAllProduct(idEstablishment);
     }
 
-    @GetMapping("/establishments/{idEstablishment}")
+    @GetMapping("/establishments/{idEstablishment}/{orderBy}")
     @Operation(summary = "Get all products by an establishment", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all products by an establishment"),
             @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Product>> getProductsByEstablishment(@PathVariable UUID idEstablishment) {
-        return productService.getProducts(idEstablishment);
+    public ResponseEntity<List<Product>> getProductsByEstablishment(@PathVariable UUID idEstablishment, @PathVariable String orderBy) {
+        return productService.getProducts(idEstablishment,orderBy);
     }
 
     @GetMapping("/{id}")

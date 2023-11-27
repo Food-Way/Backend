@@ -11,6 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
+    List<Product> findByEstablishment_IdUserOrderByNameAsc(UUID idUser);
+    List<Product> findByIdProductOrderByNameAsc(UUID idProduct);
+    List<Product> findByEstablishment_IdUserOrderByPriceAsc(UUID idUser);
+    List<Product> findByEstablishment_IdUserOrderByPriceDesc(UUID idUser);
+    Product findByIdProduct(UUID idProduct);
     List<Product> findByNameContaining(String query);
 
     List<Product> findByEstablishment_IdUser(UUID idUser);
@@ -20,6 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             ORDER BY p.createdAt DESC
             """)
     List<Product> findLastProductAdded(UUID idEstablishment);
+
+    List<Product> findByEstablishment_IdUserOrderByNameDesc(UUID establishmentId);
+
 
 //    @Transactional
 //    @Modifying
