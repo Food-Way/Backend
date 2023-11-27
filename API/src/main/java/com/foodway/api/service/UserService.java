@@ -51,16 +51,18 @@ public class UserService {
         User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new ResponseStatusException(404, "Email não cadastrado", null));
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
         String establishmentName = null;
+        String culinary = null;
 
         if(user.getTypeUser() == ETypeUser.ESTABLISHMENT) {
             Establishment establishment = establishmentRepository.findById(user.getIdUser()).orElseThrow(() -> new EstablishmentNotFoundException("Estabelecimento não encontrado"));
             establishmentName = establishment.getEstablishmentName();
+            culinary = establishment.getCulinary().get(0).getName();
         }
 
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = managerToken.generateToken(authentication);
-        return UserMapper.of(user, token, establishmentName);
+        return UserMapper.of(user, token, establishmentName, culinary);
 
     }
 }

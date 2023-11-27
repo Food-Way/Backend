@@ -9,6 +9,7 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.record.DTOs.CommentEstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
+import com.foodway.api.record.DTOs.RelevanceDTO;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
@@ -316,5 +317,13 @@ public class EstablishmentService {
             comment = establishment.getPostList().get(sizeComment - 1).getComment();
         }
         return new SearchEstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(),establishment.getTypeUser(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment, isFavorite);
+    }
+
+    public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
+        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRateDesc(culinary);
+        validateIsEmpty(establishments);
+
+        List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
+        return ResponseEntity.ok(relevanceDTOS);
     }
 }

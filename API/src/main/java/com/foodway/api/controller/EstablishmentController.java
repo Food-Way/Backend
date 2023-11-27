@@ -4,6 +4,7 @@ import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
+import com.foodway.api.record.DTOs.RelevanceDTO;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
@@ -71,6 +72,17 @@ public class EstablishmentController {
     })
     public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(@PathVariable UUID id) {
         return establishmentService.getEstablishmentProfile(id);
+    }
+
+    @GetMapping("/relevance")
+    @Operation(summary = "Get establishments relevance by culinary", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return establishments relevance by culinary"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(@RequestParam(required = true) String culinary) {
+        return establishmentService.getEstablishmentsByRelevance(culinary);
+
     }
 
     @GetMapping("/culinary/{id}")
@@ -193,6 +205,4 @@ public class EstablishmentController {
     public ResponseEntity<Establishment> patchEstablishmentPersonal(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentPersonal establishment) {
         return establishmentService.patchEstablishmentPersonal(id, establishment);
     }
-
-
 }

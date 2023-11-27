@@ -12,6 +12,7 @@ public class UserTokenDto {
     private String profilePhoto;
     private ETypeUser typeUser;
     private String establishmentName;
+    private String culinary;
 
     public UUID getIdUser() {
         return idUser;
@@ -67,5 +68,13 @@ public class UserTokenDto {
 
     public void setEstablishmentName(String establishmentName) {
         this.establishmentName = establishmentName;
+    }
+
+    public String getCulinary() {
+        return culinary;
+    }
+
+    public void setCulinary(String culinary) {
+        this.culinary = culinary;
     }
 }

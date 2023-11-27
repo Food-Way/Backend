@@ -26,12 +26,13 @@ public class UserMapper {
         return user;
     }
 
-    public static UserTokenDto of(User user, String token, String establishmentName) {
+    public static UserTokenDto of(User user, String token, String establishmentName, String culinary) {
         UserTokenDto userTokenDto = new UserTokenDto();
         ETypeUser typeUser = user.getTypeUser();
 
         if (typeUser == ETypeUser.ESTABLISHMENT) {
             userTokenDto.setEstablishmentName(establishmentName);
+            userTokenDto.setCulinary(culinary);
         }
 
         userTokenDto.setIdUser(user.getIdUser());
