@@ -98,7 +98,7 @@ public class EstablishmentService {
             for (Comment reply : comment.getReplies()) {
                 repliesDTOs.add(new CommentEstablishmentProfileDTO(
                         customer.getProfilePhoto(),
-                        customer.getName(),
+                        comment.getComment(),
                         comment.getGeneralRate(),
                         comment.getUpvotes(),
                         null
@@ -106,7 +106,7 @@ public class EstablishmentService {
             }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
                     customer.getProfilePhoto(),
-                    customer.getName(),
+                    comment.getComment(),
                     comment.getGeneralRate(),
                     comment.getUpvotes(),
                     repliesDTOs
