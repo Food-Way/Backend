@@ -44,6 +44,7 @@ public class Establishment extends User {
     @Column(length = 14, unique = true)
     private String cnpj;
     private String phone;
+
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @JsonIgnore
@@ -154,6 +155,14 @@ public class Establishment extends User {
         this.rates.add(rate);
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public void setPostList(List<Comment> postList) {
         this.postList = postList;
     }
@@ -218,12 +227,13 @@ public class Establishment extends User {
     }
 
     public void updateProfileEstablishment(Optional<UpdateEstablishmentProfile> establishment) {
-        if (establishment.get().establishmentName() != null && !establishment.get().establishmentName().isEmpty()) {
-            this.establishmentName = establishment.get().establishmentName();
+        if(establishment.get().profilePhoto() != null && !establishment.get().profilePhoto().isEmpty()) {
+            super.setProfilePhoto(establishment.get().profilePhoto());
         }
-        if (establishment.get().description() != null && !establishment.get().description().isEmpty()) {
-            this.description = establishment.get().description();
+        if(establishment.get().profileHeaderImg() != null && !establishment.get().profileHeaderImg().isEmpty()) {
+            super.setProfileHeaderImg(establishment.get().profileHeaderImg());
         }
+
     }
 
     public void updatePersonalEstablishment(Optional<UpdateEstablishmentPersonal> establishment) {
@@ -231,10 +241,10 @@ public class Establishment extends User {
             super.setName(establishment.get().name());
         }
         if(establishment.get().phone() != null && !establishment.get().phone().isEmpty()) {
-            this.phone = establishment.get().phone();
+            setPhone(establishment.get().phone());
         }
         if(establishment.get().description() != null && !establishment.get().description().isEmpty()) {
-            this.description = establishment.get().description();
+            setDescription(establishment.get().description());
         }
         if (establishment.get().emailNew() != null && !establishment.get().emailNew().isEmpty()) {
             super.setEmail(establishment.get().emailNew());

@@ -57,7 +57,7 @@ public class AzureController {
     for (MultipartFile file : files) {
       itensName.add(file.getOriginalFilename());
       azureBlobAdapter.setContainerName(actualContainer);
-      System.out.println(azureBlobAdapter.upload(file));
+
     }
     return ResponseEntity.ok().body(itensName);
   }

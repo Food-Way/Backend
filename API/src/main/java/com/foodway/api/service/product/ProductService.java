@@ -71,10 +71,10 @@ public class ProductService {
         if ("price".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
         } else if ("name".equals(orderBy)) {
-            System.out.println("name");
+
             menu = productRepository.findByEstablishment_IdUserOrderByNameAsc(establishmentId);
         }else if ("nameDesc".equals(orderBy)) {
-            System.out.println("name");
+
             menu = productRepository.findByEstablishment_IdUserOrderByNameDesc(establishmentId);
         } else if ("maxPrice".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceDesc(establishmentId);
@@ -120,7 +120,7 @@ public class ProductService {
     }
 
     public ResponseEntity<List<Product>> getAllProduct(UUID idEstablishment) {
-        System.out.println(idEstablishment);
+
         List<Product> products = productRepository.findByEstablishment_IdUser(idEstablishment);
         if (products.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no products yet");
