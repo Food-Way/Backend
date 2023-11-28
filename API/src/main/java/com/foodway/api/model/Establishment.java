@@ -55,8 +55,8 @@ public class Establishment extends User {
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.REMOVE)
     private List<Product> menu;
     public Establishment() {
+        this.rates = new ArrayList<>();
     }
-
 
 
     public Establishment(RequestUserEstablishment establishment) {

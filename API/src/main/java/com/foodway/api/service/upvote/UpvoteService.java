@@ -48,7 +48,7 @@ public class UpvoteService {
         upvote.setIdCustomer(data.idCustomer());
         upvoteRepository.save(upvote);
 
-        return ResponseEntity.status(200).body(upvote);
+        return ResponseEntity.status(201).body(upvote);
     }
 
     public ResponseEntity<Upvote> put(long id, RequestUpvote data) {
