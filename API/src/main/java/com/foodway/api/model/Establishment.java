@@ -230,6 +230,12 @@ public class Establishment extends User {
         if (establishment.get().name() != null && !establishment.get().name().isEmpty()) {
             super.setName(establishment.get().name());
         }
+        if(establishment.get().phone() != null && !establishment.get().phone().isEmpty()) {
+            this.phone = establishment.get().phone();
+        }
+        if(establishment.get().description() != null && !establishment.get().description().isEmpty()) {
+            this.description = establishment.get().description();
+        }
         if (establishment.get().emailNew() != null && !establishment.get().emailNew().isEmpty()) {
             super.setEmail(establishment.get().emailNew());
         }
