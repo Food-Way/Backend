@@ -177,10 +177,13 @@ public class CustomerService {
 
     @NotNull
     private SearchCustomerDTO getSearchCustomerDTO(Customer customer) {
+
         int sizeCulinary = customer.getCulinary().size();
-        final long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        long countComments = commentRepository.countByIdCustomer(customer.getIdUser());
         Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(customer.getIdUser());
         String culinary = null;
+
         if (sizeCulinary == 0 || customer.getCulinary().get(sizeCulinary-1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {
@@ -194,6 +197,7 @@ public class CustomerService {
                 customerAvgRate,
                 customer.getBio(),
                 countUpvotes,
+                countComments,
                 customer.getProfilePhoto());
     }
 }

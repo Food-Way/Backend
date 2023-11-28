@@ -53,6 +53,8 @@ public class EstablishmentService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private UpvoteRepository upvoteRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -316,7 +318,20 @@ public class EstablishmentService {
         } else {
             comment = establishment.getPostList().get(sizeComment - 1).getComment();
         }
-        return new SearchEstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(),establishment.getTypeUser(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment, isFavorite);
+        return new SearchEstablishmentDTO(
+                establishment.getIdUser(),
+                establishment.getEstablishmentName(),
+                establishment.getTypeUser(),
+                culinary,
+                establishment.getGeneralRate(),
+                establishment.getDescription(),
+                countUpvotes,
+                establishment.getProfilePhoto(),
+                establishment.getAddress().getLatitude(),
+                establishment.getAddress().getLongitude(),
+                establishment.getPostList().size(),
+                comment,
+                isFavorite);
     }
 
     public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
