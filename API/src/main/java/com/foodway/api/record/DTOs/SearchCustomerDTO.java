@@ -12,6 +12,7 @@ public record SearchCustomerDTO(
         Double generalRate,
         String bio,
         long upvotes,
+        long qtdComments,
         String photo
 ) {
 }
