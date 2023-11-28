@@ -236,8 +236,8 @@ public class EstablishmentService {
         }
         Establishment establishment2 = establishment1.get();
         UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(establishment.email());
-        userLoginDto.setPassword(establishment.password());
+        userLoginDto.setEmail(establishment.emailActual());
+        userLoginDto.setPassword(establishment.passwordActual());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
 
         establishment2.updateProfileEstablishment(Optional.of(establishment));
@@ -252,11 +252,13 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishmentUpdate) {
+
         Establishment establishment = getEstablishment(id).getBody();
         UserLoginDto userLoginDto = new UserLoginDto();
         userLoginDto.setEmail(establishmentUpdate.emailActual());
         userLoginDto.setPassword(establishmentUpdate.passwordActual());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
