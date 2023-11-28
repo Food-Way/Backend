@@ -103,8 +103,8 @@ public class EstablishmentService {
                 ));
             }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
-                    customer.getName(),
                     customer.getProfilePhoto(),
+                    customer.getName(),
                     comment.getGeneralRate(),
                     comment.getUpvotes(),
                     repliesDTOs
