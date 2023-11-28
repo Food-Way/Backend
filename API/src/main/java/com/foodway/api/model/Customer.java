@@ -33,6 +33,7 @@ public class Customer extends User {
     private List<Upvote> upvoteList;
 
     public Customer() {
+        this.rates = new ArrayList<>();
     }
 
     public Customer(RequestUserCustomer customer) {

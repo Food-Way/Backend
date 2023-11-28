@@ -44,6 +44,7 @@ public class Comment {
     private List<Upvote> upvoteList;
 
     public Comment() {
+        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(UUID idPost) {
@@ -84,6 +85,10 @@ public class Comment {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
         this.setImages(c.images());
+    }
+
+    public void setIdPost(UUID idPost) {
+        this.idPost = idPost;
     }
 
     public int getUpvotes() {
@@ -153,6 +158,7 @@ public class Comment {
     public List<Upvote> getUpvoteList() {
         return upvoteList;
     }
+
 
     public double getGeneralRate() {
         return generalRate;
