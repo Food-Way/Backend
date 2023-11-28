@@ -6,11 +6,8 @@ import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Enums.ETypeRate;
-import com.foodway.api.record.DTOs.CommentEstablishmentProfileDTO;
-import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
+import com.foodway.api.record.DTOs.*;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
-import com.foodway.api.record.DTOs.RelevanceDTO;
-import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -325,5 +322,15 @@ public class EstablishmentService {
 
         List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
         return ResponseEntity.ok(relevanceDTOS);
+    }
+
+    public ResponseEntity<List<CommentDTO>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
+        Establishment establishment = getEstablishment(idEstablishment).getBody();
+        List<Comment> comments = establishment.getPostList();
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDTOs.add(new CommentDTO(establishment.getEstablishmentName(),null, comment.getComment(), comment.getGeneralRate(),comment.getUpvotes()));
+        }
+        return ResponseEntity.ok(commentDTOs);
     }
 }

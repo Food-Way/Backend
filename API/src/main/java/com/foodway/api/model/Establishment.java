@@ -28,19 +28,19 @@ public class Establishment extends User {
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private double generalRate;
+    private Double generalRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private double ambientRate;
+    private Double ambientRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private double serviceRate;
+    private Double serviceRate;
     @PositiveOrZero
     @Max(value = 5)
     @Min(value = 0)
-    private double foodRate;
+    private Double foodRate;
     @Column(length = 14, unique = true)
     private String cnpj;
     private String phone;
