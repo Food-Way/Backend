@@ -140,6 +140,13 @@ public class ListaObj<T> {
                             Establishment first = (Establishment) list.getElemento(j - 1);
                             Establishment next = (Establishment) list.getElemento(j);
 
+                            if (first.getGeneralRate() == null) {
+                                first.setGeneralRate(0.0);
+                            }
+                            if (next.getGeneralRate() == null) {
+                                next.setGeneralRate(0.0);
+                            }
+
                             if(next.getGeneralRate() > first.getGeneralRate()){
                                 list.adicionaNoIndice(j - 1, (T) next);
                                 list.adicionaNoIndice(j, (T) first);
