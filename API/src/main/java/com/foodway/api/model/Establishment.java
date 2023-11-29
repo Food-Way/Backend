@@ -198,7 +198,7 @@ public class Establishment extends User {
     public void setRates(Map<String, Double> map) {
         String[] rateKeys = { "AMBIENT", "SERVICE", "FOOD" };
         int count = 0;
-        double totalRate = 0.0;
+        Double totalRate = 0.0;
 
         for (String key : rateKeys) {
             Double rateValue = map.get(key);

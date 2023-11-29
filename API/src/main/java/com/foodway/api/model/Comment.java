@@ -27,7 +27,7 @@ public class Comment {
     private UUID idEstablishment;
     private UUID idCustomer;
     private String comment;
-    private double generalRate;
+    private Double generalRate;
     private int upvotes;
     private List<String> images;
     @CreationTimestamp
@@ -160,11 +160,11 @@ public class Comment {
     }
 
 
-    public double getGeneralRate() {
+    public Double getGeneralRate() {
         return generalRate;
     }
 
-    public void setGeneralRate(double generalRate) {
+    public void setGeneralRate(Double generalRate) {
         this.generalRate = generalRate;
     }
 

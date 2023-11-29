@@ -29,7 +29,7 @@ public class Rate {
     @PositiveOrZero
     @Min(value = 0, message = "Value should be at least 0.")
     @Max(value = 5, message = "Value cannot exceed 5.")
-    private double ratePoint;
+    private Double ratePoint;
     private ETypeRate typeRate;
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -39,7 +39,7 @@ public class Rate {
     public Rate() {
     }
 
-    public Rate(double ratePoint, ETypeRate typeRate) {
+    public Rate(Double ratePoint, ETypeRate typeRate) {
         this.ratePoint = ratePoint;
         this.typeRate = typeRate;
     }
@@ -64,11 +64,11 @@ public class Rate {
         this.idRate = idRate;
     }
 
-    public double getRatePoint() {
+    public Double getRatePoint() {
         return ratePoint;
     }
 
-    public void setRatePoint(double ratePoint) {
+    public void setRatePoint(Double ratePoint) {
         this.ratePoint = ratePoint;
     }
 

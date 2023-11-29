@@ -131,10 +131,10 @@ public class CommentService {
         comment.setUpvotes(countUpvotes);
     }
 
-    public double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
+    public Double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
         List<Rate> rates = rateRepository.findByCommentOfCustomer(idCustomer, idEstablishment);
         int count = 0;
-        double sum = 0.0;
+        Double sum = 0.0;
         for (Rate rate: rates) {
             sum += rate.getRatePoint();
             count++;

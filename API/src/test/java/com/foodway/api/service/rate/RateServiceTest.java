@@ -108,7 +108,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(
@@ -139,7 +139,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(
@@ -172,7 +172,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(
@@ -204,7 +204,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(
@@ -232,7 +232,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(
@@ -261,7 +261,7 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        double ratePoint = 3;
+        Double ratePoint = 3.0;
         ETypeRate typeRate = ETypeRate.FOOD;
 
         RequestRate newRate = new RequestRate(

@@ -12,7 +12,7 @@ public record RequestRate(
         @NotNull
         UUID idEstablishment,
         @NotNull
-        double ratePoint,
+        Double ratePoint,
         @NotNull
         ETypeRate typeRate
 ) {}
