@@ -25,8 +25,7 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idUser;
     private String name;
-    @Column(length = 255)
-    private String description;
+
     @Column(length = 254, unique = true)
     private String email;
     @JsonIgnore

@@ -33,6 +33,7 @@ public class Customer extends User {
     private List<Upvote> upvoteList;
 
     public Customer() {
+        this.rates = new ArrayList<>();
     }
 
     public Customer(RequestUserCustomer customer) {
@@ -44,7 +45,6 @@ public class Customer extends User {
     @Override
     public void update(@NotNull Optional<?> optional) {
         UpdateCustomerData c = (UpdateCustomerData) optional.get();
-        System.out.println(c);
         this.setName(c.name());
         this.setEmail(c.email());
         this.setPassword(c.password());

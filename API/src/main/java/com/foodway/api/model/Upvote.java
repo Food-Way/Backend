@@ -62,4 +62,8 @@ public class Upvote {
     public void setIdComment(UUID idComment) {
         this.idComment = idComment;
     }
+
+    public void setIdUpvote(long idUpvote) {
+        this.idUpvote = idUpvote;
+    }
 }

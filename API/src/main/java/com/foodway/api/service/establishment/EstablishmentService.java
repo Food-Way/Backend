@@ -6,11 +6,8 @@ import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Enums.ETypeRate;
-import com.foodway.api.record.DTOs.CommentEstablishmentProfileDTO;
-import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
+import com.foodway.api.record.DTOs.*;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
-import com.foodway.api.record.DTOs.RelevanceDTO;
-import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
@@ -53,6 +50,8 @@ public class EstablishmentService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private UpvoteRepository upvoteRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -70,6 +69,8 @@ public class EstablishmentService {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = establishment.getPostList();
         List<CommentEstablishmentProfileDTO> commentDTOs = createCommentDTO(comments);
+        long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
+        long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
 
         EstablishmentProfileDTO establishmentProfileDTO = new EstablishmentProfileDTO(
                 establishment.getEstablishmentName(),
@@ -80,10 +81,11 @@ public class EstablishmentService {
                 establishment.getServiceRate(),
                 establishment.getAddress().getLatitude(),
                 establishment.getAddress().getLongitude(),
-                upvoteRepository.countByIdEstablishment(idEstablishment),
+                qtdUpvotes,
                 establishment.getPostList().size(),
-                rateRepository.countByIdEstablishment(idEstablishment),
-                commentDTOs
+                qtdRates,
+                commentDTOs,
+                establishment.getProfileHeaderImg()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
@@ -96,16 +98,18 @@ public class EstablishmentService {
             Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
             for (Comment reply : comment.getReplies()) {
                 repliesDTOs.add(new CommentEstablishmentProfileDTO(
-                        customer.getName(),
+                        comment.getIdPost(),
                         customer.getProfilePhoto(),
+                        comment.getComment(),
                         comment.getGeneralRate(),
                         comment.getUpvotes(),
                         null
                 ));
             }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
-                    customer.getName(),
+                    comment.getIdPost(),
                     customer.getProfilePhoto(),
+                    comment.getComment(),
                     comment.getGeneralRate(),
                     comment.getUpvotes(),
                     repliesDTOs
@@ -237,8 +241,8 @@ public class EstablishmentService {
         }
         Establishment establishment2 = establishment1.get();
         UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(establishment.email());
-        userLoginDto.setPassword(establishment.password());
+        userLoginDto.setEmail(establishment.emailActual());
+        userLoginDto.setPassword(establishment.passwordActual());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
 
         establishment2.updateProfileEstablishment(Optional.of(establishment));
@@ -253,11 +257,13 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishmentUpdate) {
+
         Establishment establishment = getEstablishment(id).getBody();
         UserLoginDto userLoginDto = new UserLoginDto();
         userLoginDto.setEmail(establishmentUpdate.emailActual());
         userLoginDto.setPassword(establishmentUpdate.passwordActual());
         ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
+
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
@@ -316,7 +322,20 @@ public class EstablishmentService {
         } else {
             comment = establishment.getPostList().get(sizeComment - 1).getComment();
         }
-        return new SearchEstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(),establishment.getTypeUser(), culinary, establishment.getGeneralRate(), establishment.getDescription(), countUpvotes, establishment.getProfilePhoto(), establishment.getAddress().getLatitude(), establishment.getAddress().getLongitude(), comment, isFavorite);
+        return new SearchEstablishmentDTO(
+                establishment.getIdUser(),
+                establishment.getEstablishmentName(),
+                establishment.getTypeUser(),
+                culinary,
+                establishment.getGeneralRate(),
+                establishment.getDescription(),
+                countUpvotes,
+                establishment.getProfilePhoto(),
+                establishment.getAddress().getLatitude(),
+                establishment.getAddress().getLongitude(),
+                establishment.getPostList().size(),
+                comment,
+                isFavorite);
     }
 
     public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
@@ -325,5 +344,15 @@ public class EstablishmentService {
 
         List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
         return ResponseEntity.ok(relevanceDTOS);
+    }
+
+    public ResponseEntity<List<CommentDTO>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
+        Establishment establishment = getEstablishment(idEstablishment).getBody();
+        List<Comment> comments = establishment.getPostList();
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDTOs.add(new CommentDTO(establishment.getEstablishmentName(),null, comment.getComment(), comment.getGeneralRate(),comment.getUpvotes()));
+        }
+        return ResponseEntity.ok(commentDTOs);
     }
 }

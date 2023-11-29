@@ -1,12 +1,9 @@
 package com.foodway.api.record;
 
 public record UpdateEstablishmentProfile(
-        String establishmentName,
-        String description,
-        String email,
-        String password,
+        String emailActual,
+        String passwordActual,
         String profilePhoto,
-        String profileHeaderImg,
-        String phone
+        String profileHeaderImg
 ) {
 }

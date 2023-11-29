@@ -31,8 +31,9 @@ public class RateService {
     EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<List<Rate>> getAll() {
-        if(rateRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
-        return ResponseEntity.status(200).body(rateRepository.findAll());
+        List<Rate> rates = rateRepository.findAll();
+        if(rates.isEmpty()) throw new ResponseStatusException(HttpStatus.NO_CONTENT, "List of Rate is empty");
+        return ResponseEntity.status(200).body(rates);
     }
 
     public ResponseEntity<Rate> get(Long id) {
@@ -58,7 +59,8 @@ public class RateService {
         establishment.addRate(newRate);
         newRate.setIdCustomer(newRate.getIdCustomer());
         newRate.setIdEstablishment(newRate.getIdEstablishment());
-        return ResponseEntity.status(201).body(rateRepository.save(newRate));
+        rateRepository.save(newRate);
+        return ResponseEntity.status(201).body(newRate);
     }
 
     public ResponseEntity<Rate> put(Long id, RequestRate data) {
@@ -66,7 +68,8 @@ public class RateService {
         final Rate rate = rateRepository.findById(id).get();
         final Rate newRate = new Rate(data);
         rate.update(newRate);
-        return ResponseEntity.status(200).body(rateRepository.save(rate));
+        rateRepository.save(rate);
+        return ResponseEntity.status(200).body(rate);
     }
 
     public ResponseEntity<Void>delete(Long id) {

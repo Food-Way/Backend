@@ -36,7 +36,7 @@ public class AzureBlobService {
                 .getBlobClient(multipartFile.getOriginalFilename());
         blob.upload(multipartFile.getInputStream(),
                 multipartFile.getSize(), true);
-        System.out.println(blob.getContainerName()) ;
+
         return multipartFile.getOriginalFilename();
     }
 

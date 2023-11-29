@@ -11,10 +11,7 @@ import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Favorite;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
-import com.foodway.api.repository.CommentRepository;
-import com.foodway.api.repository.CustomerRepository;
-import com.foodway.api.repository.FavoriteRepository;
-import com.foodway.api.repository.RateRepository;
+import com.foodway.api.repository.*;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
@@ -45,6 +42,8 @@ public class CustomerService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     UserController userController;
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -101,6 +100,7 @@ public class CustomerService {
         Customer customer = getCustomer(idCustomer).getBody();
         Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(idCustomer);
         long customerQtdComments = commentRepository.countByIdCustomer(idCustomer);
+        long customerQtdUpvotes = upvoteRepository.countByIdCustomer(idCustomer);
         List<Comment> comments = commentRepository.findTop4ByIdCustomer(idCustomer).orElse(new ArrayList<>());
         List<Favorite> favorites = favoriteRepository.findTop4ByIdCustomer(idCustomer).orElse(new ArrayList<>());
         List<EstablishmentDTO> favoriteEstablishments = new ArrayList<>();
@@ -118,7 +118,7 @@ public class CustomerService {
             favoriteEstablishments.add(establishmentDTO);
         });
 
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, commentDTOS, favoriteEstablishments);
+        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, customerQtdUpvotes, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
     }
 
@@ -177,10 +177,13 @@ public class CustomerService {
 
     @NotNull
     private SearchCustomerDTO getSearchCustomerDTO(Customer customer) {
+
         int sizeCulinary = customer.getCulinary().size();
-        final long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        long countComments = commentRepository.countByIdCustomer(customer.getIdUser());
         Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(customer.getIdUser());
         String culinary = null;
+
         if (sizeCulinary == 0 || customer.getCulinary().get(sizeCulinary-1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {
@@ -194,6 +197,7 @@ public class CustomerService {
                 customerAvgRate,
                 customer.getBio(),
                 countUpvotes,
+                countComments,
                 customer.getProfilePhoto());
     }
 }

@@ -35,7 +35,7 @@ public class ProductController {
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<List<Product>> getProducts(@PathVariable UUID idEstablishment) {
-        System.out.println("idEstablishment: " + idEstablishment);
+
         return productService.getAllProduct(idEstablishment);
     }
 

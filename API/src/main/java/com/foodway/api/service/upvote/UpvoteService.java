@@ -23,18 +23,16 @@ public class UpvoteService {
     CommentRepository commentRepository;
 
     public ResponseEntity<List<Upvote>> getAll() {
-        return upvoteRepository.findAll().isEmpty() ?
-                ResponseEntity.status(204).build() :
-                ResponseEntity.status(200).body(upvoteRepository.findAll());
+        List<Upvote> upvotes = upvoteRepository.findAll();
+        if (upvotes.isEmpty()) throw new ResponseStatusException(HttpStatus.NO_CONTENT, "List of Upvotes is empty");
+        return ResponseEntity.status(200).body(upvotes);
     }
 
     public ResponseEntity<Upvote> get(long id) {
-        if(!upvoteRepository.existsById(id)){
-            return ResponseEntity.status(404).build();
-        }
-
         Optional<Upvote> upvote = upvoteRepository.findById(id);
-
+        if(upvote.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found.");
+        }
         return ResponseEntity.status(200).body(upvote.get());
     }
 
@@ -48,23 +46,25 @@ public class UpvoteService {
         upvote.setIdComment(data.idComment());
         upvote.setIdEstablishment(data.idEstablishment());
         upvote.setIdCustomer(data.idCustomer());
+        upvoteRepository.save(upvote);
 
-        return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
+        return ResponseEntity.status(201).body(upvote);
     }
 
     public ResponseEntity<Upvote> put(long id, RequestUpvote data) {
         if(!upvoteRepository.existsById(id)){
-            return ResponseEntity.status(404).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found");
         }
 
         Upvote upvote = upvoteRepository.findById(id).get();
         upvote.update(data);
-        return ResponseEntity.status(200).body(upvoteRepository.save(upvote));
+        upvoteRepository.save(upvote);
+        return ResponseEntity.status(200).body(upvote);
     }
 
     public ResponseEntity<Void> delete(long id) {
         if(!upvoteRepository.existsById(id)){
-            return ResponseEntity.status(404).build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found");
         }
         upvoteRepository.deleteById(id);
         return ResponseEntity.status(200).build();
