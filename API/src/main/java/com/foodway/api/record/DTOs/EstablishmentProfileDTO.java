@@ -14,6 +14,7 @@ public record EstablishmentProfileDTO(
         long qtdUpvotes,
         Integer qtdComments,
         long qtdRates,
-        List<CommentEstablishmentProfileDTO> comments
+        List<CommentEstablishmentProfileDTO> comments,
+        String profileHeaderImg
 ) {
 }

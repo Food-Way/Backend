@@ -84,7 +84,8 @@ public class EstablishmentService {
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
-                commentDTOs
+                commentDTOs,
+                establishment.getProfileHeaderImg()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
