@@ -97,6 +97,7 @@ public class EstablishmentService {
             Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
             for (Comment reply : comment.getReplies()) {
                 repliesDTOs.add(new CommentEstablishmentProfileDTO(
+                        comment.getIdPost(),
                         customer.getProfilePhoto(),
                         comment.getComment(),
                         comment.getGeneralRate(),
@@ -105,6 +106,7 @@ public class EstablishmentService {
                 ));
             }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
+                    comment.getIdPost(),
                     customer.getProfilePhoto(),
                     comment.getComment(),
                     comment.getGeneralRate(),
