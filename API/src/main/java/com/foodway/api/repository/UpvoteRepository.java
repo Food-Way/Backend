@@ -12,4 +12,6 @@ public interface UpvoteRepository extends JpaRepository<Upvote, Long> {
     Integer countUpvotesByComment(UUID idPost);
 
     long countByIdEstablishment(UUID idEstablishment);
+
+    long countByIdCustomer(UUID idCustomer);
 }

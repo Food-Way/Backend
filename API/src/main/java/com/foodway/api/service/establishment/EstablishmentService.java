@@ -69,6 +69,8 @@ public class EstablishmentService {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = establishment.getPostList();
         List<CommentEstablishmentProfileDTO> commentDTOs = createCommentDTO(comments);
+        long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
+        long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
 
         EstablishmentProfileDTO establishmentProfileDTO = new EstablishmentProfileDTO(
                 establishment.getEstablishmentName(),
@@ -79,9 +81,9 @@ public class EstablishmentService {
                 establishment.getServiceRate(),
                 establishment.getAddress().getLatitude(),
                 establishment.getAddress().getLongitude(),
-                upvoteRepository.countByIdEstablishment(idEstablishment),
+                qtdUpvotes,
                 establishment.getPostList().size(),
-                rateRepository.countByIdEstablishment(idEstablishment),
+                qtdRates,
                 commentDTOs
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
@@ -95,16 +97,16 @@ public class EstablishmentService {
             Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
             for (Comment reply : comment.getReplies()) {
                 repliesDTOs.add(new CommentEstablishmentProfileDTO(
-                        customer.getName(),
                         customer.getProfilePhoto(),
+                        comment.getComment(),
                         comment.getGeneralRate(),
                         comment.getUpvotes(),
                         null
                 ));
             }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
-                    customer.getName(),
                     customer.getProfilePhoto(),
+                    comment.getComment(),
                     comment.getGeneralRate(),
                     comment.getUpvotes(),
                     repliesDTOs
