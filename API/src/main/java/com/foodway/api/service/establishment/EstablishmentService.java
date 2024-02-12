@@ -1,6 +1,7 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.controller.UserController;
+import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
@@ -95,7 +96,7 @@ public class EstablishmentService {
         List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
 
         for (Comment comment : comments) {
-            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
+            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElse(new Customer());
             for (Comment reply : comment.getReplies()) {
                 repliesDTOs.add(new CommentEstablishmentProfileDTO(
                         comment.getIdPost(),

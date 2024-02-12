@@ -107,6 +107,9 @@ public abstract class User {
     }
 
     public String getProfilePhoto() {
+        if (profilePhoto == null || profilePhoto.isEmpty() || profilePhoto.isBlank()) {
+            return "https://foodway.blob.core.windows.net/public/default-user-image.png";
+        }
         return profilePhoto;
     }
 
