@@ -17,7 +17,8 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     long countByIdCustomer(UUID idCustomer);
 
     @Query("""
-            SELECT c FROM com.foodway.api.model.Comment c ORDER BY c.generalRate DESC
+            SELECT c FROM com.foodway.api.model.Comment c
+            WHERE idEstablishment = ?1
             """)
-    List<Comment> findAllOrderByGeneralRateDesc();
+    List<Comment> findAllFromidEstablishment(UUID idEstablishment);
 }
