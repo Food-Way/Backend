@@ -15,10 +15,7 @@ import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.foodway.api.utils.Fila;
 import com.foodway.api.utils.Pilha;
@@ -143,20 +140,20 @@ public class CommentService {
         return sum / count;
     }
 
-    public ResponseEntity<Fila<Comment>> getBetterAvaliated() {
-        List<Comment> comments = commentRepository.findAllOrderByGeneralRateDesc();
+    public ResponseEntity<List<Comment>> getMostVoted(UUID idEstablishment) {
+        List<Comment> comments = commentRepository.findAllFromidEstablishment(idEstablishment);
         if(comments.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NO_CONTENT);
         }
 
-       Fila<Comment> fila = new Fila<>(comments.size());
-
-        for (int i = 0; i < comments.size(); i++) {
-            Comment current = comments.get(i);
-            fila.insert(current);
+        for (Comment comment : comments) {
+            countUpvotesOfComment(comment);
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         }
 
-        return ResponseEntity.status(200).body(fila);
+        Collections.sort(comments, Comparator.comparingInt(Comment::getUpvotes).reversed());
+
+        return ResponseEntity.status(200).body(comments);
     }
 
 

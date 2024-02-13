@@ -48,14 +48,14 @@ public class CommentController {
         return commentService.get(id);
     }
 
-    @GetMapping("/better-avaliated")
+    @GetMapping("/most-voted/{idEstablishment}")
     @Operation(summary = "Get a list of comments better avaliated", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return a list of comment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Fila<Comment>> getBetterAvaliated() {
-        return commentService.getBetterAvaliated();
+    public ResponseEntity<List<Comment>> getMostVoted(@PathVariable UUID idEstablishment) {
+        return commentService.getMostVoted(idEstablishment);
     }
 
     @PutMapping("/{id}")
