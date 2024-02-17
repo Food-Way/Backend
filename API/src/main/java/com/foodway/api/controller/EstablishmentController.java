@@ -97,14 +97,14 @@ public class EstablishmentController {
 
     }
 
-    @GetMapping("/culinary/{id}")
+    @GetMapping("/culinary")
     @Operation(summary = "Get all establishments by culinary", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return a establishment by culinary"),
             @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@PathVariable int idCulinary) {
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@RequestParam(required = false) Integer idCulinary) {
         return establishmentService.getEstablishmentsByCulinary(idCulinary);
     }
 
