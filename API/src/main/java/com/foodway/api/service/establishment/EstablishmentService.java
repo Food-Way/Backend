@@ -230,8 +230,13 @@ public class EstablishmentService {
         establishment.setRates(current);
     }
 
-    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(int idCulinary) {
-        List<Establishment> establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(Integer idCulinary) {
+        List<Establishment> establishments;
+        if(idCulinary == null){
+            establishments = establishmentRepository.findAll();
+        }else {
+             establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+        }
         return validateIsEmpty(establishments);
     }
 
