@@ -29,7 +29,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
-@Tag(name = "Customer")
+    @Tag(name = "Customer")
 public class CustomerController {
 
     @Autowired

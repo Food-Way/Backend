@@ -44,7 +44,8 @@ public class Establishment extends User {
     @Column(length = 14, unique = true)
     private String cnpj;
     private String phone;
-
+    @OneToMany
+    private List<Tag> tags;
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @JsonIgnore
@@ -69,6 +70,7 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
         this.rates = new ArrayList<>();
         this.postList = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg,
@@ -80,6 +82,7 @@ public class Establishment extends User {
         this.address = address;
         this.postList = new ArrayList<>();
         this.rates = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     @Override
@@ -101,6 +104,11 @@ public class Establishment extends User {
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
         this.postList = new ArrayList<>();
         this.rates = new ArrayList<>();
+        this.tags = new ArrayList<>();
+    }
+
+    public List<Tag> getTags() {
+        return tags;
     }
 
     public String getEstablishmentName() {

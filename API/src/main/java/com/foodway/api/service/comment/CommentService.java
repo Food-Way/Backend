@@ -2,31 +2,29 @@ package com.foodway.api.service.comment;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
-import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
+import com.foodway.api.record.DTOs.CommentDTO;
+import com.foodway.api.record.DTOs.DashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
-import com.foodway.api.repository.CommentRepository;
-import com.foodway.api.repository.RateRepository;
-import com.foodway.api.repository.UpvoteRepository;
-import com.foodway.api.repository.UserRepository;
+import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
-import com.foodway.api.utils.Fila;
-import com.foodway.api.utils.Pilha;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.print.attribute.standard.DateTimeAtCreation;
 
 @Service
 public class CommentService {
@@ -42,6 +40,8 @@ public class CommentService {
     CustomerService customerService;
     @Autowired
     private RateRepository rateRepository;
+    @Autowired
+    private EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         if (!userRepository.existsById(data.idCustomer())) {
@@ -123,9 +123,10 @@ public class CommentService {
     }
 
 
-    public void countUpvotesOfComment(Comment comment) {
+    public int countUpvotesOfComment(Comment comment) {
         Integer countUpvotes = upvoteRepository.countUpvotesByComment(comment.getIdPost());
         comment.setUpvotes(countUpvotes);
+        return countUpvotes;
     }
 
     public Double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
@@ -140,21 +141,39 @@ public class CommentService {
         return sum / count;
     }
 
-    public ResponseEntity<List<Comment>> getMostVoted(UUID idEstablishment) {
-        List<Comment> comments = commentRepository.findAllFromidEstablishment(idEstablishment);
-        if(comments.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+    public ResponseEntity<DashboardDTO> getMostVoted(UUID idEstablishment) {
+        List<Comment> c = commentRepository.findAllFromidEstablishment(idEstablishment);
+        Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
+        List<CommentDTO> comments = new ArrayList<>();
+
+        if(c.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no comment!");
+        }
+        if (!establishment.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not exist!");
+        }
+        int date = LocalDateTime.now().getDayOfMonth();
+        Integer qtdEvaluationForWeek = 0;
+
+        for (Comment comment : c) {
+            int countUpvotes = countUpvotesOfComment(comment);
+            Double generalRate = comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+            comments.add(new CommentDTO(establishment.get().getEstablishmentName(),
+                    comment.getComment(),
+                    generalRate, countUpvotes));
+
+            int commentDate = comment.getCreatedAt().getDayOfMonth();
+            if(commentDate >= date - 7 && commentDate <= date) qtdEvaluationForWeek++;
         }
 
-        for (Comment comment : comments) {
-            countUpvotesOfComment(comment);
-            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
-        }
+        Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
 
-        Collections.sort(comments, Comparator.comparingInt(Comment::getUpvotes).reversed());
+        DashboardDTO dashboardDTO = new DashboardDTO(
+                comments,
+                establishment.get().getGeneralRate(),
+                qtdEvaluationForWeek
+        );
 
-        return ResponseEntity.status(200).body(comments);
+        return ResponseEntity.status(200).body(dashboardDTO);
     }
-
-
 }

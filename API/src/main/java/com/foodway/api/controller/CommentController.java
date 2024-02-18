@@ -2,6 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
+import com.foodway.api.record.DTOs.DashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
@@ -54,7 +55,7 @@ public class CommentController {
             @ApiResponse(responseCode = "200", description = "Return a list of comment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Comment>> getMostVoted(@PathVariable UUID idEstablishment) {
+    public ResponseEntity<DashboardDTO> getMostVoted(@PathVariable UUID idEstablishment) {
         return commentService.getMostVoted(idEstablishment);
     }
 
