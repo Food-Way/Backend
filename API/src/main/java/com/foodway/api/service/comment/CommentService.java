@@ -141,7 +141,7 @@ public class CommentService {
         return sum / count;
     }
 
-    public ResponseEntity<DashboardDTO> getMostVoted(UUID idEstablishment) {
+    public ResponseEntity<DashboardDTO> getDashboardData(UUID idEstablishment) {
         List<Comment> c = commentRepository.findAllFromidEstablishment(idEstablishment);
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
         List<CommentDTO> comments = new ArrayList<>();
