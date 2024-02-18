@@ -24,6 +24,7 @@ public class TagController {
     public ResponseEntity<List<com.foodway.api.model.Tag>> getAll() {
         return tagService.getAll();
     }
+
     @GetMapping("/{idTag}")
     public ResponseEntity<Optional<com.foodway.api.model.Tag>> get(@PathVariable Long idTag) {
         return tagService.get(idTag);
@@ -34,7 +35,7 @@ public class TagController {
         return tagService.post(requestTag);
     }
 
-    @DeleteMapping("/{idTag}")
+    @PutMapping("/{idTag}")
     public ResponseEntity<com.foodway.api.model.Tag> put(@PathVariable Long idTag, @RequestBody UpdateTag updateTag) {
         return tagService.put(idTag, updateTag);
     }
