@@ -1,4 +1,4 @@
-package com.foodway.api.service;
+package com.foodway.api.service.tag;
 
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Tag;
@@ -65,7 +65,7 @@ public class TagService {
         Tag tag = t.get();
         tag.setIdEstablishment(null);
         tagRepository.delete(tag);
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.status(200).build();
     }
 
     public ResponseEntity<Tag> put(Long idTag, UpdateTag updateTag) {

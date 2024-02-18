@@ -2,7 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.record.RequestTag;
 import com.foodway.api.record.UpdateTag;
-import com.foodway.api.service.TagService;
+import com.foodway.api.service.tag.TagService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
