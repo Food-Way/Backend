@@ -232,7 +232,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(Integer idCulinary) {
         List<Establishment> establishments;
-        if(idCulinary == null){
+        if(idCulinary == 999){
             establishments = establishmentRepository.findAll();
         }else {
              establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
