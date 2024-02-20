@@ -352,7 +352,11 @@ public class EstablishmentService {
         List<Comment> comments = establishment.getPostList();
         List<CommentDTO> commentDTOs = new ArrayList<>();
         for (Comment comment : comments) {
-            commentDTOs.add(new CommentDTO(establishment.getEstablishmentName(),null, comment.getComment(), comment.getGeneralRate(),comment.getUpvotes()));
+            commentDTOs.add(new CommentDTO(
+                    establishment.getEstablishmentName(),
+                    comment.getComment(),
+                    comment.getGeneralRate(),
+                    comment.getUpvotes()));
         }
         return ResponseEntity.ok(commentDTOs);
     }

@@ -42,19 +42,19 @@ public class TagService {
     public ResponseEntity<Tag> post(RequestTag requestTag) {
         Tag tag = new Tag(requestTag);
         Optional<Establishment> e = establishmentRepository.findById(tag.getIdEstablishment());
-        if (e.isPresent()) {
+        if (!e.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not exist!");
         }
         Establishment establishment = e.get();
         establishment.getTags().forEach(t -> {
-            if(t.getName() == tag.getName()){
+            if(t.getName().equals(tag.getName())){
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tag already does exist!");
             }
         });
-        establishment.getTags().add(tag);
+        establishment.addTags(tag);
         tag.setIdEstablishment(establishment.getIdUser());
-
-        return ResponseEntity.status(201).body(tagRepository.save(tag));
+        tagRepository.save(tag);
+        return ResponseEntity.status(201).body(tag);
     }
 
     public ResponseEntity<Tag> delete(Long idTag) {

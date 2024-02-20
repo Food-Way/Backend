@@ -6,6 +6,7 @@ import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
 import com.foodway.api.record.DTOs.CommentDTO;
 import com.foodway.api.record.DTOs.DashboardDTO;
+import com.foodway.api.record.DTOs.EstablishmentDashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
@@ -13,6 +14,7 @@ import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -100,7 +102,8 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAll();
         for (Comment comment : comments) {
             countUpvotesOfComment(comment);
-            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));        }
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+        }
         return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
 
@@ -133,7 +136,7 @@ public class CommentService {
         List<Rate> rates = rateRepository.findByCommentOfCustomer(idCustomer, idEstablishment);
         int count = 0;
         Double sum = 0.0;
-        for (Rate rate: rates) {
+        for (Rate rate : rates) {
             sum += rate.getRatePoint();
             count++;
         }
@@ -146,32 +149,56 @@ public class CommentService {
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
         List<CommentDTO> comments = new ArrayList<>();
 
-        if(c.isEmpty()){
+        if (c.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no comment!");
         }
         if (!establishment.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not exist!");
         }
-        int date = LocalDateTime.now().getDayOfMonth();
-        Integer qtdEvaluationForWeek = 0;
 
-        for (Comment comment : c) {
+        Map<String, Integer> qtdEvaluationDaysForWeek = new HashMap<>(Map.ofEntries(
+                Map.entry("MONDAY", 0),
+                Map.entry("TUESDAY", 0),
+                Map.entry("WEDNESDAY", 0),
+                Map.entry("THURSDAY", 0),
+                Map.entry("FRIDAY", 0),
+                Map.entry("SATURDAY", 0),
+                Map.entry("SUNDAY", 0)
+        ));
+
+
+        for (int i = 0; i < 10; i++) {
+            Comment comment = c.get(i);
             int countUpvotes = countUpvotesOfComment(comment);
             Double generalRate = comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
-            comments.add(new CommentDTO(establishment.get().getEstablishmentName(),
-                    comment.getComment(),
-                    generalRate, countUpvotes));
+            comments.add(
+                    new CommentDTO(
+                            establishment.get().getEstablishmentName(),
+                            comment.getComment(),
+                            generalRate,
+                            countUpvotes
+                    ));
 
-            int commentDate = comment.getCreatedAt().getDayOfMonth();
-            if(commentDate >= date - 7 && commentDate <= date) qtdEvaluationForWeek++;
+            String commentDayOfWeek = String.valueOf(comment.getCreatedAt().getDayOfWeek());
+
+            int current = qtdEvaluationDaysForWeek.getOrDefault(commentDayOfWeek.toUpperCase(), 0);
+            qtdEvaluationDaysForWeek.put(commentDayOfWeek, current + 1);
         }
 
         Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
 
+        EstablishmentDashboardDTO establishmentDashboardDTO = new EstablishmentDashboardDTO(
+                establishment.get().getGeneralRate(),
+                establishment.get().getAmbientRate(),
+                establishment.get().getServiceRate(),
+                establishment.get().getFoodRate(),
+                establishment.get().getTags()
+        );
+
         DashboardDTO dashboardDTO = new DashboardDTO(
                 comments,
-                establishment.get().getGeneralRate(),
-                qtdEvaluationForWeek
+                establishmentDashboardDTO,
+                qtdEvaluationDaysForWeek
         );
 
         return ResponseEntity.status(200).body(dashboardDTO);

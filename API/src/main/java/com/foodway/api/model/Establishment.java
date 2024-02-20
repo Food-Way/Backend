@@ -111,6 +111,10 @@ public class Establishment extends User {
         return tags;
     }
 
+    public void addTags(Tag tag){
+        tags.add(tag);
+    }
+
     public String getEstablishmentName() {
         return establishmentName;
     }

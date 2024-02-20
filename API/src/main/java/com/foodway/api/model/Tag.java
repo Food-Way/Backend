@@ -23,7 +23,7 @@ public class Tag {
     private Long idTag;
     @NotNull
     private UUID idEstablishment;
-    @NotBlank
+    @NotNull
     private ETagName name;
     @NotNull
     private boolean enable;
