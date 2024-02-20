@@ -59,12 +59,14 @@ public class TagService {
 
     public ResponseEntity<Tag> delete(Long idTag) {
         Optional<Tag> t = tagRepository.findById(idTag);
+        Optional<Establishment> establishment = establishmentRepository.findById(t.get().getIdEstablishment());
         if (!t.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tag not found!");
         }
+
         Tag tag = t.get();
-        tag.setIdEstablishment(null);
-        tagRepository.delete(tag);
+        establishment.get().getTags().remove(tag);
+        tagRepository.deleteById(idTag);
         return ResponseEntity.status(200).build();
     }
 

@@ -14,12 +14,6 @@ import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
-<<<<<<< HEAD
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-=======
->>>>>>> 0b47f2ca5cfca0e1d63a5a2558e247eb55276956
-import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -9,7 +9,7 @@ import java.util.UUID;
 public record RequestTag(
         @NotNull
         UUID idEstablishment,
-        @NotBlank
+        @NotNull
         ETagName name,
         @NotNull
         boolean enable
