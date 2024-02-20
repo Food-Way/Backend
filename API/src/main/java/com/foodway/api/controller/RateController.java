@@ -53,12 +53,8 @@ public class RateController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-
-
     public ResponseEntity<Rate> post(@RequestBody @Valid RequestRate rate){
         return rateService.post(rate);
-
-
     }
 
     @PutMapping("/{id}")

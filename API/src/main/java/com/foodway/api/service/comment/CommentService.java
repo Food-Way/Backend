@@ -14,19 +14,19 @@ import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
+<<<<<<< HEAD
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+=======
+>>>>>>> 0b47f2ca5cfca0e1d63a5a2558e247eb55276956
 import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import javax.print.attribute.standard.DateTimeAtCreation;
 
 @Service
 public class CommentService {
@@ -171,6 +171,7 @@ public class CommentService {
             Comment comment = c.get(i);
             int countUpvotes = countUpvotesOfComment(comment);
             Double generalRate = comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+
             comments.add(
                     new CommentDTO(
                             establishment.get().getEstablishmentName(),
