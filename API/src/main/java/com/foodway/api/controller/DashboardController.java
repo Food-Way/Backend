@@ -26,7 +26,7 @@ public class DashboardController {
     @GetMapping("/{idEstablishment}")
     @Operation(summary = "Get datas to use in dashboard", method = "GET")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return a list of comment"),
+            @ApiResponse(responseCode = "200", description = "Return dashboard data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<DashboardDTO> getDashboardData(@PathVariable UUID idEstablishment) {
