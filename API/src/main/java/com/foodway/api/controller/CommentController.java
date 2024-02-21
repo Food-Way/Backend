@@ -15,6 +15,7 @@ import com.foodway.api.utils.Fila;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comments")
+@Tag(name = "Comment")
 public class CommentController {
 
     @Autowired
@@ -47,16 +49,6 @@ public class CommentController {
     })
     public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
         return commentService.get(id);
-    }
-
-    @GetMapping("/dashboard/{idEstablishment}")
-    @Operation(summary = "Get a list of comments better avaliated", method = "GET")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return a list of comment"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<DashboardDTO> getDashboardData(@PathVariable UUID idEstablishment) {
-        return commentService.getDashboardData(idEstablishment);
     }
 
     @PutMapping("/{id}")
