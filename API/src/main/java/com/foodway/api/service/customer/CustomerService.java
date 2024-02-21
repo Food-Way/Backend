@@ -108,7 +108,7 @@ public class CustomerService {
 
         comments.forEach(comment -> {
             String establishmentName = establishmentService.getEstablishment(comment.getIdEstablishment()).getBody().getEstablishmentName();
-            CommentDTO commentDTO = new CommentDTO(establishmentName, "Teste", comment.getComment(), comment.getGeneralRate(), comment.getUpvotes());
+            CommentDTO commentDTO = new CommentDTO(establishmentName, comment.getComment(), comment.getGeneralRate(), comment.getUpvotes());
             commentDTOS.add(commentDTO);
         });
 

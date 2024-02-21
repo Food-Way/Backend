@@ -2,29 +2,23 @@ package com.foodway.api.service.comment;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
-import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
+import com.foodway.api.record.DTOs.CommentDTO;
+import com.foodway.api.record.DTOs.DashboardDTO;
+import com.foodway.api.record.DTOs.EstablishmentDashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
-import com.foodway.api.repository.CommentRepository;
-import com.foodway.api.repository.RateRepository;
-import com.foodway.api.repository.UpvoteRepository;
-import com.foodway.api.repository.UserRepository;
+import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
 
 import java.util.*;
 
-import com.foodway.api.utils.Fila;
-import com.foodway.api.utils.Pilha;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,6 +36,8 @@ public class CommentService {
     CustomerService customerService;
     @Autowired
     private RateRepository rateRepository;
+    @Autowired
+    private EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         if (!userRepository.existsById(data.idCustomer())) {
@@ -100,7 +96,8 @@ public class CommentService {
         List<Comment> comments = commentRepository.findAll();
         for (Comment comment : comments) {
             countUpvotesOfComment(comment);
-            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));        }
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+        }
         return ResponseEntity.status(200).body(commentRepository.findById(id));
     }
 
@@ -123,37 +120,22 @@ public class CommentService {
     }
 
 
-    public void countUpvotesOfComment(Comment comment) {
+    public int countUpvotesOfComment(Comment comment) {
         Integer countUpvotes = upvoteRepository.countUpvotesByComment(comment.getIdPost());
         comment.setUpvotes(countUpvotes);
+        return countUpvotes;
     }
 
     public Double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
         List<Rate> rates = rateRepository.findByCommentOfCustomer(idCustomer, idEstablishment);
         int count = 0;
         Double sum = 0.0;
-        for (Rate rate: rates) {
+        for (Rate rate : rates) {
             sum += rate.getRatePoint();
             count++;
         }
         if (count == 0) return 0.0;
         return sum / count;
-    }
-
-    public ResponseEntity<List<Comment>> getMostVoted(UUID idEstablishment) {
-        List<Comment> comments = commentRepository.findAllFromidEstablishment(idEstablishment);
-        if(comments.isEmpty()){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT);
-        }
-
-        for (Comment comment : comments) {
-            countUpvotesOfComment(comment);
-            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
-        }
-
-        Collections.sort(comments, Comparator.comparingInt(Comment::getUpvotes).reversed());
-
-        return ResponseEntity.status(200).body(comments);
     }
 
 

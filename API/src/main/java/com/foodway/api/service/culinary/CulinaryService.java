@@ -26,7 +26,6 @@ public class CulinaryService {
     public ResponseEntity<Culinary> saveCulinary(RequestCulinary culinary) {
         Culinary createdCulinary = new Culinary(culinary);
         return ResponseEntity.status(201).body(culinaryRepository.save(createdCulinary));
-
     }
 
     public ResponseEntity<Culinary> putCulinary(int id, RequestCulinary culinary) {

@@ -2,6 +2,7 @@ package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.Comment;
+import com.foodway.api.record.DTOs.DashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
@@ -14,6 +15,7 @@ import com.foodway.api.utils.Fila;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comments")
+@Tag(name = "Comment")
 public class CommentController {
 
     @Autowired
@@ -46,16 +49,6 @@ public class CommentController {
     })
     public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
         return commentService.get(id);
-    }
-
-    @GetMapping("/most-voted/{idEstablishment}")
-    @Operation(summary = "Get a list of comments better avaliated", method = "GET")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return a list of comment"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<List<Comment>> getMostVoted(@PathVariable UUID idEstablishment) {
-        return commentService.getMostVoted(idEstablishment);
     }
 
     @PutMapping("/{id}")
