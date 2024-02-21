@@ -2,9 +2,11 @@ package com.foodway.api.repository;
 
 import com.foodway.api.model.Comment;
 import com.foodway.api.utils.Fila;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.awt.print.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,5 +22,5 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
             SELECT c FROM com.foodway.api.model.Comment c
             WHERE idEstablishment = ?1
             """)
-    List<Comment> findAllFromidEstablishment(UUID idEstablishment);
+    List<Comment> findByidEstablishment(UUID idEstablishment, PageRequest pageable);
 }

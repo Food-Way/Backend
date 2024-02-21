@@ -9,6 +9,7 @@ import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.service.comment.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,13 +27,11 @@ public class DashboardService {
     CommentService commentService;
 
     public ResponseEntity<DashboardDTO> getDashboardData(UUID idEstablishment) {
-        List<Comment> c = commentRepository.findAllFromidEstablishment(idEstablishment);
+        PageRequest pageable = PageRequest.of(0, 10);
+        List<Comment> c = commentRepository.findByidEstablishment(idEstablishment, pageable);
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
         List<CommentDTO> comments = new ArrayList<>();
 
-        if (c.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "There is no comment!");
-        }
         if (!establishment.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not exist!");
         }
@@ -47,27 +46,28 @@ public class DashboardService {
                 Map.entry("SUNDAY", 0)
         ));
 
+        if (!c.isEmpty()) {
+            for (int i = 0; i < c.size(); i++) {
+                Comment comment = c.get(i);
+                int countUpvotes = commentService.countUpvotesOfComment(comment);
+                Double generalRate = comment.setGeneralRate(commentService.generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
 
-        for (int i = 0; i < 10; i++) {
-            Comment comment = c.get(i);
-            int countUpvotes = commentService.countUpvotesOfComment(comment);
-            Double generalRate = comment.setGeneralRate(commentService.generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+                comments.add(
+                        new CommentDTO(
+                                establishment.get().getEstablishmentName(),
+                                comment.getComment(),
+                                generalRate,
+                                countUpvotes
+                        ));
 
-            comments.add(
-                    new CommentDTO(
-                            establishment.get().getEstablishmentName(),
-                            comment.getComment(),
-                            generalRate,
-                            countUpvotes
-                    ));
+                String commentDayOfWeek = String.valueOf(comment.getCreatedAt().getDayOfWeek());
 
-            String commentDayOfWeek = String.valueOf(comment.getCreatedAt().getDayOfWeek());
+                int current = qtdEvaluationDaysForWeek.getOrDefault(commentDayOfWeek.toUpperCase(), 0);
+                qtdEvaluationDaysForWeek.put(commentDayOfWeek, current + 1);
+            }
 
-            int current = qtdEvaluationDaysForWeek.getOrDefault(commentDayOfWeek.toUpperCase(), 0);
-            qtdEvaluationDaysForWeek.put(commentDayOfWeek, current + 1);
+            Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
         }
-
-        Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
 
         EstablishmentDashboardDTO establishmentDashboardDTO = new EstablishmentDashboardDTO(
                 establishment.get().getGeneralRate(),
