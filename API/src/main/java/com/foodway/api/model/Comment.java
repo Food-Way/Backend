@@ -164,8 +164,9 @@ public class Comment {
         return generalRate;
     }
 
-    public void setGeneralRate(Double generalRate) {
+    public Double setGeneralRate(Double generalRate) {
         this.generalRate = generalRate;
+        return generalRate;
     }
 
     public void addReply(Comment reply) {

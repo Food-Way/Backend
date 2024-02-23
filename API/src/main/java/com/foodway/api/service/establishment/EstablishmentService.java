@@ -173,7 +173,7 @@ public class EstablishmentService {
         Establishment establishment = new Establishment(establishmentRequest);
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyBdmmGVqp3SOAYkQ8ef1SN9PDBkm8JjD_s");
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
         Establishment establishmentSaved = establishmentRepository.save(establishment);
@@ -230,8 +230,13 @@ public class EstablishmentService {
         establishment.setRates(current);
     }
 
-    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(int idCulinary) {
-        List<Establishment> establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(Integer idCulinary) {
+        List<Establishment> establishments;
+        if(idCulinary == 999){
+            establishments = establishmentRepository.findAll();
+        }else {
+             establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+        }
         return validateIsEmpty(establishments);
     }
 
@@ -352,7 +357,11 @@ public class EstablishmentService {
         List<Comment> comments = establishment.getPostList();
         List<CommentDTO> commentDTOs = new ArrayList<>();
         for (Comment comment : comments) {
-            commentDTOs.add(new CommentDTO(establishment.getEstablishmentName(),null, comment.getComment(), comment.getGeneralRate(),comment.getUpvotes()));
+            commentDTOs.add(new CommentDTO(
+                    establishment.getEstablishmentName(),
+                    comment.getComment(),
+                    comment.getGeneralRate(),
+                    comment.getUpvotes()));
         }
         return ResponseEntity.ok(commentDTOs);
     }
