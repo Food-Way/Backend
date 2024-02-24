@@ -39,10 +39,6 @@ public class SecurityConfiguration {
     @Autowired
     AuthenticationEntryPoint authenticationEntryPoint;
 
-//    @PostConstruct
-//    public void init() {
-//        authenticationEntryPoint.setSecurityConfiguration(this);
-//    }
     private static final String ORIGENS_PERMITIDAS = "*";
 
 
@@ -102,10 +98,10 @@ public class SecurityConfiguration {
         return authenticationManagerBuilder.build();
     }
 
-//    @Bean
-//    public AuthenticationEntryPoint jwtAuthenticationEntryPointBean() {
-//        return new AuthenticationEntryPoint();
-//    }
+    @Bean
+    public AuthenticationEntryPoint jwtAuthenticationEntryPointBean() {
+        return new AuthenticationEntryPoint();
+    }
 
     @Bean
     public AuthenticationFilter jwtAuthenticationFilterBean() {
@@ -124,9 +120,9 @@ public class SecurityConfiguration {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuracao = new CorsConfiguration();
-        configuracao.applyPermitDefaultValues();
-        configuracao.setAllowedMethods(
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.applyPermitDefaultValues();
+        configuration.setAllowedMethods(
                 Arrays.asList(
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
@@ -137,11 +133,11 @@ public class SecurityConfiguration {
                         HttpMethod.HEAD.name(),
                         HttpMethod.TRACE.name()));
 
-        configuracao.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
+        configuration.setExposedHeaders(List.of(HttpHeaders.CONTENT_DISPOSITION));
 
-        UrlBasedCorsConfigurationSource origem = new UrlBasedCorsConfigurationSource();
-        origem.registerCorsConfiguration("/**", configuracao);
+        UrlBasedCorsConfigurationSource origin = new UrlBasedCorsConfigurationSource();
+        origin.registerCorsConfiguration("/**", configuration);
 
-        return origem;
+        return origin;
     }
 }

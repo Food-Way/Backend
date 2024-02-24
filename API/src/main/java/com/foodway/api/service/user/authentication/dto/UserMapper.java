@@ -15,8 +15,6 @@ import static com.foodway.api.model.Enums.EEntity.CUSTOMER;
 import static com.foodway.api.model.Enums.EEntity.ESTABLISHMENT;
 
 public class UserMapper {
-
-
     public static User of(UserCreateDto userCreateDto) {
         User user = new Customer();
 
@@ -43,5 +41,4 @@ public class UserMapper {
         userTokenDto.setTypeUser(typeUser);
         return userTokenDto;
     }
-
 }

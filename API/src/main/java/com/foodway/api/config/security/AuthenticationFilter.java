@@ -21,9 +21,7 @@ import java.util.Objects;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AuthenticationFilter.class);
-
     private final AuthenticationService authenticationService;
-
     private final ManagerToken managerToken;
 
     public AuthenticationFilter(AuthenticationService authenticationService, ManagerToken managerToken) {
@@ -48,27 +46,22 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
                 LOGGER.trace("[FALHA AUTENTICACAO] - stack trace: {}", exception);
 
-
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
-
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             addUsernameInContext(request, username, jwtToken);
         }
-
         filterChain.doFilter(request, response);
     }
 
     private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {
-
         UserDetails userDetails = authenticationService.loadUserByUsername(username);
 
         if (managerToken.validateToken(jwtToken, userDetails)) {
-
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, ((UserDetails) userDetails).getAuthorities());
+                    userDetails, null, userDetails.getAuthorities());
 
             usernamePasswordAuthenticationToken
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

@@ -22,11 +22,9 @@ public class AuthenticationProvider implements org.springframework.security.auth
         final String username = authentication.getName();
         final String password = authentication.getCredentials().toString();
 
-
         UserDetails userDetails = this.userAuthenticationService.loadUserByUsername(username);
         if(this.passwordEncoder.matches(password, userDetails.getPassword())){
             return  new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
         }else{
             throw new BadCredentialsException("Usuário ou senha inválidos");
         }
