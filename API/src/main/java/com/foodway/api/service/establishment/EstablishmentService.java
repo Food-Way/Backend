@@ -1,7 +1,6 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.controller.UserController;
-import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
 import com.foodway.api.model.Enums.EEntity;
@@ -103,7 +102,7 @@ public class EstablishmentService {
                         customer.getProfilePhoto(),
                         comment.getComment(),
                         comment.getGeneralRate(),
-                        comment.getUpvotes(),
+                        comment.getUpvoteList().size(),
                         null
                 ));
             }
@@ -112,7 +111,7 @@ public class EstablishmentService {
                     customer.getProfilePhoto(),
                     comment.getComment(),
                     comment.getGeneralRate(),
-                    comment.getUpvotes(),
+                    comment.getUpvoteList().size(),
                     repliesDTOs
                 )
             );
@@ -304,7 +303,7 @@ public class EstablishmentService {
 
         for (Establishment establishment : establishments) {
             boolean isFavorite = favoriteRepository.existsByIdCustomerAndIdEstablishment(idSession, establishment.getIdUser());
-            SearchEstablishmentDTO searchEstablishmentDTO = getSeachEstablishmentDTO(establishment, isFavorite);
+            SearchEstablishmentDTO searchEstablishmentDTO = getSearchEstablishmentDTO(establishment, isFavorite);
             searchEstablishmentDTOs.add(searchEstablishmentDTO);
         }
 
@@ -312,7 +311,7 @@ public class EstablishmentService {
     }
 
     @NotNull
-    private SearchEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment, boolean isFavorite) {
+    private SearchEstablishmentDTO getSearchEstablishmentDTO(Establishment establishment, boolean isFavorite) {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
         final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
@@ -361,7 +360,7 @@ public class EstablishmentService {
                     establishment.getEstablishmentName(),
                     comment.getComment(),
                     comment.getGeneralRate(),
-                    comment.getUpvotes()));
+                    comment.getUpvoteList().size()));
         }
         return ResponseEntity.ok(commentDTOs);
     }

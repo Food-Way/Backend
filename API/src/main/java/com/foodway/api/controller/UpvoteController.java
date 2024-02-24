@@ -44,37 +44,15 @@ public class UpvoteController {
         return upvoteService.get(id);
     }
 
-    @PostMapping
-    @Operation(summary = "Post a new upvote", method = "POST")
+    @PatchMapping
+    @Operation(summary = "Post or delete an upvote", method = "PATCH")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return the posted upvote"),
+            @ApiResponse(responseCode = "200", description = "Return the upvote toggled"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Upvote> post(@RequestBody @Valid RequestUpvote data) {
-        return upvoteService.post(data);
+    public ResponseEntity<Upvote> patch(@RequestBody @Valid RequestUpvote data) {
+        return upvoteService.patch(data);
     }
 
-    @PutMapping("/{id}")
-    @Operation(summary = "Update upvote by ID", method = "PUT")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return the updated upvote"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = UpvoteNotFoundException.CODE, description = UpvoteNotFoundException.DESCRIPTION),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Upvote> put(@PathVariable int id, @RequestBody @Valid RequestUpvote data) {
-        return upvoteService.put(id, data);
-    }
-
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete upvote by ID", method = "DELETE")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Upvote deleted successfully"),
-            @ApiResponse(responseCode = UpvoteNotFoundException.CODE, description = UpvoteNotFoundException.DESCRIPTION),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Void> delete(@PathVariable int id) {
-        return upvoteService.delete(id);
-    }
 }

@@ -11,16 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UpvoteService {
     @Autowired
-    private UpvoteRepository upvoteRepository;
-    @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    private UpvoteRepository upvoteRepository;
 
     public ResponseEntity<List<Upvote>> getAll() {
         List<Upvote> upvotes = upvoteRepository.findAll();
@@ -30,56 +30,25 @@ public class UpvoteService {
 
     public ResponseEntity<Upvote> get(long id) {
         Optional<Upvote> upvote = upvoteRepository.findById(id);
-        if(upvote.isEmpty()){
+        if (upvote.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found.");
         }
         return ResponseEntity.status(200).body(upvote.get());
     }
 
-    public ResponseEntity<Upvote> post(RequestUpvote data) {
+    public ResponseEntity<Upvote> patch(RequestUpvote data) {
         Upvote upvote = new Upvote(data);
         final Comment comment = commentRepository.findById(data.idComment()).get();
-        if(existUpvote(upvote)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Upvote already exist");
-        }
-        comment.addUpvote(upvote);
-        upvote.setIdComment(data.idComment());
-        upvote.setIdEstablishment(data.idEstablishment());
-        upvote.setIdCustomer(data.idCustomer());
-        upvoteRepository.save(upvote);
+        boolean existsUpvote = upvoteRepository.existsByIdCommentAndIdCustomer(upvote.getIdComment(), upvote.getIdCustomer());
 
+        if (existsUpvote) {
+            comment.getUpvoteList().remove(upvote);
+            upvoteRepository.delete(upvote);
+            return ResponseEntity.status(200).body(upvote);
+        }
+
+        comment.getUpvoteList().add(upvote);
+        upvoteRepository.save(upvote);
         return ResponseEntity.status(201).body(upvote);
-    }
-
-    public ResponseEntity<Upvote> put(long id, RequestUpvote data) {
-        if(!upvoteRepository.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found");
-        }
-
-        Upvote upvote = upvoteRepository.findById(id).get();
-        upvote.update(data);
-        upvoteRepository.save(upvote);
-        return ResponseEntity.status(200).body(upvote);
-    }
-
-    public ResponseEntity<Void> delete(long id) {
-        if(!upvoteRepository.existsById(id)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Upvote not found");
-        }
-        upvoteRepository.deleteById(id);
-        return ResponseEntity.status(200).build();
-    }
-
-    public boolean existUpvote(Upvote upvote){
-        List<Upvote> upvotes = upvoteRepository.findAll();
-        if(upvotes.isEmpty()) {
-            return false;
-        }
-        for (Upvote u : upvotes) {
-            if(u.getIdComment().equals(upvote.getIdComment()) && u.getIdCustomer().equals(upvote.getIdCustomer())){
-                return true;
-            }
-        }
-        return false;
     }
 }
