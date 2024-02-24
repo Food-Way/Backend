@@ -56,10 +56,10 @@ public class Establishment extends User {
     private List<Comment> postList;
     @OneToMany(mappedBy = "establishment", cascade = CascadeType.REMOVE)
     private List<Product> menu;
+
     public Establishment() {
         this.rates = new ArrayList<>();
     }
-
 
     public Establishment(RequestUserEstablishment establishment) {
         super(establishment.name(), establishment.email(), establishment.password(), establishment.typeUser(), establishment.profilePhoto(), establishment.profileHeaderImg(), establishment.culinary());

@@ -159,7 +159,6 @@ public class CustomerService {
         return ResponseEntity.status(401).build();
     }
 
-
     public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {
 
         List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
@@ -179,7 +178,7 @@ public class CustomerService {
     private SearchCustomerDTO getSearchCustomerDTO(Customer customer) {
 
         int sizeCulinary = customer.getCulinary().size();
-        long countUpvotes = customerRepository.countByUpvoteList_IdCustomer(customer.getIdUser());
+        long countUpvotes = upvoteRepository.countByIdCustomer(customer.getIdUser());
         long countComments = commentRepository.countByIdCustomer(customer.getIdUser());
         Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(customer.getIdUser());
         String culinary = null;
