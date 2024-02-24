@@ -26,18 +26,7 @@ public class AuthenticationService implements UserDetailsService {
         if(userOptional.isEmpty()){
             throw new UserNotFoundException("User %s not found".formatted(email));
         }
-        User user = userOptional.get();
-        String passwordData = user.getPassword();
 
-        // Verifique a senha usando o BCryptPasswordEncoder
-//
-//        boolean wrongPassword = passwordEncoder.matches("password123", passwordData);
-//
-//        if (!wrongPassword) {
-//            throw new BadCredentialsException("Senha incorreta");
-//        }
-
-        return new UserDetailsDto(user);
-
+        return new UserDetailsDto(userOptional.get());
     }
 }
