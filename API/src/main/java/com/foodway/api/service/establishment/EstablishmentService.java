@@ -92,27 +92,27 @@ public class EstablishmentService {
 
     private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
         List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
-        List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
+//        List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
 
         for (Comment comment : comments) {
             Customer customer = customerRepository.findById(comment.getIdCustomer()).orElse(new Customer());
-            for (Comment reply : comment.getReplies()) {
-                repliesDTOs.add(new CommentEstablishmentProfileDTO(
-                        comment.getIdPost(),
-                        customer.getProfilePhoto(),
-                        comment.getComment(),
-                        comment.getGeneralRate(),
-                        comment.getUpvoteList().size(),
-                        null
-                ));
-            }
+//            for (Comment reply : comment.getReplies()) {
+//                repliesDTOs.add(new CommentEstablishmentProfileDTO(
+//                        comment.getIdPost(),
+//                        customer.getProfilePhoto(),
+//                        comment.getComment(),
+//                        comment.getGeneralRate(),
+//                        comment.getUpvoteList().size(),
+//                        null
+//                ));
+//            }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
                     comment.getIdPost(),
                     customer.getProfilePhoto(),
                     comment.getComment(),
                     comment.getGeneralRate(),
                     comment.getUpvoteList().size(),
-                    repliesDTOs
+                    null
                 )
             );
         }
