@@ -52,7 +52,7 @@ public class UpvoteController {
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
     public ResponseEntity<Upvote> patch(@RequestBody @Valid RequestUpvote data) {
-        return upvoteService.patch(data);
+        return upvoteService.toggleCommentUpvote(data);
     }
 
 }

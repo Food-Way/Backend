@@ -13,12 +13,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UpvoteService {
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
     @Autowired
     private UpvoteRepository upvoteRepository;
 
@@ -36,19 +35,20 @@ public class UpvoteService {
         return ResponseEntity.status(200).body(upvote.get());
     }
 
-    public ResponseEntity<Upvote> patch(RequestUpvote data) {
-        Upvote upvote = new Upvote(data);
-        final Comment comment = commentRepository.findById(data.idComment()).get();
-        boolean existsUpvote = upvoteRepository.existsByIdCommentAndIdCustomer(upvote.getIdComment(), upvote.getIdCustomer());
+    public ResponseEntity<Upvote> toggleCommentUpvote(RequestUpvote data) {
+        Comment comment = commentRepository.findById(data.idComment()).get();
+        Upvote existsUpvote = upvoteRepository.findByIdCommentAndIdCustomer(data.idComment(), data.idCustomer());
 
-        if (existsUpvote) {
-            comment.getUpvoteList().remove(upvote);
-            upvoteRepository.delete(upvote);
-            return ResponseEntity.status(200).body(upvote);
+        if (existsUpvote == null) {
+            Upvote upvote = new Upvote(data);
+            comment.addUpvote(upvote);
+            upvoteRepository.save(upvote);
+            return ResponseEntity.status(201).body(upvote);
         }
 
-        comment.getUpvoteList().add(upvote);
-        upvoteRepository.save(upvote);
-        return ResponseEntity.status(201).body(upvote);
+        comment.removeUpvote(existsUpvote);
+        upvoteRepository.delete(existsUpvote);
+        return ResponseEntity.status(200).build();
+
     }
 }
