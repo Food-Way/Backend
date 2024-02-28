@@ -1,5 +1,7 @@
 package com.foodway.api.record.DTOs;
 
+import com.foodway.api.model.Comment;
+
 import java.util.List;
 
 public record EstablishmentProfileDTO(
@@ -14,7 +16,7 @@ public record EstablishmentProfileDTO(
         long qtdUpvotes,
         Integer qtdComments,
         long qtdRates,
-        List<CommentEstablishmentProfileDTO> comments,
+        List<Comment> comments,
         String profileHeaderImg
 ) {
 }

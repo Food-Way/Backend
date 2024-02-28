@@ -15,5 +15,7 @@ public record RequestCommentChild (
         UUID idParent,
         @NotBlank
         String comment,
+        @NotBlank
+        String userPhoto,
         List<String> images
 ){}

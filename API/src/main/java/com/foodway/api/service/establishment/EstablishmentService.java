@@ -68,7 +68,6 @@ public class EstablishmentService {
     public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = establishment.getPostList();
-        List<CommentEstablishmentProfileDTO> commentDTOs = createCommentDTO(comments);
 
         long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
@@ -85,30 +84,28 @@ public class EstablishmentService {
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
-                commentDTOs,
+                comments,
                 establishment.getProfileHeaderImg()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
 
-    private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
-        List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
-
-        for (Comment comment : comments) {
-            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElse(new Customer());
-
-            commentDTOs.add(new CommentEstablishmentProfileDTO(
-                    comment.getIdPost(),
-                    customer.getProfilePhoto(),
-                    comment.getComment(),
-                    comment.getGeneralRate(),
-                    comment.getUpvoteList().size(),
-                    comment.getReplies()
-                )
-            );
-        }
-        return commentDTOs;
-    }
+//    private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
+//        List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
+//
+//        for (Comment comment : comments) {
+//            commentDTOs.add(new CommentEstablishmentProfileDTO(
+//                    comment.getIdPost(),
+//                    comment.getUserPhoto(),
+//                    comment.getComment(),
+//                    comment.getGeneralRate(),
+//                    comment.getUpvoteList().size(),
+//                    comment.getReplies()
+//                )
+//            );
+//        }
+//        return commentDTOs;
+//    }
 
 //    public ResponseEntity<List<Establishment>> getBestEstablishments() {
 //        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByGeneralRateDesc();
