@@ -178,6 +178,12 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
         Establishment establishment = new Establishment(establishmentRequest);
+        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
+        try {
+            simpleMailClient.aaa("/account-created", simpleMail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
         MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
@@ -185,9 +191,7 @@ public class EstablishmentService {
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
         Establishment establishmentSaved = establishmentRepository.save(establishment);
 
-        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
 
-        simpleMailClient.aaa("/account-created", simpleMail);
 
 
         return ResponseEntity.status(201).body(establishmentSaved);

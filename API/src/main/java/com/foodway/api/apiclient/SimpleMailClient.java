@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "simpleMailClient", url = "http://localhost:80")
 public interface SimpleMailClient {
 
-    @PostMapping("/{uri}")
+    @PostMapping("{uri}")
     void aaa(@PathVariable String uri, @RequestBody SimpleMail body);
 
 }
