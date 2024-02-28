@@ -11,6 +11,7 @@ public record EstablishmentProfileDTO(
         Double serviceRate,
         String lat,
         String lng,
+        String phone,
         long qtdUpvotes,
         Integer qtdComments,
         long qtdRates,
