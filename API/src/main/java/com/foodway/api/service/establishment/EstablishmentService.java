@@ -1,5 +1,8 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.apiclient.MapsClient;
+import com.foodway.api.apiclient.SimpleMail;
+import com.foodway.api.apiclient.SimpleMailClient;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
@@ -34,14 +37,18 @@ public class EstablishmentService {
 
     @Autowired
     UserController userController;
+
+    @Autowired
+    private MapsClient mapsClient;
+    @Autowired
+    private SimpleMailClient simpleMailClient;
+
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
     private RateRepository rateRepository;
-    @Autowired
-    private MapsClient mapsClient;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -81,6 +88,7 @@ public class EstablishmentService {
                 establishment.getServiceRate(),
                 establishment.getAddress().getLatitude(),
                 establishment.getAddress().getLongitude(),
+                establishment.getPhone(),
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
@@ -170,12 +178,22 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
         Establishment establishment = new Establishment(establishmentRequest);
+        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
+        try {
+            simpleMailClient.aaa("/account-created", simpleMail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
         MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
         Establishment establishmentSaved = establishmentRepository.save(establishment);
+
+
+
+
         return ResponseEntity.status(201).body(establishmentSaved);
     }
 
