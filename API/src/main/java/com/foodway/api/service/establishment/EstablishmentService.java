@@ -1,5 +1,8 @@
 package com.foodway.api.service.establishment;
 
+import com.foodway.api.apiclient.MapsClient;
+import com.foodway.api.apiclient.SimpleMail;
+import com.foodway.api.apiclient.SimpleMailClient;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
@@ -34,14 +37,18 @@ public class EstablishmentService {
 
     @Autowired
     UserController userController;
+
+    @Autowired
+    private MapsClient mapsClient;
+    @Autowired
+    private SimpleMailClient simpleMailClient;
+
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
     private RateRepository rateRepository;
-    @Autowired
-    private MapsClient mapsClient;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -81,6 +88,7 @@ public class EstablishmentService {
                 establishment.getServiceRate(),
                 establishment.getAddress().getLatitude(),
                 establishment.getAddress().getLongitude(),
+                establishment.getPhone(),
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
@@ -92,27 +100,27 @@ public class EstablishmentService {
 
     private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
         List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
-        List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
+//        List<CommentEstablishmentProfileDTO> repliesDTOs = new ArrayList<>();
 
         for (Comment comment : comments) {
-            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
-            for (Comment reply : comment.getReplies()) {
-                repliesDTOs.add(new CommentEstablishmentProfileDTO(
-                        comment.getIdPost(),
-                        customer.getProfilePhoto(),
-                        comment.getComment(),
-                        comment.getGeneralRate(),
-                        comment.getUpvotes(),
-                        null
-                ));
-            }
+            Customer customer = customerRepository.findById(comment.getIdCustomer()).orElse(new Customer());
+//            for (Comment reply : comment.getReplies()) {
+//                repliesDTOs.add(new CommentEstablishmentProfileDTO(
+//                        comment.getIdPost(),
+//                        customer.getProfilePhoto(),
+//                        comment.getComment(),
+//                        comment.getGeneralRate(),
+//                        comment.getUpvoteList().size(),
+//                        null
+//                ));
+//            }
             commentDTOs.add(new CommentEstablishmentProfileDTO(
                     comment.getIdPost(),
                     customer.getProfilePhoto(),
                     comment.getComment(),
                     comment.getGeneralRate(),
-                    comment.getUpvotes(),
-                    repliesDTOs
+                    comment.getUpvoteList().size(),
+                    null
                 )
             );
         }
@@ -170,12 +178,22 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
         Establishment establishment = new Establishment(establishmentRequest);
+        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
+        try {
+            simpleMailClient.aaa("/account-created", simpleMail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyBdmmGVqp3SOAYkQ8ef1SN9PDBkm8JjD_s");
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
         Establishment establishmentSaved = establishmentRepository.save(establishment);
+
+
+
+
         return ResponseEntity.status(201).body(establishmentSaved);
     }
 
@@ -229,8 +247,13 @@ public class EstablishmentService {
         establishment.setRates(current);
     }
 
-    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(int idCulinary) {
-        List<Establishment> establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(Integer idCulinary) {
+        List<Establishment> establishments;
+        if(idCulinary == 999){
+            establishments = establishmentRepository.findAll();
+        }else {
+             establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+        }
         return validateIsEmpty(establishments);
     }
 
@@ -298,7 +321,7 @@ public class EstablishmentService {
 
         for (Establishment establishment : establishments) {
             boolean isFavorite = favoriteRepository.existsByIdCustomerAndIdEstablishment(idSession, establishment.getIdUser());
-            SearchEstablishmentDTO searchEstablishmentDTO = getSeachEstablishmentDTO(establishment, isFavorite);
+            SearchEstablishmentDTO searchEstablishmentDTO = getSearchEstablishmentDTO(establishment, isFavorite);
             searchEstablishmentDTOs.add(searchEstablishmentDTO);
         }
 
@@ -306,7 +329,7 @@ public class EstablishmentService {
     }
 
     @NotNull
-    private SearchEstablishmentDTO getSeachEstablishmentDTO(Establishment establishment, boolean isFavorite) {
+    private SearchEstablishmentDTO getSearchEstablishmentDTO(Establishment establishment, boolean isFavorite) {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
         final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
@@ -351,7 +374,11 @@ public class EstablishmentService {
         List<Comment> comments = establishment.getPostList();
         List<CommentDTO> commentDTOs = new ArrayList<>();
         for (Comment comment : comments) {
-            commentDTOs.add(new CommentDTO(establishment.getEstablishmentName(),null, comment.getComment(), comment.getGeneralRate(),comment.getUpvotes()));
+            commentDTOs.add(new CommentDTO(
+                    establishment.getEstablishmentName(),
+                    comment.getComment(),
+                    comment.getGeneralRate(),
+                    comment.getUpvoteList().size()));
         }
         return ResponseEntity.ok(commentDTOs);
     }

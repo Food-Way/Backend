@@ -44,7 +44,6 @@ public class Comment {
     private List<Upvote> upvoteList;
 
     public Comment() {
-        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(UUID idPost) {
@@ -57,7 +56,6 @@ public class Comment {
         this.images = images;
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
-        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(RequestComment data) {
@@ -67,7 +65,6 @@ public class Comment {
         this.images = data.images();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
-        this.upvoteList = new ArrayList<>();
     }
 
     public Comment(RequestCommentChild data) {
@@ -78,7 +75,6 @@ public class Comment {
         this.images = data.images();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
-        this.upvoteList = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
@@ -159,21 +155,25 @@ public class Comment {
         return upvoteList;
     }
 
+    public void addUpvote(Upvote upvote) {
+        this.upvoteList.add(upvote);
+    }
+
+    public void removeUpvote(Upvote upvote) {
+        this.upvoteList.remove(upvote);
+    }
 
     public Double getGeneralRate() {
         return generalRate;
     }
 
-    public void setGeneralRate(Double generalRate) {
+    public Double setGeneralRate(Double generalRate) {
         this.generalRate = generalRate;
+        return generalRate;
     }
 
     public void addReply(Comment reply) {
         this.replies.add(reply);
         reply.setParentComment(this);
-    }
-
-    public void addUpvote(Upvote upvote) {
-        this.upvoteList.add(upvote);
     }
 }

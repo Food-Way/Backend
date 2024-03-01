@@ -1,4 +1,4 @@
-package com.foodway.api.model;
+package com.foodway.api.apiclient;
 
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
 import org.springframework.cloud.openfeign.FeignClient;

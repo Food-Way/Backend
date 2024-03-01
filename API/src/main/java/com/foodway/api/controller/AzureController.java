@@ -28,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 
 @RestController
 @RequestMapping("/files")
+@Tag(name = "Azure")
 public class AzureController {
 
   @Autowired

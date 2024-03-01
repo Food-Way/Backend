@@ -16,6 +16,7 @@ import com.foodway.api.utils.ListaObj;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/establishments")
+@Tag(name = "Establishment")
 public class EstablishmentController {
 
     @Autowired
@@ -97,14 +99,14 @@ public class EstablishmentController {
 
     }
 
-    @GetMapping("/culinary/{id}")
+    @GetMapping("/culinary")
     @Operation(summary = "Get all establishments by culinary", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return a establishment by culinary"),
             @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@PathVariable int idCulinary) {
+    public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(@RequestParam(required = false) Integer idCulinary) {
         return establishmentService.getEstablishmentsByCulinary(idCulinary);
     }
 

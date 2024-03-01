@@ -29,8 +29,6 @@ public class Customer extends User {
     private List<Rate> rates;
     @OneToMany
     private List<Favorite> favorites;
-    @OneToMany
-    private List<Upvote> upvoteList;
 
     public Customer() {
         this.rates = new ArrayList<>();
@@ -81,10 +79,6 @@ public class Customer extends User {
 
     public List<Favorite> getFavorites() {
         return favorites;
-    }
-
-    public List<Upvote> getUpvoteList() {
-        return upvoteList;
     }
 
     public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
