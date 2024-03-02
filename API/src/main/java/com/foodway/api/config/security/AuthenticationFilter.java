@@ -2,13 +2,17 @@ package com.foodway.api.config.security;
 
 import com.foodway.api.config.security.jwt.ManagerToken;
 import com.foodway.api.service.user.authentication.AuthenticationService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +20,15 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 
 public class AuthenticationFilter extends OncePerRequestFilter {
+
+    @Value("${jwt.secret}")
+    private String secret;
+
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(AuthenticationFilter.class);
     private final AuthenticationService authenticationService;
     private final ManagerToken managerToken;
@@ -40,7 +49,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             jwtToken = requestTokenHeader.substring(7);
 
             try {
-                username = managerToken.getUsernameFromToken(jwtToken);
+                username = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(this.secret.getBytes(StandardCharsets.UTF_8)))
+                        .build()
+                        .parseClaimsJws(jwtToken).getBody().get("email", String.class);
             } catch (ExpiredJwtException exception) {
                 LOGGER.info("[FALHA AUTENTICACAO] - Token expirado, usuario: {} - {}", exception.getClaims().getSubject(), exception.getMessage());
 
