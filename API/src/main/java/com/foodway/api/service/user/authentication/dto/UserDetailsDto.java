@@ -14,14 +14,12 @@ public class UserDetailsDto implements UserDetails {
     private final String email;
     private final String password;
     private final String name;
-    private final String typeUser;
 
     public UserDetailsDto(User user) {
         this.id = user.getIdUser();
         this.password = user.getPassword();
         this.email = user.getEmail();
         this.name = user.getName();
-        this.typeUser = user.getTypeUser().toString();
         // Outros mapeamentos de campos, se necessário
     }
     @Override
@@ -45,10 +43,6 @@ public class UserDetailsDto implements UserDetails {
 
     public String getName() {
         return name;
-    }
-
-    public String getTypeUser() {
-        return typeUser;
     }
 
     public String getEmail() {
