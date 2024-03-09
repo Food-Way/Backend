@@ -41,7 +41,7 @@ public class ManagerToken {
 
         return Jwts.builder().setSubject(userDetails.getId().toString())
                 .claim("email", userDetails.getEmail())
-                .claim("name", userDetails.getName())
+                .claim("username", userDetails.getName())
                 .signWith(parseSecret()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtTokenValidity * 1_000)).compact();
     }
