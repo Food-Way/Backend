@@ -54,8 +54,8 @@ public abstract class User {
         this.email = email;
         this.password = encodePassword(password);
         this.typeUser = typeUser;
-        this.profilePhoto = profilePhoto == null || profilePhoto.isEmpty() ? "https://foodway.blob.core.windows.net/public/default-user-image.png" : profilePhoto;
-        this.profileHeaderImg = profileHeaderImg == null || profileHeaderImg.isEmpty() ? "https://foodway.blob.core.windows.net/public/default-banner.png" : profileHeaderImg;
+        this.profilePhoto = profilePhoto == null || profilePhoto.isEmpty() ? "https://foodway-public-s3.s3.amazonaws.com/website-images/default-user-image.png" : profilePhoto;
+        this.profileHeaderImg = profileHeaderImg == null || profileHeaderImg.isEmpty() ? "https://foodway-public-s3.s3.amazonaws.com/website-images/default-banner.png" : profileHeaderImg;
         this.culinary = culinary;
     }
 
@@ -108,7 +108,7 @@ public abstract class User {
 
     public String getProfilePhoto() {
         if (profilePhoto == null || profilePhoto.isEmpty() || profilePhoto.isBlank()) {
-            return "https://foodway.blob.core.windows.net/public/default-user-image.png";
+            return "https://foodway-public-s3.s3.amazonaws.com/website-images/default-user-image.png";
         }
         return profilePhoto;
     }
