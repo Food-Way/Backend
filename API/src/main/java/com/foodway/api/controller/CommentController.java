@@ -40,17 +40,6 @@ public class CommentController {
         return commentService.getComments();
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get a comment by ID", method = "GET")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Return a comment"),
-            @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public ResponseEntity<Optional<Comment>> get(@PathVariable UUID id) {
-        return commentService.get(id);
-    }
-
     @PutMapping("/{id}")
     @Operation(summary = "Update comment by ID", method = "PUT")
     @ApiResponses(value = {

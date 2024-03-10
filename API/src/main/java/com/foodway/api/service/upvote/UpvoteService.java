@@ -36,11 +36,11 @@ public class UpvoteService {
     }
 
     public ResponseEntity<Upvote> toggleCommentUpvote(RequestUpvote data) {
-        Comment comment = commentRepository.findById(data.idComment()).get();
-        Upvote existsUpvote = upvoteRepository.findByIdCommentAndIdCustomer(data.idComment(), data.idCustomer());
+        final Comment comment = commentRepository.findById(data.idComment()).get();
+        final Upvote existsUpvote = upvoteRepository.findByIdCommentAndIdCustomer(data.idComment(), data.idCustomer());
 
         if (existsUpvote == null) {
-            Upvote upvote = new Upvote(data);
+            final Upvote upvote = new Upvote(data);
             comment.addUpvote(upvote);
             upvoteRepository.save(upvote);
             return ResponseEntity.status(201).body(upvote);
