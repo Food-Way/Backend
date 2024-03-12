@@ -82,13 +82,14 @@ public class EstablishmentService {
         EstablishmentProfileDTO establishmentProfileDTO = new EstablishmentProfileDTO(
                 establishment.getEstablishmentName(),
                 establishment.getCulinary().get(0).getName(),
+                establishment.getEmail(),
+                establishment.getPhone(),
                 establishment.getGeneralRate(),
                 establishment.getFoodRate(),
                 establishment.getAmbientRate(),
                 establishment.getServiceRate(),
                 establishment.getAddress().getLatitude(),
                 establishment.getAddress().getLongitude(),
-                establishment.getPhone(),
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
@@ -178,21 +179,21 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> saveEstablishment(RequestUserEstablishment establishmentRequest) {
         Establishment establishment = new Establishment(establishmentRequest);
-        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
-        try {
-            simpleMailClient.aaa("/account-created", simpleMail);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
         MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
+
         Establishment establishmentSaved = establishmentRepository.save(establishment);
 
+        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
 
-
+        try {
+            simpleMailClient.aaa("/account-created", simpleMail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
 
         return ResponseEntity.status(201).body(establishmentSaved);
     }

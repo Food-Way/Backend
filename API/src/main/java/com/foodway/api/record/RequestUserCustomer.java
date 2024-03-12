@@ -17,8 +17,7 @@ public record RequestUserCustomer(
         @Enumerated
         ETypeUser typeUser,
         String profilePhoto,
-        String profileHeaderImg
-        ,
+        String profileHeaderImg,
         String cpf,
         List<Culinary> culinary,
         String bio

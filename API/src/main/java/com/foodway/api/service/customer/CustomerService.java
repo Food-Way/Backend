@@ -118,7 +118,7 @@ public class CustomerService {
             favoriteEstablishments.add(establishmentDTO);
         });
 
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), 0, customerAvgRate, 0, customerQtdComments, customerQtdUpvotes, commentDTOS, favoriteEstablishments);
+        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), customer.getLevel(), customerAvgRate, customer.getXp(), customerQtdComments, customerQtdUpvotes, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
     }
 

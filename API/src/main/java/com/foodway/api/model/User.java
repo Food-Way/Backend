@@ -118,6 +118,9 @@ public abstract class User {
     }
 
     public String getProfileHeaderImg() {
+        if (profileHeaderImg == null || profileHeaderImg.isEmpty() || profileHeaderImg.isBlank()) {
+            return "https://foodway-public-s3.s3.amazonaws.com/website-images/default-banner.png";
+        }
         return profileHeaderImg;
     }
 

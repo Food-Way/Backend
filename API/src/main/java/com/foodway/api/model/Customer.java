@@ -25,6 +25,9 @@ public class Customer extends User {
     private String cpf;
     @Column(length = 254)
     private String bio;
+    private Integer level;
+    private Integer xp;
+    private Integer xpLimit;
     @OneToMany
     private List<Rate> rates;
     @OneToMany
@@ -38,6 +41,9 @@ public class Customer extends User {
         super(customer.name(), customer.email(), customer.password(), customer.typeUser(), customer.profilePhoto(), customer.profileHeaderImg(), customer.culinary());
         this.cpf = customer.cpf();
         this.bio = customer.bio();
+        this.level = 1;
+        this.xp = 0;
+        this.xpLimit = 100;
     }
 
     @Override
@@ -67,6 +73,30 @@ public class Customer extends User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Integer getXp() {
+        return xp;
+    }
+
+    public void setXp(Integer xp) {
+        this.xp = xp;
+    }
+
+    public Integer getXpLimit() {
+        return xpLimit;
+    }
+
+    public void setXpLimit(Integer xpLimit) {
+        this.xpLimit = xpLimit;
     }
 
     public List<Rate> getRates() {
@@ -111,8 +141,6 @@ public class Customer extends User {
         if (c.profileHeaderImg() != null && !c.profileHeaderImg().isBlank()) {
             this.setProfileHeaderImg(c.profileHeaderImg());
         }
-
-
     }
 
     private String encodePassword(String password) {
@@ -133,5 +161,15 @@ public class Customer extends User {
 
     public void addFavorite(Favorite saved) {
         this.favorites.add(saved);
+    }
+
+    public Customer increaseXp(int xp) {
+        this.setXp(this.getXp() + xp);
+        if (this.getXp() >= getXpLimit()) {
+            this.setLevel(this.getLevel() + 1);
+            this.setXpLimit(this.getXpLimit() + 100);
+            this.setXp(0);
+        }
+        return this;
     }
 }
