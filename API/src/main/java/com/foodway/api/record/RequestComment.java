@@ -12,6 +12,8 @@ public record RequestComment(
         UUID idEstablishment,
         @NotBlank
         String comment,
+        @NotBlank
+        String userPhoto,
         List<String> images
 ){
 }

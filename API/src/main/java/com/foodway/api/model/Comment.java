@@ -30,6 +30,7 @@ public class Comment {
     private Double generalRate;
     private int upvotes;
     private List<String> images;
+    private String userPhoto;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -62,6 +63,7 @@ public class Comment {
         this.idCustomer = data.idCustomer();
         this.idEstablishment = data.idEstablishment();
         this.comment = data.comment();
+        this.userPhoto = data.userPhoto();
         this.images = data.images();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
@@ -72,6 +74,7 @@ public class Comment {
         this.idEstablishment = data.idEstablishment();
         this.idParent = data.idParent();
         this.comment = data.comment();
+        this.userPhoto = data.userPhoto();
         this.images = data.images();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
@@ -81,6 +84,10 @@ public class Comment {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
         this.setImages(c.images());
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
     }
 
     public void setIdPost(UUID idPost) {
