@@ -39,7 +39,8 @@ public class ManagerToken {
 
         UserDetailsDto userDetails = (UserDetailsDto) authentication.getPrincipal();
 
-        return Jwts.builder().setSubject(userDetails.getId().toString())
+        return Jwts.builder().setSubject(userDetails.getEmail())
+                .claim("idUser",userDetails.getId().toString())
                 .claim("email", userDetails.getEmail())
                 .claim("username", userDetails.getName())
                 .signWith(parseSecret()).setIssuedAt(new Date(System.currentTimeMillis()))
