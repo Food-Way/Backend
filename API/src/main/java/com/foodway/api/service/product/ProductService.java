@@ -71,19 +71,15 @@ public class ProductService {
         if ("price".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
         } else if ("name".equals(orderBy)) {
-
             menu = productRepository.findByEstablishment_IdUserOrderByNameAsc(establishmentId);
         }else if ("nameDesc".equals(orderBy)) {
-
             menu = productRepository.findByEstablishment_IdUserOrderByNameDesc(establishmentId);
         } else if ("maxPrice".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceDesc(establishmentId);
         } else if ("minPrice".equals(orderBy)) {
             menu = productRepository.findByEstablishment_IdUserOrderByPriceAsc(establishmentId);
         } else {
-
             menu = productRepository.findByIdProductOrderByNameAsc(establishmentId);
-
         }
 
         if (menu.isEmpty()) {
