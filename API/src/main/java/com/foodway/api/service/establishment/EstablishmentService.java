@@ -298,7 +298,7 @@ public class EstablishmentService {
             };
         } else if (filter != null) {
             establishments = switch (filter) {
-                case COMMENTS -> establishmentRepository.findByOrderByPostListDesc();
+                case COMMENTS -> establishmentRepository.findAllByOrderByPostListSizeDesc();
                 case RELEVANCE -> establishmentRepository.findByOrderByGeneralRateDesc() ;
                 case UPVOTES -> establishmentRepository.findByOrderByPostList_UpvoteListDesc();
             };

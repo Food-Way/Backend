@@ -4,6 +4,7 @@ import com.foodway.api.model.Establishment;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.UUID;
 
@@ -25,7 +26,11 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findByEstablishmentNameContainsIgnoreCaseOrderByPostList_UpvoteListDesc(String establishmentName);
 
-    List<Establishment> findByOrderByPostListDesc();
+    @Query("""
+            SELECT e FROM establishment e
+            ORDER BY SIZE(e.postList) DESC
+            """)
+    List<Establishment> findAllByOrderByPostListSizeDesc();
 
     List<Establishment> findByOrderByGeneralRateDesc();
 

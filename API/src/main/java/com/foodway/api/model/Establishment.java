@@ -139,10 +139,6 @@ public class Establishment extends User {
         this.generalRate = generalRate;
     }
 
-    public List<Comment> getPostList() {
-        return postList;
-    }
-
     public String getCnpj() {
         return cnpj;
     }
@@ -173,6 +169,10 @@ public class Establishment extends User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public List<Comment> getPostList() {
+        return postList;
     }
 
     public void setPostList(List<Comment> postList) {
