@@ -6,6 +6,7 @@ import java.util.List;
 
 public record EstablishmentProfileDTO(
         String name,
+        String establishmentName,
         String culinary,
         String email,
         String phone,

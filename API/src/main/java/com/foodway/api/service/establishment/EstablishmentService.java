@@ -80,6 +80,7 @@ public class EstablishmentService {
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
 
         EstablishmentProfileDTO establishmentProfileDTO = new EstablishmentProfileDTO(
+                establishment.getName(),
                 establishment.getEstablishmentName(),
                 establishment.getCulinary().get(0).getName(),
                 establishment.getEmail(),
