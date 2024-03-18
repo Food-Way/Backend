@@ -111,21 +111,6 @@ public class Customer extends User {
         return favorites;
     }
 
-    public boolean validateTypeRate(ETypeRate typeRate, UUID idEstablishment){
-        boolean existTypeRate = false;
-        switch (typeRate) {
-            case AMBIENT, SERVICE, FOOD:
-                for(Rate rate: rates) {
-                    if(rate.getTypeRate().equals(typeRate) && rate.getIdEstablishment().equals(idEstablishment)){
-                        existTypeRate = true;
-                        return existTypeRate;
-                    }
-                }
-                break;
-        }
-        return existTypeRate;
-    }
-
     public void updateProfile(Optional<UpdateCustomerProfile> customer) {
         UpdateCustomerProfile c = customer.get();
         if (c.email() != null && !c.email().isBlank()) {

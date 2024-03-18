@@ -2,9 +2,7 @@ package com.foodway.api.service.dashboard;
 
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.DTOs.CommentDTO;
-import com.foodway.api.record.DTOs.DashboardDTO;
-import com.foodway.api.record.DTOs.EstablishmentDashboardDTO;
+import com.foodway.api.record.DTOs.*;
 import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.service.comment.CommentService;
@@ -26,7 +24,7 @@ public class DashboardService {
     @Autowired
     CommentService commentService;
 
-    public ResponseEntity<DashboardDTO> getDashboardData(UUID idEstablishment) {
+    public ResponseEntity<EstablishmentDashboardViewDTO> getDashboardData(UUID idEstablishment) {
         PageRequest pageable = PageRequest.of(0, 10);
         List<Comment> c = commentRepository.findByidEstablishment(idEstablishment, pageable);
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
@@ -37,13 +35,13 @@ public class DashboardService {
         }
 
         Map<String, Integer> qtdEvaluationDaysForWeek = new HashMap<>(Map.ofEntries(
+                Map.entry("SUNDAY", 0),
                 Map.entry("MONDAY", 0),
                 Map.entry("TUESDAY", 0),
                 Map.entry("WEDNESDAY", 0),
                 Map.entry("THURSDAY", 0),
                 Map.entry("FRIDAY", 0),
-                Map.entry("SATURDAY", 0),
-                Map.entry("SUNDAY", 0)
+                Map.entry("SATURDAY", 0)
         ));
 
         if (!c.isEmpty()) {
@@ -66,21 +64,31 @@ public class DashboardService {
                 qtdEvaluationDaysForWeek.put(commentDayOfWeek, current + 1);
             }
 
-            Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
+//            Collections.sort(comments, Comparator.comparingInt(CommentDTO::upvotes).reversed());
         }
 
-        EstablishmentDashboardDTO establishmentDashboardDTO = new EstablishmentDashboardDTO(
-                establishment.get().getGeneralRate(),
-                establishment.get().getAmbientRate(),
-                establishment.get().getServiceRate(),
-                establishment.get().getFoodRate(),
-                establishment.get().getTags()
+        List<EstablishmentRateDto> establishmentRateDto = List.of(
+                new EstablishmentRateDto("General", establishment.get().getGeneralRate()),
+                new EstablishmentRateDto("Ambient", establishment.get().getAmbientRate()),
+                new EstablishmentRateDto("Food", establishment.get().getFoodRate()),
+                new EstablishmentRateDto("Service", establishment.get().getServiceRate())
         );
 
-        DashboardDTO dashboardDTO = new DashboardDTO(
+        List<QtdEvaluationDaysForWeek> qtdEvaluationDaysForWeeks = List.of(
+                new QtdEvaluationDaysForWeek("Sunday",  qtdEvaluationDaysForWeek.get("SUNDAY")),
+                new QtdEvaluationDaysForWeek("Monday",  qtdEvaluationDaysForWeek.get("MONDAY")),
+                new QtdEvaluationDaysForWeek("Tuesday",  qtdEvaluationDaysForWeek.get("TUESDAY")),
+                new QtdEvaluationDaysForWeek("Wednesday",  qtdEvaluationDaysForWeek.get("WEDNESDAY")),
+                new QtdEvaluationDaysForWeek("Thursday",  qtdEvaluationDaysForWeek.get("THURSDAY")),
+                new QtdEvaluationDaysForWeek("Friday",  qtdEvaluationDaysForWeek.get("FRIDAY")),
+                new QtdEvaluationDaysForWeek("Saturday",  qtdEvaluationDaysForWeek.get("SATURDAY"))
+        );
+
+        EstablishmentDashboardViewDTO dashboardDTO = new EstablishmentDashboardViewDTO(
                 comments,
-                establishmentDashboardDTO,
-                qtdEvaluationDaysForWeek
+                establishmentRateDto,
+                qtdEvaluationDaysForWeeks,
+                establishment.get().getTags()
         );
 
         return ResponseEntity.status(200).body(dashboardDTO);

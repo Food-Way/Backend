@@ -190,7 +190,7 @@ class RateServiceTest {
     }
 
     @Test
-    @DisplayName("Should return Exception BAD REQUEST when rate type already does exist")
+    @DisplayName("Should return Exception CONFLICT when rate type already does exist")
     void postExceptionValidation() {
         Customer customer = new Customer();
         UUID idC = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
@@ -214,10 +214,10 @@ class RateServiceTest {
                 typeRate
         );
 
-        EstablishmentNotFoundException exception = assertThrows(EstablishmentNotFoundException.class,
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
                 () -> rateService.post(newRate));
 
-        assertEquals(EstablishmentNotFoundException.DESCRIPTION, exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
     }
 
     @Test
