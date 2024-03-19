@@ -75,13 +75,13 @@ public class DashboardService {
         );
 
         List<QtdEvaluationDaysForWeek> qtdEvaluationDaysForWeeks = List.of(
-                new QtdEvaluationDaysForWeek("Sunday",  qtdEvaluationDaysForWeek.get("SUNDAY")),
-                new QtdEvaluationDaysForWeek("Monday",  qtdEvaluationDaysForWeek.get("MONDAY")),
-                new QtdEvaluationDaysForWeek("Tuesday",  qtdEvaluationDaysForWeek.get("TUESDAY")),
-                new QtdEvaluationDaysForWeek("Wednesday",  qtdEvaluationDaysForWeek.get("WEDNESDAY")),
-                new QtdEvaluationDaysForWeek("Thursday",  qtdEvaluationDaysForWeek.get("THURSDAY")),
-                new QtdEvaluationDaysForWeek("Friday",  qtdEvaluationDaysForWeek.get("FRIDAY")),
-                new QtdEvaluationDaysForWeek("Saturday",  qtdEvaluationDaysForWeek.get("SATURDAY"))
+                new QtdEvaluationDaysForWeek("Domingo",  qtdEvaluationDaysForWeek.get("SUNDAY")),
+                new QtdEvaluationDaysForWeek("Segunda",  qtdEvaluationDaysForWeek.get("MONDAY")),
+                new QtdEvaluationDaysForWeek("Terça",  qtdEvaluationDaysForWeek.get("TUESDAY")),
+                new QtdEvaluationDaysForWeek("Quarta",  qtdEvaluationDaysForWeek.get("WEDNESDAY")),
+                new QtdEvaluationDaysForWeek("Quinta",  qtdEvaluationDaysForWeek.get("THURSDAY")),
+                new QtdEvaluationDaysForWeek("Sexta",  qtdEvaluationDaysForWeek.get("FRIDAY")),
+                new QtdEvaluationDaysForWeek("Sábado",  qtdEvaluationDaysForWeek.get("SATURDAY"))
         );
 
         EstablishmentDashboardViewDTO dashboardDTO = new EstablishmentDashboardViewDTO(
