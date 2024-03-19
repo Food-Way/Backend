@@ -2,9 +2,6 @@ package com.foodway.api.service.comment;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.*;
-import com.foodway.api.record.DTOs.CommentDTO;
-import com.foodway.api.record.DTOs.DashboardDTO;
-import com.foodway.api.record.DTOs.EstablishmentDashboardDTO;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
@@ -15,10 +12,8 @@ import com.foodway.api.service.establishment.EstablishmentService;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class CommentService {

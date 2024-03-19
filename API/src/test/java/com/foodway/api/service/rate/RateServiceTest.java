@@ -8,6 +8,7 @@ import com.foodway.api.model.Enums.ETypeRate;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Rate;
 import com.foodway.api.record.RequestRate;
+import com.foodway.api.record.RequestRateAddOrUpdate;
 import com.foodway.api.repository.CustomerRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.RateRepository;
@@ -108,24 +109,31 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
-
-        RequestRate newRate = new RequestRate(
-                idCustomer,
-                idEstablishment,
-                ratePoint,
-                typeRate
+        List<RequestRateAddOrUpdate.DescriptionRate> descriptionRates = List.of(
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.AMBIENT, 3.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.FOOD, 4.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.SERVICE, 2.0)
         );
 
-        ResponseEntity<Rate> rate = rateService.post(newRate);
-        Rate r = rate.getBody();
-        assertNotNull(r);
-        assertEquals(idCustomer, r.getIdCustomer());
-        assertEquals(idEstablishment, r.getIdEstablishment());
-        assertEquals(ratePoint, r.getRatePoint());
-        assertEquals(typeRate, r.getTypeRate());
-        assertEquals(HttpStatus.CREATED, rate.getStatusCode());
+        RequestRateAddOrUpdate newRate = new RequestRateAddOrUpdate(
+                idCustomer,
+                idEstablishment,
+                descriptionRates
+        );
+
+        ResponseEntity<List<Rate>> rates = rateService.addOrUpdate(newRate);
+        int index = 0;
+
+        for(Rate rate : rates.getBody()){
+            assertNotNull(rate);
+            assertEquals(idCustomer, rate.getIdCustomer());
+            assertEquals(idEstablishment, rate.getIdEstablishment());
+            assertEquals(descriptionRates.get(index).ratePoint(), rate.getRatePoint());
+            assertEquals(descriptionRates.get(index).name(), rate.getTypeRate());
+            index++;
+        }
+
+        assertEquals(HttpStatus.CREATED, rates.getStatusCode());
     }
 
     @Test
@@ -139,18 +147,20 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
+        List<RequestRateAddOrUpdate.DescriptionRate> descriptionRates = List.of(
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.AMBIENT, 3.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.FOOD, 4.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.SERVICE, 2.0)
+        );
 
-        RequestRate newRate = new RequestRate(
+        RequestRateAddOrUpdate newRate = new RequestRateAddOrUpdate(
                 idCustomer,
                 idEstablishment,
-                ratePoint,
-                typeRate
+                descriptionRates
         );
 
         CustomerNotFoundException exception = assertThrows(CustomerNotFoundException.class,
-                () -> rateService.post(newRate));
+                () -> rateService.addOrUpdate(newRate));
 
         assertEquals(CustomerNotFoundException.DESCRIPTION, exception.getMessage());
     }
@@ -172,25 +182,27 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
-
-        RequestRate newRate = new RequestRate(
-                idCustomer,
-                idEstablishment,
-                ratePoint,
-                typeRate
+        List<RequestRateAddOrUpdate.DescriptionRate> descriptionRates = List.of(
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.AMBIENT, 3.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.FOOD, 4.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.SERVICE, 2.0)
         );
 
-        rateService.post(newRate);
+        RequestRateAddOrUpdate newRate = new RequestRateAddOrUpdate(
+                idCustomer,
+                idEstablishment,
+                descriptionRates
+        );
+
+        rateService.addOrUpdate(newRate);
         ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-                () -> rateService.post(newRate));
+                () -> rateService.addOrUpdate(newRate));
 
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
     }
 
     @Test
-    @DisplayName("Should return Exception BAD REQUEST when rate type already does exist")
+    @DisplayName("Should return Exception CONFLICT when rate type already does exist")
     void postExceptionValidation() {
         Customer customer = new Customer();
         UUID idC = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
@@ -204,77 +216,22 @@ class RateServiceTest {
 
         UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
         UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
-
-        RequestRate newRate = new RequestRate(
-                idCustomer,
-                idEstablishment,
-                ratePoint,
-                typeRate
+        List<RequestRateAddOrUpdate.DescriptionRate> descriptionRates = List.of(
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.AMBIENT, 3.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.FOOD, 4.0),
+                new RequestRateAddOrUpdate.DescriptionRate(ETypeRate.SERVICE, 2.0)
         );
 
-        EstablishmentNotFoundException exception = assertThrows(EstablishmentNotFoundException.class,
-                () -> rateService.post(newRate));
-
-        assertEquals(EstablishmentNotFoundException.DESCRIPTION, exception.getMessage());
-    }
-
-    @Test
-    @DisplayName("Should return Rate updated")
-    void put() {
-        Rate rate = new Rate();
-        Long idRate = 32L;
-        rate.setIdRate(idRate);
-
-        Mockito.when(rateRepository.existsById(idRate)).thenReturn(true);
-        Mockito.when(rateRepository.findById(idRate)).thenReturn(Optional.of(rate));
-
-        UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
-        UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
-
-        RequestRate newRate = new RequestRate(
+        RequestRateAddOrUpdate newRate = new RequestRateAddOrUpdate(
                 idCustomer,
                 idEstablishment,
-                ratePoint,
-                typeRate
+                descriptionRates
         );
 
-        ResponseEntity<Rate> ra = rateService.put(idRate, newRate);
-        Rate r = ra.getBody();
-        assertNotNull(r);
-        assertEquals(ratePoint, r.getRatePoint());
-        assertEquals(typeRate, r.getTypeRate());
-        assertEquals(HttpStatus.OK, ra.getStatusCode());
-    }
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+                () -> rateService.addOrUpdate(newRate));
 
-    @Test
-    @DisplayName("Should return a exception NO FOUND when rate does not exist")
-    void putExceptionRateNotFound() {
-        Rate rate = new Rate();
-        Long idRate = 32L;
-        rate.setIdRate(idRate);
-
-        Mockito.when(rateRepository.existsById(idRate)).thenReturn(false);
-
-        UUID idCustomer = UUID.fromString("39c23540-8e2e-11ee-b9d1-0242ac120002");
-        UUID idEstablishment = UUID.fromString("6cd66f8a-8da4-11ee-b9d1-0242ac120002");
-        Double ratePoint = 3.0;
-        ETypeRate typeRate = ETypeRate.FOOD;
-
-        RequestRate newRate = new RequestRate(
-                idCustomer,
-                idEstablishment,
-                ratePoint,
-                typeRate
-        );
-
-        RateNotFoundException exception = assertThrows(RateNotFoundException.class,
-                () -> rateService.put(idRate, newRate));
-
-        assertEquals(RateNotFoundException.DESCRIPTION, exception.getMessage());
+        assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
     }
 
     @Test

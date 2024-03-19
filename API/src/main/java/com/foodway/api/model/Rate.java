@@ -51,6 +51,13 @@ public class Rate {
         this.typeRate = data.typeRate();
     }
 
+    public Rate(UUID idCustomer, UUID idEstablishment, Double ratePoint, ETypeRate typeRate) {
+        this.idCustomer = idCustomer;
+        this.idEstablishment = idEstablishment;
+        this.ratePoint = ratePoint;
+        this.typeRate = typeRate;
+    }
+
     public void update(Rate data) {
         this.ratePoint = data.ratePoint;
         this.typeRate = data.typeRate;

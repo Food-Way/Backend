@@ -1,6 +1,6 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.record.DTOs.DashboardDTO;
+import com.foodway.api.record.DTOs.EstablishmentDashboardViewDTO;
 import com.foodway.api.service.dashboard.DashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +29,7 @@ public class DashboardController {
             @ApiResponse(responseCode = "200", description = "Return dashboard data"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<DashboardDTO> getDashboardData(@PathVariable UUID idEstablishment) {
+    public ResponseEntity<EstablishmentDashboardViewDTO> getDashboardData(@PathVariable UUID idEstablishment) {
         return dashboardService.getDashboardData(idEstablishment);
     }
 }
