@@ -68,7 +68,6 @@ public class DashboardService {
         }
 
         List<EstablishmentRateDto> establishmentRateDto = List.of(
-                new EstablishmentRateDto("General", establishment.get().getGeneralRate()),
                 new EstablishmentRateDto("Ambient", establishment.get().getAmbientRate()),
                 new EstablishmentRateDto("Food", establishment.get().getFoodRate()),
                 new EstablishmentRateDto("Service", establishment.get().getServiceRate())
@@ -86,6 +85,7 @@ public class DashboardService {
 
         EstablishmentDashboardViewDTO dashboardDTO = new EstablishmentDashboardViewDTO(
                 comments,
+                establishment.get().getGeneralRate(),
                 establishmentRateDto,
                 qtdEvaluationDaysForWeeks,
                 establishment.get().getTags()
