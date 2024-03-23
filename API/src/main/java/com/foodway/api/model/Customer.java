@@ -113,9 +113,11 @@ public class Customer extends User {
 
     public void updateProfile(Optional<UpdateCustomerProfile> customer) {
         UpdateCustomerProfile c = customer.get();
-        if (c.email() != null && !c.email().isBlank()) {
-            this.setEmail(c.email());
+
+        if (c.name() != null && !c.name().isBlank()) {
+            this.setName(c.name());
         }
+
         if (c.bio() != null && !c.bio().isBlank()) {
             this.setBio(c.bio());
         }

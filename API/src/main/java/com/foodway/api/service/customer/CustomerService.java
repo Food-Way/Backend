@@ -12,6 +12,7 @@ import com.foodway.api.model.Favorite;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.UserService;
 import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
@@ -44,6 +45,8 @@ public class CustomerService {
     UserController userController;
     @Autowired
     private UpvoteRepository upvoteRepository;
+    @Autowired
+    UserService userService;
 
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
@@ -127,17 +130,10 @@ public class CustomerService {
         if (customerOptional.isEmpty()) {
             throw new CustomerNotFoundException("Customer not found");
         }
-        UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(customer.email());
-        userLoginDto.setPassword(customer.password());
-        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
         Customer custumerToUpdate = customerOptional.get();
         custumerToUpdate.updateProfile(Optional.ofNullable(customer));
 
-        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
-            return ResponseEntity.status(200).body(customerRepository.save(custumerToUpdate));
-        }
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(200).body(customerRepository.save(custumerToUpdate));
     }
 
     public ResponseEntity<Customer> patchCustomerPersonalInfo(UUID id, UpdateCustomerPersonalInfo customer) {
@@ -145,18 +141,9 @@ public class CustomerService {
         if (customerOptional.isEmpty()) {
             throw new CustomerNotFoundException("Customer not found");
         }
-        UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(customerOptional.get().getEmail());
-        userLoginDto.setPassword(customer.password());
-        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
         Customer customerToUpdate = customerOptional.get();
         customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
-        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
-            return ResponseEntity.status(200).body(customerRepository.save(customerToUpdate));
-        } else {
-            System.out.println("Erro ao atualizar");
-        }
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(200).body(customerRepository.save(customerToUpdate));
     }
 
     public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {
@@ -183,10 +170,10 @@ public class CustomerService {
         Double customerAvgRate = rateRepository.getAvgIndicatorCustomer(customer.getIdUser());
         String culinary = null;
 
-        if (sizeCulinary == 0 || customer.getCulinary().get(sizeCulinary-1).getName() == null) {
+        if (sizeCulinary == 0 || customer.getCulinary().get(sizeCulinary - 1).getName() == null) {
             culinary = "Nenhuma culinária";
         } else {
-            culinary = customer.getCulinary().get(sizeCulinary-1).getName();
+            culinary = customer.getCulinary().get(sizeCulinary - 1).getName();
         }
         return new SearchCustomerDTO(
                 customer.getIdUser(),
