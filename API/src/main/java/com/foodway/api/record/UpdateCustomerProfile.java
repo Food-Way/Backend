@@ -13,10 +13,6 @@ public record UpdateCustomerProfile(
          
         String profileHeaderImg,
          
-        String password,
-
-        String email,
-         
         String bio
 ) {
 }
