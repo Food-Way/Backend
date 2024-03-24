@@ -1,6 +1,7 @@
 package com.foodway.api.controller;
 
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.DTOs.CommentDTO;
@@ -94,9 +95,8 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return establishment comments by idEstablishment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<CommentDTO>> getEstablishmentsCommentsByIdEstablishment(@PathVariable UUID idEstablishment) {
+    public ResponseEntity<List<Comment>> getEstablishmentsCommentsByIdEstablishment(@PathVariable UUID idEstablishment) {
         return establishmentService.getEstablishmentCommentsByIdEstablishment(idEstablishment);
-
     }
 
     @GetMapping("/culinary")
