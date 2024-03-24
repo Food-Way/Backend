@@ -1,6 +1,7 @@
 package com.foodway.api.record.DTOs;
 
 import com.foodway.api.model.Comment;
+import com.foodway.api.model.Tag;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public record EstablishmentProfileDTO(
         Integer qtdComments,
         long qtdRates,
         List<Comment> comments,
-        String profileHeaderImg
+        String profileHeaderImg,
+        List<Tag> tags
 ) {
 }

@@ -96,7 +96,8 @@ public class EstablishmentService {
                 establishment.getPostList().size(),
                 qtdRates,
                 comments,
-                establishment.getProfileHeaderImg()
+                establishment.getProfileHeaderImg(),
+                establishment.getTags()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
@@ -361,24 +362,16 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
-        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRateDesc(culinary);
+        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRate(culinary);
         validateIsEmpty(establishments);
 
         List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
         return ResponseEntity.ok(relevanceDTOS);
     }
 
-    public ResponseEntity<List<CommentDTO>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
+    public ResponseEntity<List<Comment>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = establishment.getPostList();
-        List<CommentDTO> commentDTOs = new ArrayList<>();
-        for (Comment comment : comments) {
-            commentDTOs.add(new CommentDTO(
-                    establishment.getEstablishmentName(),
-                    comment.getComment(),
-                    comment.getGeneralRate(),
-                    comment.getUpvoteList().size()));
-        }
-        return ResponseEntity.ok(commentDTOs);
+        return ResponseEntity.ok(comments);
     }
 }
