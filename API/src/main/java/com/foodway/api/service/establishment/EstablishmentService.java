@@ -95,7 +95,8 @@ public class EstablishmentService {
                 establishment.getPostList().size(),
                 qtdRates,
                 comments,
-                establishment.getProfileHeaderImg()
+                establishment.getProfileHeaderImg(),
+                establishment.getTags()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
