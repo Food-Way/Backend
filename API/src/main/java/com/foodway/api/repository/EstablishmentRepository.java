@@ -36,7 +36,7 @@ public interface EstablishmentRepository extends JpaRepository<Establishment,UUI
 
     List<Establishment> findByOrderByPostList_UpvoteListDesc();
 
-    List<Establishment> findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRateDesc(String culinary);
+    List<Establishment> findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRate(String culinary);
 
 
 

@@ -353,7 +353,7 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
-        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRateDesc(culinary);
+        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRate(culinary);
         validateIsEmpty(establishments);
 
         List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
