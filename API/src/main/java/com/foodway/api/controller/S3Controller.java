@@ -1,5 +1,4 @@
 package com.foodway.api.controller;
-
 import com.foodway.api.record.RequestS3;
 import com.foodway.api.service.StorageService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +18,7 @@ public class S3Controller {
 
     @Autowired
     private StorageService s3Service;
-
+  
     @PostMapping("/upload")
     @Operation(summary = "Upload a file to S3", method = "POST")
     @ApiResponses(value = {
