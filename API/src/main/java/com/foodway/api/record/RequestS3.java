@@ -1,6 +1,9 @@
 package com.foodway.api.record;
 
-public record RequestS3PresignedUrl(
+import org.springframework.web.multipart.MultipartFile;
+
+public record RequestS3(
+        MultipartFile file,
         String bucketName,
         String objectKey,
         String tagKey,
