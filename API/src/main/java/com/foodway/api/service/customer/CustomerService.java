@@ -1,5 +1,8 @@
 package com.foodway.api.service.customer;
 
+import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
+import com.foodway.api.apiclient.SimpleMailClient;
+import com.foodway.api.apiclient.entities.SimpleMailAccountUpdated;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.record.DTOs.*;
 import com.foodway.api.record.UpdateCustomerPersonalInfo;
@@ -14,10 +17,7 @@ import com.foodway.api.record.UpdateCustomerData;
 import com.foodway.api.repository.*;
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.establishment.EstablishmentService;
-import com.foodway.api.service.user.authentication.dto.UserLoginDto;
-import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +48,9 @@ public class CustomerService {
     @Autowired
     UserService userService;
 
+    @Autowired
+    private SimpleMailClient simpleMailClient;
+
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(customerRepository.findAll());
@@ -69,7 +72,15 @@ public class CustomerService {
 
     public ResponseEntity<Customer> saveCustomer(RequestUserCustomer userCreateDto) {
         Customer createdCustomer = new Customer(userCreateDto);
-        return ResponseEntity.status(201).body(customerRepository.save(createdCustomer));
+        Customer customerSaved = customerRepository.save(createdCustomer);
+        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(createdCustomer.getName(), null, createdCustomer.getEmail(), createdCustomer.getTypeUser());
+
+        try {
+            simpleMailClient.aaa("/account-created", simpleMail);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return ResponseEntity.status(201).body(customerSaved);
     }
 
     public ResponseEntity<Customer> deleteCustomer(UUID id) {
@@ -132,8 +143,11 @@ public class CustomerService {
         }
         Customer custumerToUpdate = customerOptional.get();
         custumerToUpdate.updateProfile(Optional.ofNullable(customer));
-
-        return ResponseEntity.status(200).body(customerRepository.save(custumerToUpdate));
+        Customer customerSaved = customerRepository.save(custumerToUpdate);
+        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null, customerSaved.getEmail(),
+                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null, null);
+        simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+        return ResponseEntity.status(200).body(customerSaved);
     }
 
     public ResponseEntity<Customer> patchCustomerPersonalInfo(UUID id, UpdateCustomerPersonalInfo customer) {
@@ -143,7 +157,10 @@ public class CustomerService {
         }
         Customer customerToUpdate = customerOptional.get();
         customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
-        return ResponseEntity.status(200).body(customerRepository.save(customerToUpdate));
+        Customer customerSaved = customerRepository.save(customerToUpdate);
+        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null, customerSaved.getEmail(),
+                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null, null);
+        return ResponseEntity.status(200).body(customerSaved);
     }
 
     public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {

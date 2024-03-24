@@ -1,8 +1,9 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.apiclient.MapsClient;
-import com.foodway.api.apiclient.SimpleMail;
+import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
 import com.foodway.api.apiclient.SimpleMailClient;
+import com.foodway.api.apiclient.entities.SimpleMailAccountUpdated;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.*;
@@ -176,7 +177,7 @@ public class EstablishmentService {
 
         Establishment establishmentSaved = establishmentRepository.save(establishment);
 
-        SimpleMail simpleMail = new SimpleMail(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
+        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
 
         try {
             simpleMailClient.aaa("/account-created", simpleMail);
@@ -261,7 +262,11 @@ public class EstablishmentService {
         establishment2.updateProfileEstablishment(Optional.of(establishment));
 
         if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
-            return ResponseEntity.status(200).body(establishmentRepository.save(establishment2));
+            Establishment establishmentSaved = establishmentRepository.save(establishment2);
+            SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
+                    establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
+            simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+            return ResponseEntity.status(200).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
         }
@@ -279,7 +284,11 @@ public class EstablishmentService {
 
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
-            return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
+            Establishment establishmentSaved = establishmentRepository.save(establishment);
+            SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
+                    establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
+            simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+            return ResponseEntity.status(200).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
         }
