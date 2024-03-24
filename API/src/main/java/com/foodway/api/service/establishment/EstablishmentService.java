@@ -369,9 +369,18 @@ public class EstablishmentService {
         return ResponseEntity.ok(relevanceDTOS);
     }
 
-    public ResponseEntity<List<Comment>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
+    public ResponseEntity<List<CommentDTO>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = establishment.getPostList();
-        return ResponseEntity.ok(comments);
+        List<CommentDTO> commentDTOs = new ArrayList<>();
+        for (Comment comment : comments) {
+            commentDTOs.add(new CommentDTO(
+                    establishment.getEstablishmentName(),
+                    comment.getComment(),
+                    comment.getGeneralRate(),
+                    comment.getUpvoteList().size())
+            );
+        }
+        return ResponseEntity.ok(commentDTOs);
     }
 }
