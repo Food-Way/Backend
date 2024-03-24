@@ -160,6 +160,7 @@ public class CustomerService {
         Customer customerSaved = customerRepository.save(customerToUpdate);
         SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null, customerSaved.getEmail(),
                 customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null, null);
+        simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
         return ResponseEntity.status(200).body(customerSaved);
     }
 
