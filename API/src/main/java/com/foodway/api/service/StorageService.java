@@ -1,47 +1,47 @@
 package com.foodway.api.service;
 
-import com.foodway.api.record.RequestS3PresignedUrl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
-import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.model.Tag;
+import software.amazon.awssdk.services.s3.model.Tagging;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class StorageService {
     @Autowired
     private S3Client s3Client;
 
-    public String generatePresignedUrlWithTags(RequestS3PresignedUrl request) {
+    public ResponseEntity<String> uploadFileToS3(MultipartFile file, String bucketName, String objectKey, String tagKey, String tagValue) {
         try {
-            S3Presigner presigner = S3Presigner.builder()
-                    .region(Region.of("us-east-1"))
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("Content-Type", file.getContentType());
+
+            Tagging tagging = Tagging.builder()
+                    .tagSet(Tag.builder().key(tagKey).value(tagValue).build())
                     .build();
 
-            PutObjectRequest objectRequest = PutObjectRequest.builder()
-                    .bucket(request.bucketName())
-                    .key(request.objectKey())
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(objectKey)
+                    .metadata(metadata)
+                    .tagging(tagging)
                     .build();
 
-            PresignedPutObjectRequest presignedRequest = presigner.presignPutObject(p -> p.signatureDuration(Duration.ofMinutes(10))
-                    .putObjectRequest(objectRequest));
+            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            URI urlWithTags = new URI(presignedRequest.url().toString() + "?tagging=" + request.tagKey() + "=" + request.tagValue());
-
-            return urlWithTags.toString();
-        } catch (URISyntaxException e) {
+            String fileUrl = s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(objectKey)).toString();
+            return ResponseEntity.ok(fileUrl);
+        } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return ResponseEntity.internalServerError().body("Erro ao fazer upload do arquivo");
         }
     }
 }
