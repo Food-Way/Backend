@@ -16,6 +16,7 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.comment.CommentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
@@ -37,28 +38,20 @@ public class EstablishmentService {
 
     @Autowired
     UserController userController;
-
     @Autowired
     private MapsClient mapsClient;
     @Autowired
     private SimpleMailClient simpleMailClient;
-
-    @Autowired
-    CustomerRepository customerRepository;
     @Autowired
     private EstablishmentRepository establishmentRepository;
     @Autowired
     private RateRepository rateRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CulinaryRepository culinaryRepository;
-    @Autowired
     private FavoriteRepository favoriteRepository;
     @Autowired
     private UpvoteRepository upvoteRepository;
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -74,7 +67,7 @@ public class EstablishmentService {
 
     public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
-        List<Comment> comments = establishment.getPostList();
+        List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
 
         long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
@@ -362,7 +355,7 @@ public class EstablishmentService {
 
     public ResponseEntity<List<Comment>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
-        List<Comment> comments = establishment.getPostList();
+        List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());;
         return ResponseEntity.ok(comments);
     }
 }

@@ -24,13 +24,11 @@ public class CommentService {
     @Autowired
     UpvoteRepository upvoteRepository;
     @Autowired
-    EstablishmentService establishmentService;
+    private EstablishmentService establishmentService;
     @Autowired
     CustomerService customerService;
     @Autowired
     private RateRepository rateRepository;
-    @Autowired
-    private EstablishmentRepository establishmentRepository;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
@@ -70,6 +68,17 @@ public class CommentService {
         }
 
         return ResponseEntity.status(200).body(comments);
+    }
+
+    public List<Comment> getCountsFromComments(List<Comment> comments) {
+        if (!comments.isEmpty()) {
+            for (Comment comment : comments) {
+                countUpvotesOfComment(comment);
+                comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+            }
+        }
+
+        return comments;
     }
 
     public ResponseEntity<Void> deleteComment(UUID id, UUID idOwner) {
