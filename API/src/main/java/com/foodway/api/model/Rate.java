@@ -58,6 +58,7 @@ public class Rate {
         this.typeRate = typeRate;
     }
 
+
     public void update(Rate data) {
         this.ratePoint = data.ratePoint;
         this.typeRate = data.typeRate;

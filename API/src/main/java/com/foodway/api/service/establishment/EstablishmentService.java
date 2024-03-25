@@ -17,6 +17,7 @@ import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.comment.CommentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
@@ -59,7 +60,7 @@ public class EstablishmentService {
     @Autowired
     private UpvoteRepository upvoteRepository;
     @Autowired
-    private CommentRepository commentRepository;
+    private CommentService commentService;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -75,7 +76,7 @@ public class EstablishmentService {
 
     public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
-        List<Comment> comments = establishment.getPostList();
+        List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
 
         long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
@@ -369,18 +370,9 @@ public class EstablishmentService {
         return ResponseEntity.ok(relevanceDTOS);
     }
 
-    public ResponseEntity<List<CommentDTO>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
+    public ResponseEntity<List<Comment>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
-        List<Comment> comments = establishment.getPostList();
-        List<CommentDTO> commentDTOs = new ArrayList<>();
-        for (Comment comment : comments) {
-            commentDTOs.add(new CommentDTO(
-                    establishment.getEstablishmentName(),
-                    comment.getComment(),
-                    comment.getGeneralRate(),
-                    comment.getUpvoteList().size())
-            );
-        }
-        return ResponseEntity.ok(commentDTOs);
+        List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
+        return ResponseEntity.ok(comments);
     }
 }
