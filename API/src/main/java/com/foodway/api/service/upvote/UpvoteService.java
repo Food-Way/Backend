@@ -36,7 +36,7 @@ public class UpvoteService {
     }
 
     public ResponseEntity<Upvote> toggleCommentUpvote(RequestUpvote data) {
-        final Comment comment = commentRepository.findById(data.idComment()).get();
+        final Comment comment = commentRepository.findById(data.idComment()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comment not found."));
         final Upvote existsUpvote = upvoteRepository.findByIdCommentAndIdCustomer(data.idComment(), data.idCustomer());
 
         if (existsUpvote == null) {

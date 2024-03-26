@@ -95,7 +95,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = "200", description = "Return establishment comments by idEstablishment"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<CommentDTO>> getEstablishmentsCommentsByIdEstablishment(@PathVariable UUID idEstablishment) {
+    public ResponseEntity<List<Comment>> getEstablishmentsCommentsByIdEstablishment(@PathVariable UUID idEstablishment) {
         return establishmentService.getEstablishmentCommentsByIdEstablishment(idEstablishment);
     }
 

@@ -252,6 +252,9 @@ public class Establishment extends User {
         if (establishment.get().name() != null && !establishment.get().name().isEmpty()) {
             super.setName(establishment.get().name());
         }
+        if(establishment.get().name() != null && !establishment.get().name().isEmpty()){
+            setEstablishmentName(establishment.get().establishmentName());
+        }
         if(establishment.get().phone() != null && !establishment.get().phone().isEmpty()) {
             setPhone(establishment.get().phone());
         }
