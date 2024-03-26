@@ -7,4 +7,4 @@ feign:
   client:
     config:
       simpleMailClient:
-        url: http://localhost:80
+        url: http://54.226.147.165:80
