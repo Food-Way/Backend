@@ -5,7 +5,7 @@ import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "simpleMailClient", url = "http://localhost:80")
+@FeignClient(name = "simpleMailClient", url = "${feign.client.config.simpleMailClient.url}")
 public interface SimpleMailClient {
 
     @PostMapping("{uri}")
