@@ -57,7 +57,7 @@ public class CustomerService {
     }
 
     public ResponseEntity<Customer> getCustomer(UUID id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+            Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
         return ResponseEntity.status(200).body(customer);
     }
 

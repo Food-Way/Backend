@@ -288,7 +288,7 @@ public class EstablishmentService {
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment);
             SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
-                    establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
+            establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
             simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
             return ResponseEntity.status(200).body(establishmentSaved);
         } else {
