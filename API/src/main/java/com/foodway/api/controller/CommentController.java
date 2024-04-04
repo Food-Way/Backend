@@ -78,8 +78,8 @@ public class CommentController {
             @ApiResponse(responseCode = CommentNotFoundException.CODE, description = CommentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Void> deleteComment(@PathVariable UUID id, @PathVariable UUID idOwner) {
-        return commentService.deleteComment(id, idOwner);
+    public ResponseEntity<Void> deleteComment(@PathVariable UUID id) {
+        return commentService.deleteComment(id);
     }
 
     //todo fazer filtros de comentários

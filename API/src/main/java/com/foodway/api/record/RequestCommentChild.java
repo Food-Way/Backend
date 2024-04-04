@@ -17,5 +17,7 @@ public record RequestCommentChild (
         String comment,
         @NotBlank
         String userPhoto,
+        @NotBlank
+        String userName,
         List<String> images
 ){}
