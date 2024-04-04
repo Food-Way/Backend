@@ -23,6 +23,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.UUID;
@@ -41,6 +42,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Return all customers"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public ResponseEntity<List<Customer>> getCustomers(){
         return customerService.getCustomers();
     }
@@ -144,6 +146,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
+
     public ResponseEntity<Favorite> addFavoriteEstablishment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment){
         return customerService.toggleFavoriteEstablishment(idCustomer, idEstablishment);
     }

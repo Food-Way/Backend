@@ -4,7 +4,6 @@ import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.record.DTOs.CommentDTO;
 import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.RelevanceDTO;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
@@ -190,6 +189,7 @@ public class EstablishmentController {
             @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public ResponseEntity<Establishment> putEstablishment(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentData establishment) {
         return establishmentService.putEstablishment(id, establishment);
     }
@@ -208,7 +208,7 @@ public class EstablishmentController {
     }
 
     @PatchMapping("/personal/{id}")
-    @Operation(summary = "Update establishment profile by email", method = "PATCH")
+    @Operation(summary = "Update establishment profile by ID", method = "PATCH")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return the updated establishment"),
             @ApiResponse(responseCode = "400", description = "Bad request"),

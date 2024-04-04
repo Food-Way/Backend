@@ -45,7 +45,6 @@ public class CommentService {
     public ResponseEntity<Comment> postCommentChild(RequestCommentChild data) {
         final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
         final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
-        final Establishment establishment = establishmentService.getEstablishment(data.idEstablishment()).getBody();
         final Comment commentChild = new Comment(data);
         commentChild.setGeneralRate(generateGeneralRateForComment(commentChild.getIdCustomer(), commentChild.getIdEstablishment()));
         commentParent.addReply(commentChild);
@@ -72,16 +71,20 @@ public class CommentService {
 
     public List<Comment> getCountsFromComments(List<Comment> comments) {
         if (!comments.isEmpty()) {
-            for (Comment comment : comments) {
+            for (int i = 0; i < comments.size(); i++) {
+                Comment comment = comments.get(i);
                 countUpvotesOfComment(comment);
                 comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+                if(!comment.getReplies().isEmpty()){
+                    comments.addAll(comment.getReplies());
+                }
             }
         }
 
         return comments;
     }
 
-    public ResponseEntity<Void> deleteComment(UUID id, UUID idOwner) {
+    public ResponseEntity<Void> deleteComment(UUID id) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isPresent()) {
             commentRepository.delete(comment.get());

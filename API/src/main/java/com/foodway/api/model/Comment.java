@@ -31,6 +31,7 @@ public class Comment {
     private int upvotes;
     private List<String> images;
     private String userPhoto;
+    private String userName;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -65,6 +66,7 @@ public class Comment {
         this.comment = data.comment();
         this.userPhoto = data.userPhoto();
         this.images = data.images();
+        this.userName = data.userName();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
     }
@@ -76,6 +78,7 @@ public class Comment {
         this.comment = data.comment();
         this.userPhoto = data.userPhoto();
         this.images = data.images();
+        this.userName = data.userName();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
     }
