@@ -1,8 +1,12 @@
 package com.foodway.api.controller;
 
+
 import com.foodway.api.record.RequestTag;
+import com.foodway.api.record.RequestTagEstablishment;
+import com.foodway.api.record.RequestTagTeste;
 import com.foodway.api.record.UpdateTag;
 import com.foodway.api.service.tag.TagService;
+import com.foodway.api.model.Tags;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @RestController
@@ -21,27 +26,32 @@ public class TagController {
     private TagService tagService;
 
     @GetMapping()
-    public ResponseEntity<List<com.foodway.api.model.Tag>> getAll() {
+    public ResponseEntity<List<Tags>> getAll() {
         return tagService.getAll();
     }
 
     @GetMapping("/{idTag}")
-    public ResponseEntity<Optional<com.foodway.api.model.Tag>> get(@PathVariable Long idTag) {
+    public ResponseEntity<Optional<Tags>> get(@PathVariable Long idTag) {
         return tagService.get(idTag);
     }
 
     @PostMapping()
-    public ResponseEntity<com.foodway.api.model.Tag> post(@RequestBody RequestTag requestTag) {
+    public ResponseEntity<Tags> post(@RequestBody RequestTag requestTag) {
         return tagService.post(requestTag);
     }
+    @PostMapping("establishment")
+    public ResponseEntity<Set<Tags>> addTagToEstablishment(@RequestBody RequestTagEstablishment requestTagEstablishment){
+        return tagService.addTagEstablishment(requestTagEstablishment.establishment(),requestTagEstablishment.tags());
+    }
+
 
     @PutMapping("/{idTag}")
-    public ResponseEntity<com.foodway.api.model.Tag> put(@PathVariable Long idTag, @RequestBody UpdateTag updateTag) {
+    public ResponseEntity<Tags> put(@PathVariable Long idTag, @RequestBody UpdateTag updateTag) {
         return tagService.put(idTag, updateTag);
     }
 
     @DeleteMapping("/{idTag}")
-    public ResponseEntity<com.foodway.api.model.Tag> delete(@PathVariable Long idTag) {
+    public ResponseEntity<Tags> delete(@PathVariable Long idTag) {
         return tagService.delete(idTag);
     }
 }

@@ -10,13 +10,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.PositiveOrZero;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Table(name = "tbEstablishment")
 @Entity(name = "establishment")
@@ -44,12 +40,17 @@ public class Establishment extends User {
     @Column(length = 14, unique = true)
     private String cnpj;
     private String phone;
-    @OneToMany
-    private List<Tag> tags;
+    @ManyToMany
+    @JoinTable(
+            name = "establishment_tags",
+            joinColumns = @JoinColumn(name = "establishment_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tags> tags = new HashSet<Tags>();
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
     @JsonIgnore
-    @OneToMany
+    @ManyToMany
     private List<Rate> rates;
     @JsonIgnore
     @OneToMany
@@ -70,7 +71,7 @@ public class Establishment extends User {
         this.cnpj = establishment.cnpj();
         this.rates = new ArrayList<>();
         this.postList = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.tags = new HashSet<>();
     }
 
     public Establishment(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg,
@@ -82,7 +83,7 @@ public class Establishment extends User {
         this.address = address;
         this.postList = new ArrayList<>();
         this.rates = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.tags = new HashSet<>();
     }
 
     @Override
@@ -104,15 +105,19 @@ public class Establishment extends User {
         this.cnpj = ((UpdateEstablishmentData) optional.get()).cnpj();
         this.postList = new ArrayList<>();
         this.rates = new ArrayList<>();
-        this.tags = new ArrayList<>();
+        this.tags = new HashSet<>();
     }
 
-    public List<Tag> getTags() {
+    public Set<Tags> getTags() {
         return tags;
     }
 
-    public void addTags(Tag tag){
+    public void addTags(Tags tag){
         tags.add(tag);
+    }
+
+    public void setTags(Set<Tags> tags) {
+        this.tags = tags;
     }
 
     public String getEstablishmentName() {
