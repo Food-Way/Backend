@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.Entity;
@@ -32,6 +33,7 @@ public class Comment {
     private List<String> images;
     private String userPhoto;
     private String userName;
+    private ETypeUser typeUser;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -175,6 +177,26 @@ public class Comment {
 
     public Double getGeneralRate() {
         return generalRate;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public ETypeUser getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(ETypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 
     public Double setGeneralRate(Double generalRate) {
