@@ -29,3 +29,30 @@
  ('https://foodway-public-s3.s3.amazonaws.com/website-images/chilean.png', 'Chilena'),
  ('https://foodway-public-s3.s3.amazonaws.com/website-images/canadian.png', 'Canadense'),
  ('https://foodway-public-s3.s3.amazonaws.com/website-images/australian.png', 'Australiana');
+
+
+
+ INSERT INTO tb_tag (id_tag, name, created_at, updated_at) VALUES
+  (1, 'Tem bicicletário', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (2, 'Pet Friendly', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (3, 'Ambiente Infantil', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (4, 'Bebida Alcoólica', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (5, 'Wi-Fi Gratuito', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (6, 'Outdoor', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (7, 'Estacionamento', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (9, 'Música ao Vivo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (10, 'Opções Veganas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (11, 'Cartão Fidelidade', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (12, 'Delivery', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (13, '24 Horas', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (14, 'Eco-friendly', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (15, 'Estacionamento Pago', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (16, 'Familiar', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (17, 'Estacionamento Grátis', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (18, 'Aberto Até Tarde', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (19, 'Happy Hour', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (20, 'Reserva', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (21, 'Eventos Privados', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (22, 'Menu de Brunch', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (23, 'Bar Esportivo', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (24, 'Terraço', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
