@@ -1,9 +1,6 @@
 package com.foodway.api.controller;
 import com.foodway.api.config.AmazonS3Config;
-import com.foodway.api.model.Customer;
 import com.foodway.api.model.Enums.ETypeUser;
-import com.foodway.api.model.User;
-import com.foodway.api.record.RequestProfilePhoto;
 import com.foodway.api.service.StorageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Properties;
 import java.util.UUID;
-
 import com.foodway.api.model.S3Credentials;
 import org.springframework.core.env.Environment;
 

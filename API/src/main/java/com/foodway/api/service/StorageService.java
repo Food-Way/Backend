@@ -1,13 +1,16 @@
 package com.foodway.api.service;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.foodway.api.handler.exceptions.ProductNotFoundException;
 import com.foodway.api.handler.exceptions.UserNotFoundException;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.model.Establishment;
+import com.foodway.api.model.Product;
 import com.foodway.api.model.User;
 import com.foodway.api.repository.CustomerRepository;
 import com.foodway.api.repository.EstablishmentRepository;
+import com.foodway.api.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -17,16 +20,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import com.amazonaws.services.s3.model.*;
-
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
 @PropertySource("classpath:s3.properties")
 public class StorageService {
+    @Autowired
+    ProductRepository productRepository;
     @Autowired
     CustomerRepository customerRepository;
     @Autowired
@@ -37,7 +38,6 @@ public class StorageService {
     public StorageService(AmazonS3 s3) {
         this.s3 = s3;
     }
-
     public ResponseEntity<String> saveProfileHeaderPhoto(MultipartFile file, UUID idUser, ETypeUser typeUser) {
         String profilePhotoUrl;
         ObjectTagging tagging = new ObjectTagging(Arrays.asList(new Tag("environment", "public")));
@@ -75,6 +75,26 @@ public class StorageService {
             profilePhotoUrl = "https://foodway.s3.amazonaws.com/" + fullPath;
             user.setProfilePhoto(profilePhotoUrl);
             saveUser(user);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload file due to: " + e.getMessage());
+        }
+        return ResponseEntity.status(200).body(profilePhotoUrl);
+    }
+    public ResponseEntity<String> saveProductImage(MultipartFile file, UUID idProduct){
+        String profilePhotoUrl;
+        ObjectTagging tagging = new ObjectTagging(Arrays.asList(new Tag("environment", "public")));
+        Optional<Product> optionalProduct = productRepository.findById(idProduct);
+        if (optionalProduct.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        }
+        Product product = optionalProduct.get();
+        String fileName = generateFileName(product.getName(), "product-image");
+        String fullPath = "product" + "/images/" + product.getIdProduct() + "/" + fileName;
+        try {
+            uploadFile(file, fullPath, tagging);
+            profilePhotoUrl = "https://foodway.s3.amazonaws.com/" + fullPath;
+            product.setPhoto(profilePhotoUrl);
+            productRepository.save(product);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file due to: " + e.getMessage());
         }
