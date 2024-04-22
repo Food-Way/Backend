@@ -1,8 +1,10 @@
 package com.foodway.api.controller;
 import com.foodway.api.config.AmazonS3Config;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.service.StorageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.FileOutputStream;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Properties;
+import java.util.UUID;
 import com.foodway.api.model.S3Credentials;
 import org.springframework.core.env.Environment;
 
@@ -25,9 +28,26 @@ public class S3Controller {
     @Autowired
     private StorageService s3Service;
 
-    @PostMapping("/upload")
-    public String upload(@RequestParam("file") MultipartFile file, @RequestParam("path") String path){
-        return s3Service.saveFile(file, path);
+
+    @PostMapping("/upload-profile")
+    public ResponseEntity<String> uploadProfilePhoto (
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("path") String path,
+            @RequestParam("idUser") UUID idUser,
+            @RequestParam("typeUser") ETypeUser typeUser
+    )
+    {
+        return s3Service.saveProfilePhoto(file,idUser,typeUser);
+    }
+    @PostMapping("/upload-profile-header")
+    public ResponseEntity<String> uploadProfileHeader (
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("path") String path,
+            @RequestParam("idUser") UUID idUser,
+            @RequestParam("typeUser") ETypeUser typeUser
+    )
+    {
+        return s3Service.saveProfileHeaderPhoto(file,idUser,typeUser);
     }
 
     @PostMapping("/update-credentials")
