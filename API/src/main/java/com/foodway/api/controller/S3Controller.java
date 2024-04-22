@@ -50,6 +50,16 @@ public class S3Controller {
         return s3Service.saveProfileHeaderPhoto(file,idUser,typeUser);
     }
 
+
+    @PostMapping("/upload-product-image")
+    public ResponseEntity<String> uploadProductImage (
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("idUser") UUID idProduct
+    )
+    {
+        return s3Service.saveProductImage(file,idProduct);
+    }
+
     @PostMapping("/update-credentials")
     public String updateCredentials(@RequestBody S3Credentials request) throws IOException {
         System.out.println(request);
