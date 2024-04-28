@@ -38,6 +38,7 @@ public class UserMapper {
         userTokenDto.setToken(token);
         userTokenDto.setName(user.getName());
         userTokenDto.setProfilePhoto(user.getProfilePhoto());
+        userTokenDto.setProfileHeaderImg(user.getProfileHeaderImg());
         userTokenDto.setTypeUser(typeUser);
         return userTokenDto;
     }
