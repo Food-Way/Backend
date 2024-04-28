@@ -1,7 +1,9 @@
 package com.foodway.api.record;
 
-import com.foodway.api.model.Comment;
+ 
 import com.foodway.api.model.Enums.ETypeUser;
+
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public record RequestCommentChild (
         String userPhoto,
         @NotBlank
         String userName,
-        @NotBlank
+        @Enumerated
         ETypeUser typeUser,
         List<String> images
 ){}

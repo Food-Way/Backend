@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
@@ -39,7 +40,6 @@ public class EstablishmentService {
 
     @Autowired
     UserController userController;
-
     @Autowired
     private MapsClient mapsClient;
     @Autowired
@@ -51,10 +51,6 @@ public class EstablishmentService {
     private EstablishmentRepository establishmentRepository;
     @Autowired
     private RateRepository rateRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private CulinaryRepository culinaryRepository;
     @Autowired
     private FavoriteRepository favoriteRepository;
     @Autowired
@@ -77,7 +73,10 @@ public class EstablishmentService {
     public ResponseEntity<EstablishmentProfileDTO> getEstablishmentProfile(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
-
+        List<Comment> filteredComments = comments.stream()
+    .filter(comment -> comment.getIdParent() == null)
+    .collect(Collectors.toList());
+        establishment.setPostList(filteredComments);
         long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
 
@@ -96,39 +95,14 @@ public class EstablishmentService {
                 qtdUpvotes,
                 establishment.getPostList().size(),
                 qtdRates,
-                comments,
+                filteredComments,
                 establishment.getProfileHeaderImg(),
                 establishment.getTags()
         );
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
 
-//    private List<CommentEstablishmentProfileDTO> createCommentDTO(List<Comment> comments) {
-//        List<CommentEstablishmentProfileDTO> commentDTOs = new ArrayList<>();
-//
-//        for (Comment comment : comments) {
-//            commentDTOs.add(new CommentEstablishmentProfileDTO(
-//                    comment.getIdPost(),
-//                    comment.getUserPhoto(),
-//                    comment.getComment(),
-//                    comment.getGeneralRate(),
-//                    comment.getUpvoteList().size(),
-//                    comment.getReplies()
-//                )
-//            );
-//        }
-//        return commentDTOs;
-//    }
 
-//    public ResponseEntity<List<Establishment>> getBestEstablishments() {
-//        List<Establishment> establishments = establishmentRepository.findTop3ByOrderByGeneralRateDesc();
-//        return validateIsEmpty(establishments);
-//    }
-//
-//    public ResponseEntity<List<Establishment>> getBestEstablishmentsByCulinary(String culinary) {
-//        List<Establishment> establishments = establishmentRepository.findTop3ByCulinary_NameOrderByGeneralRateDesc(culinary);
-//        return validateIsEmpty(establishments);
-//    }
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable String culinary) {
         List<Establishment> establishments;
@@ -205,7 +179,7 @@ public class EstablishmentService {
             throw new EstablishmentNotFoundException("Establishment not found");
         }
 
-        List<Establishment> establishments = new ArrayList();
+        List<Establishment> establishments = new ArrayList<Establishment>();
         establishments.add(establishment.getBody());
 
         ListaObj<Establishment> listaObjEstablishments = new ListaObj<>(1, establishments);
@@ -263,12 +237,12 @@ public class EstablishmentService {
 
         establishment2.updateProfileEstablishment(Optional.of(establishment));
 
-        if (userTokenDtoResponseEntity.getStatusCodeValue() == 200) {
+        if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment2);
             SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
                     establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
             simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
-            return ResponseEntity.status(200).body(establishmentSaved);
+            return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
         }
