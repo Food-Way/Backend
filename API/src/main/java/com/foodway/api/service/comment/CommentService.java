@@ -2,6 +2,7 @@ package com.foodway.api.service.comment;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.*;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
@@ -38,20 +39,29 @@ public class CommentService {
         establishment.addComment(comment);
         final Comment commentSaved = commentRepository.save(comment);
         final Customer customerIncreasedXP = customer.increaseXp(10);
-        final Customer customerUpdated = userRepository.save(customerIncreasedXP);
+        userRepository.save(customerIncreasedXP);
         return ResponseEntity.status(200).body(commentSaved);
     }
 
     public ResponseEntity<Comment> postCommentChild(RequestCommentChild data) {
-        final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
-        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
-        final Comment commentChild = new Comment(data);
-        commentChild.setGeneralRate(generateGeneralRateForComment(commentChild.getIdCustomer(), commentChild.getIdEstablishment()));
-        commentParent.addReply(commentChild);
-        final Comment commentChildSaved = commentRepository.save(commentChild);
-        final Customer customerIncreasedXP = customer.increaseXp(10);
-        final Customer customerUpdated = userRepository.save(customerIncreasedXP);
-
+            Comment commentChildSaved;
+        if(data.typeUser().equals(ETypeUser.CLIENT)){
+            final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+            final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
+            final Comment commentChild = new Comment(data);
+            commentChild.setGeneralRate(generateGeneralRateForComment(commentChild.getIdCustomer(), commentChild.getIdEstablishment()));
+            commentParent.addReply(commentChild);
+            commentChildSaved = commentRepository.save(commentChild);
+            final Customer customerIncreasedXP = customer.increaseXp(10);
+            userRepository.save(customerIncreasedXP);
+        }
+        else {
+            final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+            final Comment commentChild = new Comment(data);
+            commentParent.addReply(commentChild);
+            commentChildSaved = commentRepository.save(commentChild);
+            commentRepository.save(commentParent);
+        }
         return ResponseEntity.status(200).body(commentChildSaved);
     }
 
