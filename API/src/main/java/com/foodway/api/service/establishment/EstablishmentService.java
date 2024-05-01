@@ -74,8 +74,8 @@ public class EstablishmentService {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
         List<Comment> filteredComments = comments.stream()
-    .filter(comment -> comment.getIdParent() == null)
-    .collect(Collectors.toList());
+                .filter(comment -> comment.getIdParent() == null)
+                .collect(Collectors.toList());
         establishment.setPostList(filteredComments);
         long qtdUpvotes = upvoteRepository.countByIdEstablishment(idEstablishment);
         long qtdRates = rateRepository.countByIdEstablishment(idEstablishment);
@@ -97,12 +97,9 @@ public class EstablishmentService {
                 qtdRates,
                 filteredComments,
                 establishment.getProfileHeaderImg(),
-                establishment.getTags()
-        );
+                establishment.getTags());
         return ResponseEntity.status(200).body(establishmentProfileDTO);
     }
-
-
 
     public ResponseEntity<List<Establishment>> getMoreCommentedEstablishments(@Nullable String culinary) {
         List<Establishment> establishments;
@@ -124,7 +121,8 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<Establishment> getEstablishment(UUID paramId) {
-        Establishment establishment = establishmentRepository.findById(paramId).orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
+        Establishment establishment = establishmentRepository.findById(paramId)
+                .orElseThrow(() -> new EstablishmentNotFoundException("Establishment not found"));
         getAverageOfIndicators(establishment);
         return ResponseEntity.status(200).body(establishment);
     }
@@ -147,13 +145,15 @@ public class EstablishmentService {
         Establishment establishment = new Establishment(establishmentRequest);
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(),
+                "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
 
         Establishment establishmentSaved = establishmentRepository.save(establishment);
 
-        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(establishment.getName(), establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
+        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(establishment.getName(),
+                establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
 
         try {
             simpleMailClient.aaa("/account-created", simpleMail);
@@ -173,7 +173,6 @@ public class EstablishmentService {
 
     public ResponseEntity<ListaObj<Establishment>> exportEstablishments(String archiveType, UUID id) {
         ResponseEntity<Establishment> establishment = getEstablishment(id);
-
 
         if (establishment.getStatusCode().value() == 404) {
             throw new EstablishmentNotFoundException("Establishment not found");
@@ -209,17 +208,18 @@ public class EstablishmentService {
     }
 
     public void getAverageOfIndicators(Establishment establishment) {
-        Map<String, Double> current = rateRepository.getIndicators(ETypeRate.AMBIENT, ETypeRate.SERVICE, ETypeRate.FOOD, establishment.getIdUser());
+        Map<String, Double> current = rateRepository.getIndicators(ETypeRate.AMBIENT, ETypeRate.SERVICE, ETypeRate.FOOD,
+                establishment.getIdUser());
 
         establishment.setRates(current);
     }
 
     public ResponseEntity<List<Establishment>> getEstablishmentsByCulinary(Integer idCulinary) {
         List<Establishment> establishments;
-        if(idCulinary == 999){
+        if (idCulinary == 999) {
             establishments = establishmentRepository.findAll();
-        }else {
-             establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
+        } else {
+            establishments = establishmentRepository.findEstablishmentByCulinary_Id(idCulinary);
         }
         return validateIsEmpty(establishments);
     }
@@ -239,8 +239,12 @@ public class EstablishmentService {
 
         if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment2);
-            SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
-                    establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
+            SimpleMailAccountUpdated simpleMailAccountUpdated = new
+            SimpleMailAccountUpdated(establishmentSaved.getName(),
+            establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
+            establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(),
+            establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(),
+            establishmentSaved.getDescription());
             simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
             return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
         } else {
@@ -250,7 +254,8 @@ public class EstablishmentService {
 
     }
 
-    public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id, UpdateEstablishmentPersonal establishmentUpdate) {
+    public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id,
+            UpdateEstablishmentPersonal establishmentUpdate) {
 
         Establishment establishment = getEstablishment(id).getBody();
         UserLoginDto userLoginDto = new UserLoginDto();
@@ -261,8 +266,12 @@ public class EstablishmentService {
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment);
-            SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(establishmentSaved.getName(), establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
-            establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(), establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(), establishmentSaved.getDescription());
+            SimpleMailAccountUpdated simpleMailAccountUpdated = new
+            SimpleMailAccountUpdated(establishmentSaved.getName(),
+            establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
+            establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(),
+            establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(),
+            establishmentSaved.getDescription());
             simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
             return ResponseEntity.status(200).body(establishmentSaved);
         } else {
@@ -271,21 +280,25 @@ public class EstablishmentService {
         return ResponseEntity.status(401).build();
     }
 
-    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession, String establishmentName, ESearchFilter filter) {
+    public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession,
+            String establishmentName, ESearchFilter filter) {
         List<Establishment> establishments;
-        if (establishmentName != null  && filter != null) {
+        if (establishmentName != null && filter != null) {
             establishments = switch (filter) {
                 case COMMENTS ->
-                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByPostListDesc(establishmentName);
+                    establishmentRepository
+                            .findByEstablishmentNameContainsIgnoreCaseOrderByPostListDesc(establishmentName);
                 case RELEVANCE ->
-                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByGeneralRateDesc(establishmentName);
+                    establishmentRepository
+                            .findByEstablishmentNameContainsIgnoreCaseOrderByGeneralRateDesc(establishmentName);
                 case UPVOTES ->
-                        establishmentRepository.findByEstablishmentNameContainsIgnoreCaseOrderByPostList_UpvoteListDesc(establishmentName);
+                    establishmentRepository
+                            .findByEstablishmentNameContainsIgnoreCaseOrderByPostList_UpvoteListDesc(establishmentName);
             };
         } else if (filter != null) {
             establishments = switch (filter) {
                 case COMMENTS -> establishmentRepository.findAllByOrderByPostListSizeDesc();
-                case RELEVANCE -> establishmentRepository.findByOrderByGeneralRateDesc() ;
+                case RELEVANCE -> establishmentRepository.findByOrderByGeneralRateDesc();
                 case UPVOTES -> establishmentRepository.findByOrderByPostList_UpvoteListDesc();
             };
         } else {
@@ -295,7 +308,8 @@ public class EstablishmentService {
         List<SearchEstablishmentDTO> searchEstablishmentDTOs = new ArrayList<>();
 
         for (Establishment establishment : establishments) {
-            boolean isFavorite = favoriteRepository.existsByIdCustomerAndIdEstablishment(idSession, establishment.getIdUser());
+            boolean isFavorite = favoriteRepository.existsByIdCustomerAndIdEstablishment(idSession,
+                    establishment.getIdUser());
             SearchEstablishmentDTO searchEstablishmentDTO = getSearchEstablishmentDTO(establishment, isFavorite);
             searchEstablishmentDTOs.add(searchEstablishmentDTO);
         }
@@ -307,7 +321,8 @@ public class EstablishmentService {
     private SearchEstablishmentDTO getSearchEstablishmentDTO(Establishment establishment, boolean isFavorite) {
         int sizeCulinary = establishment.getCulinary().size();
         int sizeComment = establishment.getPostList().size();
-        final long countUpvotes = establishmentRepository.countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
+        final long countUpvotes = establishmentRepository
+                .countByPostList_UpvoteList_IdEstablishment(establishment.getIdUser());
         String culinary;
         String comment;
         if (sizeCulinary == 0 || establishment.getCulinary().get(sizeCulinary - 1).getName() == null) {
@@ -337,16 +352,24 @@ public class EstablishmentService {
     }
 
     public ResponseEntity<List<RelevanceDTO>> getEstablishmentsByRelevance(String culinary) {
-        List<Establishment> establishments = establishmentRepository.findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRate(culinary);
+        List<Establishment> establishments = establishmentRepository
+                .findTop10ByCulinary_NameIgnoreCaseOrderByGeneralRate(culinary);
         validateIsEmpty(establishments);
 
-        List<RelevanceDTO> relevanceDTOS = establishments.stream().map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(), establishment.getProfilePhoto(), establishment.getGeneralRate(), rateRepository.countByIdEstablishment(establishment.getIdUser()))).toList();
+        List<RelevanceDTO> relevanceDTOS = establishments.stream()
+                .map(establishment -> new RelevanceDTO(establishment.getEstablishmentName(),
+                        establishment.getProfilePhoto(), establishment.getGeneralRate(),
+                        rateRepository.countByIdEstablishment(establishment.getIdUser())))
+                .toList();
         return ResponseEntity.ok(relevanceDTOS);
     }
 
     public ResponseEntity<List<Comment>> getEstablishmentCommentsByIdEstablishment(UUID idEstablishment) {
         Establishment establishment = getEstablishment(idEstablishment).getBody();
         List<Comment> comments = commentService.getCountsFromComments(establishment.getPostList());
-        return ResponseEntity.ok(comments);
+        List<Comment> filteredComments = comments.stream()
+                .filter(comment -> comment.getIdParent() == null)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(filteredComments);
     }
 }
