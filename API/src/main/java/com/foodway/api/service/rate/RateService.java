@@ -36,43 +36,48 @@ public class RateService {
 
     public ResponseEntity<List<Rate>> getAll() {
         List<Rate> rates = rateRepository.findAll();
-        if (rates.isEmpty()) throw new ResponseStatusException(HttpStatus.NO_CONTENT, "List of Rate is empty");
+        if (rates.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT, "List of Rate is empty");
         return ResponseEntity.status(200).body(rates);
     }
 
     public ResponseEntity<Rate> get(Long id) {
-        if (!rateRepository.existsById(id)) throw new RateNotFoundException("Rate not found!");
+        if (!rateRepository.existsById(id))
+            throw new RateNotFoundException("Rate not found!");
         return ResponseEntity.status(200).body(rateRepository.findById(id).get());
     }
 
     public ResponseEntity<List<Rate>> addOrUpdate(RequestRateAddOrUpdate data) {
-        Optional<Customer> customer = customerRepository.findById(data.idCustomer());
-        Optional<Establishment> establishment = establishmentRepository.findById(data.idEstablishment());
-        if (!customer.isPresent()) {
+        Optional<Customer> customerOptional = customerRepository.findById(data.idCustomer());
+        Optional<Establishment> establishmentOptional = establishmentRepository.findById(data.idEstablishment());
+        if (!customerOptional.isPresent()) {
             throw new CustomerNotFoundException("Customer not found!");
         }
-        if (!establishment.isPresent()) {
+        if (!establishmentOptional.isPresent()) {
             throw new EstablishmentNotFoundException("Establishment not found!");
         }
-
-        // validate if rate exists
+        Customer customer = customerOptional.get();
+        Establishment establishment = establishmentOptional.get();
         List<Rate> rates = new ArrayList<>();
         for (RequestRateAddOrUpdate.DescriptionRate rate : data.rates()) {
             Long id = 0L;
-            if(customer.get().getRates().size() == 3){
-                if (rate.name() == customer.get().getRates().get(0).getTypeRate()) {
-                    id = customer.get().getRates().get(0).getIdRate();
-                } else if (rate.name() == customer.get().getRates().get(1).getTypeRate()) {
-                    id = customer.get().getRates().get(1).getIdRate();
-                } else if (rate.name() == customer.get().getRates().get(2).getTypeRate()) {
-                    id = customer.get().getRates().get(2).getIdRate();
+            List<Rate> ratesEstablishment = customer.getRates()
+                    .stream()
+                    .filter(
+                            r -> r.getIdEstablishment().equals(data.idEstablishment()))
+                    .toList();
+            if (ratesEstablishment.size() == 3) {
+                for (Rate establishmentRate : ratesEstablishment) {
+                    if (rate.name().equals(establishmentRate.getTypeRate())) {
+                        id = establishmentRate.getIdRate();
+                        break;
+                    }
                 }
             }
-
-            if(id == 0L){
+            if (id == 0L) {
                 Rate newRate = new Rate(data.idCustomer(), data.idEstablishment(), rate.ratePoint(), rate.name());
-                customer.get().addRate(newRate);
-                establishment.get().addRate(newRate);
+                customer.addRate(newRate);
+                establishment.addRate(newRate);
                 newRate.setIdCustomer(newRate.getIdCustomer());
                 newRate.setIdEstablishment(newRate.getIdEstablishment());
                 rates.add(newRate);
@@ -85,15 +90,14 @@ public class RateService {
                 rateRepository.save(r);
             }
         }
-
         return ResponseEntity.status(201).body(rates);
     }
 
     public ResponseEntity<Void> delete(Long id) {
-        if (!rateRepository.existsById(id)) throw new RateNotFoundException("Rate not found!");
+        if (!rateRepository.existsById(id))
+            throw new RateNotFoundException("Rate not found!");
         rateRepository.deleteById(id);
         return ResponseEntity.status(200).build();
     }
-
 
 }
