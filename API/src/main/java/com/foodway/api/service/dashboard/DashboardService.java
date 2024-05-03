@@ -55,7 +55,9 @@ public class DashboardService {
                                 establishment.get().getEstablishmentName(),
                                 comment.getComment(),
                                 generalRate,
-                                countUpvotes
+                                countUpvotes,
+                                comment.getIdEstablishment(),
+                                establishment.get().getProfilePhoto()
                         ));
 
                 String commentDayOfWeek = String.valueOf(comment.getCreatedAt().getDayOfWeek());

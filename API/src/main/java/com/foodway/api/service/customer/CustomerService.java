@@ -52,12 +52,14 @@ public class CustomerService {
     private SimpleMailClient simpleMailClient;
 
     public ResponseEntity<List<Customer>> getCustomers() {
-        if (customerRepository.findAll().isEmpty()) return ResponseEntity.status(204).build();
+        if (customerRepository.findAll().isEmpty())
+            return ResponseEntity.status(204).build();
         return ResponseEntity.status(200).body(customerRepository.findAll());
     }
 
     public ResponseEntity<Customer> getCustomer(UUID id) {
-            Customer customer = customerRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        Customer customer = customerRepository.findById(id)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
         return ResponseEntity.status(200).body(customer);
     }
 
@@ -73,7 +75,8 @@ public class CustomerService {
     public ResponseEntity<Customer> saveCustomer(RequestUserCustomer userCreateDto) {
         Customer createdCustomer = new Customer(userCreateDto);
         Customer customerSaved = customerRepository.save(createdCustomer);
-        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(createdCustomer.getName(), null, createdCustomer.getEmail(), createdCustomer.getTypeUser());
+        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(createdCustomer.getName(), null,
+                createdCustomer.getEmail(), createdCustomer.getTypeUser());
 
         try {
             simpleMailClient.aaa("/account-created", simpleMail);
@@ -121,18 +124,29 @@ public class CustomerService {
         List<CommentDTO> commentDTOS = new ArrayList<>();
 
         comments.forEach(comment -> {
-            String establishmentName = establishmentService.getEstablishment(comment.getIdEstablishment()).getBody().getEstablishmentName();
-            CommentDTO commentDTO = new CommentDTO(establishmentName, comment.getComment(), comment.getGeneralRate(), comment.getUpvotes());
+            Establishment establishmentBody = establishmentService.getEstablishment(comment.getIdEstablishment())
+                    .getBody();
+            String establishmentName = establishmentBody.getEstablishmentName();
+            CommentDTO commentDTO = new CommentDTO(
+                    establishmentName,
+                    comment.getComment(),
+                    comment.getGeneralRate(),
+                    comment.getUpvotes(),
+                    comment.getIdEstablishment(),
+                    establishmentBody.getProfilePhoto());
             commentDTOS.add(commentDTO);
         });
-
         favorites.forEach(favorite -> {
-            Establishment establishment = establishmentService.getEstablishment(favorite.getIdEstablishment()).getBody();
-            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getIdUser(), establishment.getEstablishmentName(), establishment.getGeneralRate(), establishment.getCulinary(), establishment.getProfilePhoto());
+            Establishment establishment = establishmentService.getEstablishment(favorite.getIdEstablishment())
+                    .getBody();
+            EstablishmentDTO establishmentDTO = new EstablishmentDTO(establishment.getIdUser(),
+                    establishment.getEstablishmentName(), establishment.getGeneralRate(), establishment.getCulinary(),
+                    establishment.getProfilePhoto());
             favoriteEstablishments.add(establishmentDTO);
         });
-
-        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(), customer.getProfileHeaderImg(), customer.getBio(), customer.getLevel(), customerAvgRate, customer.getXp(), customerQtdComments, customerQtdUpvotes, commentDTOS, favoriteEstablishments);
+        CustomerProfileDTO customerProfileDTO = new CustomerProfileDTO(customer.getName(), customer.getProfilePhoto(),
+                customer.getProfileHeaderImg(), customer.getBio(), customer.getLevel(), customerAvgRate,
+                customer.getXp(), customerQtdComments, customerQtdUpvotes, commentDTOS, favoriteEstablishments);
         return ResponseEntity.status(200).body(customerProfileDTO);
     }
 
@@ -144,9 +158,11 @@ public class CustomerService {
         Customer custumerToUpdate = customerOptional.get();
         custumerToUpdate.updateProfile(Optional.ofNullable(customer));
         Customer customerSaved = customerRepository.save(custumerToUpdate);
-        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null, customerSaved.getEmail(),
-                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null, null);
-        simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
+                customerSaved.getEmail(),
+                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null,
+                null);
+        simpleMailClient.aaa("/account-updated", simpleMailAccountUpdated);
         return ResponseEntity.status(200).body(customerSaved);
     }
 
@@ -158,14 +174,17 @@ public class CustomerService {
         Customer customerToUpdate = customerOptional.get();
         customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
         Customer customerSaved = customerRepository.save(customerToUpdate);
-        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null, customerSaved.getEmail(),
-                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null, null);
+        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
+                customerSaved.getEmail(),
+                customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null,
+                null);
         return ResponseEntity.status(200).body(customerSaved);
     }
 
     public ResponseEntity<List<SearchCustomerDTO>> searchAllCustomers(String customerName) {
 
-        List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName) : customerRepository.findAll();
+        List<Customer> customers = customerName != null ? customerRepository.findByNameContainsIgnoreCase(customerName)
+                : customerRepository.findAll();
         if (customers.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NO_CONTENT, "No customers found");
         }
@@ -201,6 +220,7 @@ public class CustomerService {
                 customer.getBio(),
                 countUpvotes,
                 countComments,
-                customer.getProfilePhoto());
+                customer.getProfilePhoto()
+            );
     }
 }
