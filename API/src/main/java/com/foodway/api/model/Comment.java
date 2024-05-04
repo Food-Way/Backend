@@ -71,6 +71,7 @@ public class Comment {
         this.userName = data.userName();
         this.generalRate = 0.0;
         this.replies = new ArrayList<>();
+        this.typeUser = data.typeUser();
     }
 
     public Comment(RequestCommentChild data) {
@@ -82,6 +83,7 @@ public class Comment {
         this.images = data.images();
         this.userName = data.userName();
         this.generalRate = 0.0;
+        this.typeUser= data.typeUser();
         this.replies = new ArrayList<>();
     }
 
@@ -208,4 +210,14 @@ public class Comment {
         this.replies.add(reply);
         reply.setParentComment(this);
     }
+
+    @Override
+    public String toString() {
+        return "Comment [idPost=" + idPost + ", idParent=" + idParent + ", idEstablishment=" + idEstablishment
+                + ", idCustomer=" + idCustomer + ", comment=" + comment + ", generalRate=" + generalRate + ", upvotes="
+                + upvotes + ", images=" + images + ", userPhoto=" + userPhoto + ", userName=" + userName + ", typeUser="
+                + typeUser + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", parentComment="
+                + parentComment + ", upvoteList=" + upvoteList + "]";
+    }
+    
 }
