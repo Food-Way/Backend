@@ -7,13 +7,11 @@ import com.foodway.api.model.Establishment;
 import com.foodway.api.model.User;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.UserRepository;
-import com.foodway.api.service.establishment.EstablishmentService;
 import com.foodway.api.service.user.authentication.dto.UserCreateDto;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserMapper;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,6 +63,7 @@ public class UserService {
         return UserMapper.of(user, token, establishmentName, culinary);
 
     }
+
 }
 
 

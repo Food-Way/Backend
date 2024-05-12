@@ -46,5 +46,15 @@ public abstract class SimpleMail {
     public void setTypeUser(ETypeUser typeUser) {
         this.typeUser = typeUser;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"name\": \"" + name + "\"," +
+                "\"establishmentName\": \"" + establishmentName + "\"," +
+                "\"email\": \"" + email + "\"," +
+                "\"typeUser\": \"" + typeUser.name() + "\"" +
+                "}";
+    }
 }
 

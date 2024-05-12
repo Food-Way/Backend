@@ -1,23 +1,27 @@
 package com.foodway.api.service.customer;
 
 import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
-import com.foodway.api.apiclient.SimpleMailClient;
 import com.foodway.api.apiclient.entities.SimpleMailAccountUpdated;
 import com.foodway.api.controller.UserController;
-import com.foodway.api.record.DTOs.*;
-import com.foodway.api.record.UpdateCustomerPersonalInfo;
-import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.model.Favorite;
+import com.foodway.api.record.DTOs.CommentDTO;
+import com.foodway.api.record.DTOs.CustomerProfileDTO;
+import com.foodway.api.record.DTOs.EstablishmentDTO;
+import com.foodway.api.record.DTOs.SearchCustomerDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
+import com.foodway.api.record.UpdateCustomerPersonalInfo;
+import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.repository.*;
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.establishment.EstablishmentService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,9 +51,8 @@ public class CustomerService {
     private UpvoteRepository upvoteRepository;
     @Autowired
     UserService userService;
-
     @Autowired
-    private SimpleMailClient simpleMailClient;
+    private RabbitTemplate rabbitTemplate;
 
     public ResponseEntity<List<Customer>> getCustomers() {
         if (customerRepository.findAll().isEmpty())
@@ -75,14 +78,14 @@ public class CustomerService {
     public ResponseEntity<Customer> saveCustomer(RequestUserCustomer userCreateDto) {
         Customer createdCustomer = new Customer(userCreateDto);
         Customer customerSaved = customerRepository.save(createdCustomer);
-        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(createdCustomer.getName(), null,
+
+        SimpleMailAccountCreated accountCreated = new SimpleMailAccountCreated(createdCustomer.getName(), null,
                 createdCustomer.getEmail(), createdCustomer.getTypeUser());
 
-        try {
-            simpleMailClient.aaa("/account-created", simpleMail);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Message message = new Message(accountCreated.toString().getBytes());
+        message.getMessageProperties().setContentType("application/json");
+
+        rabbitTemplate.send("account.created", message);
         return ResponseEntity.status(201).body(customerSaved);
     }
 
@@ -158,11 +161,15 @@ public class CustomerService {
         Customer custumerToUpdate = customerOptional.get();
         custumerToUpdate.updateProfile(Optional.ofNullable(customer));
         Customer customerSaved = customerRepository.save(custumerToUpdate);
-        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
+        SimpleMailAccountUpdated accountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
                 customerSaved.getEmail(),
                 customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null,
                 null);
-        simpleMailClient.aaa("/account-updated", simpleMailAccountUpdated);
+
+        Message message = new Message(accountUpdated.toString().getBytes());
+        message.getMessageProperties().setContentType("application/json");
+
+        rabbitTemplate.send("account.updated", message);
         return ResponseEntity.status(200).body(customerSaved);
     }
 
@@ -174,10 +181,15 @@ public class CustomerService {
         Customer customerToUpdate = customerOptional.get();
         customerToUpdate.updatePersonalInfo(Optional.ofNullable(customer));
         Customer customerSaved = customerRepository.save(customerToUpdate);
-        SimpleMailAccountUpdated simpleMailAccountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
+        SimpleMailAccountUpdated accountUpdated = new SimpleMailAccountUpdated(customerSaved.getName(), null,
                 customerSaved.getEmail(),
                 customerSaved.getTypeUser(), customerSaved.getProfilePhoto(), customerSaved.getProfileHeaderImg(), null,
                 null);
+
+        Message message = new Message(accountUpdated.toString().getBytes());
+        message.getMessageProperties().setContentType("application/json");
+
+        rabbitTemplate.send("account.updated", message);
         return ResponseEntity.status(200).body(customerSaved);
     }
 

@@ -2,28 +2,34 @@ package com.foodway.api.service.establishment;
 
 import com.foodway.api.apiclient.MapsClient;
 import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
-import com.foodway.api.apiclient.SimpleMailClient;
 import com.foodway.api.apiclient.entities.SimpleMailAccountUpdated;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
-import com.foodway.api.model.*;
+import com.foodway.api.model.Comment;
 import com.foodway.api.model.Enums.EEntity;
 import com.foodway.api.model.Enums.ESearchFilter;
 import com.foodway.api.model.Enums.ETypeRate;
-import com.foodway.api.record.DTOs.*;
+import com.foodway.api.model.Establishment;
+import com.foodway.api.record.DTOs.EstablishmentProfileDTO;
 import com.foodway.api.record.DTOs.GMaps.MapsLongLag;
+import com.foodway.api.record.DTOs.RelevanceDTO;
+import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.UserService;
 import com.foodway.api.service.comment.CommentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +49,9 @@ public class EstablishmentService {
     @Autowired
     private MapsClient mapsClient;
     @Autowired
-    private SimpleMailClient simpleMailClient;
+    private CommentService commentService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     CustomerRepository customerRepository;
@@ -56,7 +64,10 @@ public class EstablishmentService {
     @Autowired
     private UpvoteRepository upvoteRepository;
     @Autowired
-    private CommentService commentService;
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${GMAPS_API_KEY}")
+    private String GMapsApiKey;
 
     public ResponseEntity<List<Establishment>> validateIsEmpty(List<Establishment> establishments) {
         if (establishments.isEmpty()) {
@@ -145,22 +156,19 @@ public class EstablishmentService {
         Establishment establishment = new Establishment(establishmentRequest);
 
         RequestUserEstablishment.Address address = establishmentRequest.address();
-        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(),
-                "AIzaSyAKELgmqf4j5kRAdn9EKTC28cMao0sQvJE");
+        MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), GMapsApiKey);
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
 
         Establishment establishmentSaved = establishmentRepository.save(establishment);
 
-        SimpleMailAccountCreated simpleMail = new SimpleMailAccountCreated(establishment.getName(),
+        SimpleMailAccountCreated accountCreated = new SimpleMailAccountCreated(establishment.getName(),
                 establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
 
-        try {
-            simpleMailClient.aaa("/account-created", simpleMail);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Message message = new Message(accountCreated.toString().getBytes());
+        message.getMessageProperties().setContentType("application/json");
 
+        rabbitTemplate.send("account.created", message);
         return ResponseEntity.status(201).body(establishmentSaved);
     }
 
@@ -239,13 +247,17 @@ public class EstablishmentService {
 
         if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment2);
-            SimpleMailAccountUpdated simpleMailAccountUpdated = new
+            SimpleMailAccountUpdated accountUpdated = new
             SimpleMailAccountUpdated(establishmentSaved.getName(),
             establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
             establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(),
             establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(),
             establishmentSaved.getDescription());
-            simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+
+            Message message = new Message(accountUpdated.toString().getBytes());
+            message.getMessageProperties().setContentType("application/json");
+
+            rabbitTemplate.send("account.updated", message);
             return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
@@ -266,13 +278,18 @@ public class EstablishmentService {
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode() == HttpStatusCode.valueOf(200)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment);
-            SimpleMailAccountUpdated simpleMailAccountUpdated = new
+
+            SimpleMailAccountUpdated accountUpdated = new
             SimpleMailAccountUpdated(establishmentSaved.getName(),
             establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
             establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(),
             establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(),
             establishmentSaved.getDescription());
-            simpleMailClient.aaa("/account-updated",simpleMailAccountUpdated);
+
+            Message message = new Message(accountUpdated.toString().getBytes());
+            message.getMessageProperties().setContentType("application/json");
+
+            rabbitTemplate.send("account.updated", message);
             return ResponseEntity.status(200).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
