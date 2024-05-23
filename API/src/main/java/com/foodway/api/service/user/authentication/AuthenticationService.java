@@ -1,5 +1,6 @@
 package com.foodway.api.service.user.authentication;
 
+import com.foodway.api.handler.exceptions.UserNotFoundException;
 import com.foodway.api.model.User;
 import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.user.authentication.dto.UserDetailsDto;
@@ -23,20 +24,9 @@ public class AuthenticationService implements UserDetailsService {
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         if(userOptional.isEmpty()){
-            throw  new UsernameNotFoundException(String.format("User %s not found", email));
+            throw new UserNotFoundException("User %s not found".formatted(email));
         }
-        User user = userOptional.get();
-        String passwordData = user.getPassword();
 
-        // Verifique a senha usando o BCryptPasswordEncoder
-//
-//        boolean wrongPassword = passwordEncoder.matches("password123", passwordData);
-//
-//        if (!wrongPassword) {
-//            throw new BadCredentialsException("Senha incorreta");
-//        }
-
-        return new UserDetailsDto(user);
-
+        return new UserDetailsDto(userOptional.get());
     }
 }

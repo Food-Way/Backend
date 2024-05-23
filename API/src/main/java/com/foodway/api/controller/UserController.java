@@ -1,13 +1,4 @@
 package com.foodway.api.controller;
-//
-//
-//import com.foodway.api.model.User;
-//import com.foodway.api.record.RequestUserData;
-//import com.foodway.api.service.UserService;
-//import org.hibernate.validator.constraints.UUID;
-
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.validation.annotation.Validated;
 
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.user.authentication.dto.UserCreateDto;
@@ -17,17 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-//
-//import java.util.List;
-//
 @RestController
 @RequestMapping("/users")
+@Tag(name = "User")
 public class UserController {
 
     @Autowired
@@ -37,6 +27,12 @@ public class UserController {
 
     @PostMapping
     @SecurityRequirement(name = "Bearer")
+    @Operation(summary = "Create a new user", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the created user"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<Void> create(@RequestBody @Valid UserCreateDto userCreateDto) {
         String passwordEncrypt = passwordEncoder.encode(userCreateDto.getPassword());
         userCreateDto.setPassword(passwordEncrypt);
@@ -46,6 +42,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Realize a user login", method = "POST")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the user login"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
     public ResponseEntity<UserTokenDto> login(@RequestBody UserLoginDto userLoginDto) {
         UserTokenDto userTokenDto = this.userService.authenticate(userLoginDto);
         return ResponseEntity.status(200).body(userTokenDto);
@@ -58,51 +60,8 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "User is not authenticated"),
             @ApiResponse(responseCode = "500", description = "An unexpected error occurred while processing the request")
     })
-
     public ResponseEntity get() {
         // Se o usuário está autenticado, retorna um código de status 200
         return ResponseEntity.ok().build();
     }
-
-
 }
-//
-//    @GetMapping("/usuarios-teste") ResponseEntity<List<User>> getUsuarios() {
-//        return userService.getUsuarios();
-//    }
-//
-//    @GetMapping("/id")
-//    public ResponseEntity<User> getUsuario(@PathVariable UUID id) {
-//        return userService.getUsuario(id);
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<User> login(@RequestBody @Validated RequestUserLogin data) {
-//        return userService.loginUser(data);
-//    }
-//
-//   @PostMapping
-//    public ResponseEntity<User> save(@RequestBody @Validated RequestUserData data) {
-//        return userService.cadastrar(data);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<User> delete(@PathVariable UUID id) {
-//        return userService.deleteUsuario(id);
-//    }
-//
-//    @PutMapping
-//    public ResponseEntity<User> put(@PathVariable UUID id, @RequestBody User user) {
-//        return userService.putUsuario(id, user);
-//    }
-//    /*
-//        {
-//            "nome": "nome",
-//            "sobrenome": "sobrenome",
-//            "email": "email",
-//            "senha": "senha"
-//        }
-//     */
-//
-//
-//}

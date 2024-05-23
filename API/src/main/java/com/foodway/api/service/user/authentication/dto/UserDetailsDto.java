@@ -6,15 +6,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class UserDetailsDto implements UserDetails {
 
+    private final UUID id;
     private final String email;
     private final String password;
+    private final String name;
 
     public UserDetailsDto(User user) {
+        this.id = user.getIdUser();
         this.password = user.getPassword();
         this.email = user.getEmail();
+        this.name = user.getName();
         // Outros mapeamentos de campos, se necessário
     }
     @Override
@@ -29,6 +34,18 @@ public class UserDetailsDto implements UserDetails {
 
     @Override
     public String getUsername() {
+        return email;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
         return email;
     }
 

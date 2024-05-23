@@ -12,9 +12,10 @@ public record UpdateEstablishmentData(
         @NotBlank String password,
         @NotNull ETypeUser typeUser,
         String profilePhoto,
+        String profileHeaderImg,
         @NotBlank String establishmentName,
         String description,
-        Double rate,
+        String phone,
         @NotBlank String cnpj,
         Address address
 ) {
@@ -25,6 +26,7 @@ public record UpdateEstablishmentData(
             @NotBlank String street,
             @NotBlank String neighborhood,
             @NotBlank String city,
-            @NotBlank String state) {
+            @NotBlank String state
+    ) {
     }
 }

@@ -1,0 +1,10 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "*" ]
+feign:
+  client:
+    config:
+      simpleMailClient:
+        url: http://54.226.147.165:80

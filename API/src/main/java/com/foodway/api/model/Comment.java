@@ -1,5 +1,7 @@
 package com.foodway.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import jakarta.persistence.Entity;
@@ -24,12 +26,14 @@ public class Comment {
     private UUID idPost;
     private UUID idParent;
     private UUID idEstablishment;
+    private UUID idCustomer;
     private String comment;
-    //    private Rate rate;
-//    private List<Tags> tagList;
-//    private List<Costumer> listCostumer;
+    private Double generalRate;
     private int upvotes;
     private List<String> images;
+    private String userPhoto;
+    private String userName;
+    private ETypeUser typeUser;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
@@ -39,6 +43,9 @@ public class Comment {
     private Comment parentComment;
     @OneToMany(mappedBy = "parentComment")
     List<Comment> replies;
+    @JsonIgnore
+    @OneToMany
+    private List<Upvote> upvoteList;
 
     public Comment() {
     }
@@ -50,41 +57,48 @@ public class Comment {
     public Comment(int upvotes, String comment, List<String> images) {
         this.upvotes = upvotes;
         this.comment = comment;
-//        this.tagList = tagList;
-//        this.listCostumer = listCostumer;
         this.images = images;
-//        this.rate = rate;
+        this.generalRate = 0.0;
         this.replies = new ArrayList<>();
     }
 
     public Comment(RequestComment data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
         this.comment = data.comment();
-        this.upvotes = data.upvotes();
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
+        this.userPhoto = data.userPhoto();
         this.images = data.images();
-//        this.rate = data.rate();
+        this.userName = data.userName();
+        this.generalRate = 0.0;
         this.replies = new ArrayList<>();
+        this.typeUser = data.typeUser();
     }
 
-    public Comment(UUID idParent, RequestCommentChild data) {
-        this.idParent = idParent;
+    public Comment(RequestCommentChild data) {
+        this.idCustomer = data.idCustomer();
+        this.idEstablishment = data.idEstablishment();
+        this.idParent = data.idParent();
         this.comment = data.comment();
-        this.upvotes = data.upvotes();
-//        this.tagList = data.tagList();
-//        this.listCostumer = data.listCostumer();
+        this.userPhoto = data.userPhoto();
         this.images = data.images();
-//        this.rate = data.rate();
+        this.userName = data.userName();
+        this.generalRate = 0.0;
+        this.typeUser= data.typeUser();
         this.replies = new ArrayList<>();
     }
 
     public void update(@NotNull Optional<?> optional) {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
-        this.setUpvotes(c.upvotes());
-//        this.setTagList(c.tagList());
-//        this.setListCostumer(c.listCostumer());
         this.setImages(c.images());
+    }
+
+    public String getUserPhoto() {
+        return userPhoto;
+    }
+
+    public void setIdPost(UUID idPost) {
+        this.idPost = idPost;
     }
 
     public int getUpvotes() {
@@ -103,31 +117,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    //    public List<Tags> getTagList() {
-//        return tagList;
-//    }
-//
-//    public void setTagList(List<Tags> tagList) {
-//        this.tagList = tagList;
-//    }
-//    public List<Costumer> getListCostumer() {
-//        return listCostumer;
-//    }
-//
-//    public void setListCostumer(List<Costumer> listCostumer) {
-//        this.listCostumer = listCostumer;
-//    }
     public UUID getIdPost() {
         return idPost;
     }
 
     public List<Comment> getReplies() {
         return replies;
-    }
-
-    public void addReply(Comment reply) {
-        this.replies.add(reply);
-        reply.setParentComment(this);
     }
 
     public void setParentComment(Comment parentComment) {
@@ -154,6 +149,14 @@ public class Comment {
         this.idEstablishment = idEstablishment;
     }
 
+    public UUID getIdCustomer() {
+        return idCustomer;
+    }
+
+    public void setIdCustomer(UUID idCustomer) {
+        this.idCustomer = idCustomer;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -161,4 +164,60 @@ public class Comment {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
+
+    public List<Upvote> getUpvoteList() {
+        return upvoteList;
+    }
+
+    public void addUpvote(Upvote upvote) {
+        this.upvoteList.add(upvote);
+    }
+
+    public void removeUpvote(Upvote upvote) {
+        this.upvoteList.remove(upvote);
+    }
+
+    public Double getGeneralRate() {
+        return generalRate;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPhoto(String userPhoto) {
+        this.userPhoto = userPhoto;
+    }
+
+    public ETypeUser getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(ETypeUser typeUser) {
+        this.typeUser = typeUser;
+    }
+
+    public Double setGeneralRate(Double generalRate) {
+        this.generalRate = generalRate;
+        return generalRate;
+    }
+
+    public void addReply(Comment reply) {
+        this.replies.add(reply);
+        reply.setParentComment(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Comment [idPost=" + idPost + ", idParent=" + idParent + ", idEstablishment=" + idEstablishment
+                + ", idCustomer=" + idCustomer + ", comment=" + comment + ", generalRate=" + generalRate + ", upvotes="
+                + upvotes + ", images=" + images + ", userPhoto=" + userPhoto + ", userName=" + userName + ", typeUser="
+                + typeUser + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + ", parentComment="
+                + parentComment + ", upvoteList=" + upvoteList + "]";
+    }
+    
 }

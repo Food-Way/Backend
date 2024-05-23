@@ -1,19 +1,28 @@
 package com.foodway.api.record;
 
-import com.foodway.api.model.Comment;
+ 
+import com.foodway.api.model.Enums.ETypeUser;
+
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
 import java.util.List;
 import java.util.UUID;
 
 public record RequestCommentChild (
-        @Positive
-        int upvotes,
+        @NotNull
+        UUID idCustomer,
+        @NotNull
+        UUID idEstablishment,
+        @NotNull
+        UUID idParent,
         @NotBlank
         String comment,
-//  List<Tags> tagList,
-//  List<Costumer> listCostumer,
-        @NotNull
+        @NotBlank
+        String userPhoto,
+        @NotBlank
+        String userName,
+        @Enumerated
+        ETypeUser typeUser,
         List<String> images
-//  Rate rate
 ){}

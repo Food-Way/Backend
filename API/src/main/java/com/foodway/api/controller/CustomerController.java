@@ -1,18 +1,23 @@
 package com.foodway.api.controller;
 
 
-import com.foodway.api.exceptions.CustomerNotFoundException;
+import com.foodway.api.handler.exceptions.CustomerNotFoundException;
 import com.foodway.api.model.Customer;
+import com.foodway.api.model.Favorite;
+import com.foodway.api.record.DTOs.CustomerProfileDTO;
+import com.foodway.api.record.DTOs.SearchCustomerDTO;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
+import com.foodway.api.record.UpdateCustomerPersonalInfo;
+import com.foodway.api.record.UpdateCustomerProfile;
 import com.foodway.api.service.customer.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +37,7 @@ public class CustomerController {
             @ApiResponse(responseCode = "200", description = "Return all customers"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public ResponseEntity<List<Customer>> getCustomers(){
         return customerService.getCustomers();
     }
@@ -46,6 +52,28 @@ public class CustomerController {
         return customerService.getCustomer(id);
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Search all customers", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return all searched customers"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+
+    public ResponseEntity<List<SearchCustomerDTO>> searchCustomers(@RequestParam(required = false) String customerName) {
+
+        return customerService.searchAllCustomers(customerName);
+    }
+
+    @GetMapping("/profile/{id}")
+    @Operation(summary = "Get customer profile by ID", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<CustomerProfileDTO> getCustomerProfile(@PathVariable @Valid UUID id){
+        return customerService.getCustomerProfile(id);
+    }
+
     @PutMapping("/{id}")
     @Operation(summary = "Update customer by ID", method = "PUT")
     @ApiResponses(value = {
@@ -54,7 +82,7 @@ public class CustomerController {
             @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<Customer> putCustomer(@PathVariable UUID id, @RequestBody @Validated UpdateCustomerData customer){
+    public ResponseEntity<Customer> putCustomer(@PathVariable UUID id, @RequestBody @Valid UpdateCustomerData customer){
         return customerService.putCustomer(id, customer);
     }
 
@@ -65,8 +93,34 @@ public class CustomerController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Customer> saveCustomer(@RequestBody @Validated RequestUserCustomer customer){
+    public ResponseEntity<Customer> saveCustomer(@RequestBody @Valid RequestUserCustomer customer){
         return customerService.saveCustomer(customer);
+    }
+
+    @PatchMapping("/profile/{id}")
+    @Operation(summary = "Update customer profile by ID", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody  UpdateCustomerProfile customer){
+        return customerService.patchCustomerProfile(id, customer);
+    }
+
+    @PatchMapping("/personal/{id}")
+    @Operation(summary = "Update customer profile by email", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated customer"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = CustomerNotFoundException.CODE, description = CustomerNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Customer> patchCostumer(@PathVariable UUID id, @RequestBody UpdateCustomerPersonalInfo customer){
+        return customerService.patchCustomerPersonalInfo(id, customer);
     }
 
     @DeleteMapping("/{id}")
@@ -78,5 +132,17 @@ public class CustomerController {
     })
     public ResponseEntity deleteCustomer(@PathVariable UUID id){
         return customerService.deleteCustomer(id);
+    }
+
+    @PatchMapping("/{idCustomer}/establishments/{idEstablishment}/favorite")
+    @Operation(summary = "Add favorite establishment to customer", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the created favorite"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
+
+    public ResponseEntity<Favorite> addFavoriteEstablishment(@PathVariable UUID idCustomer, @PathVariable UUID idEstablishment){
+        return customerService.toggleFavoriteEstablishment(idCustomer, idEstablishment);
     }
 }

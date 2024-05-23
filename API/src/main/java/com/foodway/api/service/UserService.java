@@ -1,47 +1,41 @@
 package com.foodway.api.service;
 
 import com.foodway.api.config.security.jwt.ManagerToken;
-import com.foodway.api.record.RequestUserLogin;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.model.Establishment;
 import com.foodway.api.model.User;
-import com.foodway.api.record.RequestUserData;
+import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.UserRepository;
 import com.foodway.api.service.user.authentication.dto.UserCreateDto;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
 import com.foodway.api.service.user.authentication.dto.UserMapper;
 import com.foodway.api.service.user.authentication.dto.UserTokenDto;
-import org.hibernate.validator.constraints.UUID;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
+    ManagerToken managerToken;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    ManagerToken managerToken;
-
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private EstablishmentRepository establishmentRepository;
 
 
-
-    public void create(UserCreateDto userCreateDto){
+    public void create(UserCreateDto userCreateDto) {
 
         final User newUser = UserMapper.of(userCreateDto);
         String passwordEncrypted = passwordEncoder.encode(newUser.getPassword());
@@ -49,25 +43,28 @@ public class UserService {
         this.userRepository.save(newUser);
     }
 
-    public UserTokenDto authenticate(UserLoginDto userLoginDto){
-        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
-                userLoginDto.getEmail(), userLoginDto.getPassword());
+    public UserTokenDto authenticate(UserLoginDto userLoginDto) {
+        final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(userLoginDto.getEmail(), userLoginDto.getPassword());
 
+        User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new ResponseStatusException(404, "Email não cadastrado", null));
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
-        User userAuthenticate =
-                userRepository.findByEmail(userLoginDto.getEmail())
-                        .orElseThrow(
-                                () -> new ResponseStatusException(404, "Email não cadastrado", null)
-                        );
+        String establishmentName = null;
+        String culinary = null;
+
+        if(user.getTypeUser() == ETypeUser.ESTABLISHMENT) {
+            Establishment establishment = establishmentRepository.findById(user.getIdUser()).orElseThrow(() -> new EstablishmentNotFoundException("Estabelecimento não encontrado"));
+            establishmentName = establishment.getEstablishmentName();
+            culinary = establishment.getCulinary().get(0).getName();
+        }
+
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String token = managerToken.generateToken(authentication);
-        return UserMapper.of(userAuthenticate, token);
+        return UserMapper.of(user, token, establishmentName, culinary);
+
+    }
 
 }
-}
-
-
 
 
 //    public ResponseEntity<User> getUsuario(UUID id) {

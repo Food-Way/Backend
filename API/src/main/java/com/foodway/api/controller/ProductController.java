@@ -1,7 +1,7 @@
 package com.foodway.api.controller;
 
-import com.foodway.api.exceptions.CustomerNotFoundException;
-import com.foodway.api.exceptions.ProductNotFoundException;
+import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
+import com.foodway.api.handler.exceptions.ProductNotFoundException;
 import com.foodway.api.model.Product;
 import com.foodway.api.record.RequestProduct;
 import com.foodway.api.record.UpdateProductData;
@@ -10,8 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,14 +28,26 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
+    @GetMapping("/establishmentsAll/{idEstablishment}")
     @Operation(summary = "Get all products", method = "GET")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Return all products"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<Product>> getProducts() {
-        return productService.getProducts();
+    public ResponseEntity<List<Product>> getProducts(@PathVariable UUID idEstablishment) {
+
+        return productService.getAllProduct(idEstablishment);
+    }
+
+    @GetMapping("/establishments/{idEstablishment}/{orderBy}")
+    @Operation(summary = "Get all products by an establishment", method = "GET")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return all products by an establishment"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<List<Product>> getProductsByEstablishment(@PathVariable UUID idEstablishment, @PathVariable String orderBy) {
+        return productService.getProducts(idEstablishment,orderBy);
     }
 
     @GetMapping("/{id}")
@@ -66,7 +80,7 @@ public class ProductController {
             @ApiResponse(responseCode = ProductNotFoundException.CODE, description = ProductNotFoundException.DESCRIPTION),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    public ResponseEntity<Product> putProduct(@PathVariable UUID id, @RequestBody @Validated UpdateProductData product) {
+    public ResponseEntity<Product> putProduct(@PathVariable UUID id, @RequestBody @Valid UpdateProductData product) {
         return productService.putProduct(id, product);
     }
 
@@ -80,5 +94,17 @@ public class ProductController {
     public ResponseEntity deleteProduct(@PathVariable UUID id) {
         return productService.deleteProduct(id);
     }
+
+    @DeleteMapping("/delete-last-product/establishment/{idEstablishment}")
+    @Operation(summary = "Delete the last product added by ID", method = "DELETE")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the deleted product"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "500", description = "Internal server error"),
+    })
+    public ResponseEntity<Product> deleteLastProduct(@PathVariable UUID idEstablishment) {
+        return productService.deleteLastProduct(idEstablishment);
+    }
+
 
 }

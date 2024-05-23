@@ -16,11 +16,10 @@ public record RequestUserCustomer(
         String password,
         @Enumerated
         ETypeUser typeUser,
-        @NotBlank
         String profilePhoto,
+        String profileHeaderImg,
         String cpf,
         List<Culinary> culinary,
-        @NotBlank
         String bio
 ) {
 }

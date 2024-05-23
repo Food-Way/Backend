@@ -1,15 +1,18 @@
 package com.foodway.api.service.comment;
 
-import com.foodway.api.model.Comment;
-import com.foodway.api.model.Establishment;
+import com.foodway.api.handler.exceptions.CommentNotFoundException;
+import com.foodway.api.model.*;
+import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
-import com.foodway.api.repository.CommentRepository;
+import com.foodway.api.repository.*;
+import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+  
+import java.util.*; 
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,66 +22,114 @@ public class CommentService {
     @Autowired
     CommentRepository commentRepository;
     @Autowired
-    EstablishmentService establishmentService;
+    UserRepository userRepository;
+    @Autowired
+    UpvoteRepository upvoteRepository;
+    @Autowired
+    private EstablishmentService establishmentService;
+    @Autowired
+    CustomerService customerService;
+    @Autowired
+    private RateRepository rateRepository;
 
-    public ResponseEntity<Comment> postComment(UUID id, RequestComment data) {
-        final Establishment establishment = establishmentService.getEstablishment(id).getBody();
+    public ResponseEntity<Comment> postComment(RequestComment data) {
+        final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
+        final Establishment establishment = establishmentService.getEstablishment(data.idEstablishment()).getBody();
         final Comment comment = new Comment(data);
-
-        assert establishment != null;
-        comment.setIdEstablishment(establishment.getIdUser());
+        comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         establishment.addComment(comment);
-        return ResponseEntity.status(200).body(commentRepository.save(comment));
+        final Comment commentSaved = commentRepository.save(comment);
+        final Customer customerIncreasedXP = customer.increaseXp(10);
+        userRepository.save(customerIncreasedXP);
+        return ResponseEntity.status(200).body(commentSaved);
     }
 
-    public ResponseEntity<Comment> postCommentChild(UUID idEstablishment, UUID idParent, RequestCommentChild data) {
-        Optional<Comment> commentOptional = commentRepository.findById(idParent);
-        final Establishment establishment = establishmentService.getEstablishment(idEstablishment).getBody();
-
-        if (commentOptional.isEmpty()) {
-            return ResponseEntity.status(404).build();
+    public ResponseEntity<Comment> postCommentChild(RequestCommentChild data) {
+            Comment commentChildSaved;
+        if(data.typeUser().equals(ETypeUser.CLIENT)){
+            final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+            final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
+            final Comment commentChild = new Comment(data);
+            commentChild.setGeneralRate(generateGeneralRateForComment(commentChild.getIdCustomer(), commentChild.getIdEstablishment()));
+            commentParent.addReply(commentChild);
+            commentChildSaved = commentRepository.save(commentChild);
+            final Customer customerIncreasedXP = customer.increaseXp(10);
+            userRepository.save(customerIncreasedXP);
         }
-        Comment commentParent = commentOptional.get();
-        Comment comment = new Comment(idParent, data);
-        comment.setIdEstablishment(establishment.getIdUser());
-
-        commentParent.addReply(comment);
-
-//        commentRepository.save(commentParent);
-        commentRepository.save(comment);
-
-        return ResponseEntity.status(200).body(comment);
+        else {
+            final Comment commentParent = commentRepository.findById(data.idParent()).orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+            final Comment commentChild = new Comment(data);
+            commentParent.addReply(commentChild);
+            commentChildSaved = commentRepository.save(commentChild);
+            commentRepository.save(commentParent);
+        }
+        return ResponseEntity.status(200).body(commentChildSaved);
     }
 
     public ResponseEntity<List<Comment>> getComments() {
         if (commentRepository.findAll().isEmpty()) {
             return ResponseEntity.status(204).build();
         }
-        return ResponseEntity.status(200).body(commentRepository.findAll());
-    }
 
-    public ResponseEntity<Optional<Comment>> get(UUID id) {
-        if (commentRepository.findById(id).isEmpty()) {
-            return ResponseEntity.status(404).build();
+        List<Comment> comments = commentRepository.findAll();
+        for (Comment comment : comments) {
+            countUpvotesOfComment(comment);
+            comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         }
-        return ResponseEntity.status(200).body(commentRepository.findById(id));
+
+        return ResponseEntity.status(200).body(comments);
     }
 
-    public ResponseEntity deleteComment(UUID id, UUID idOwner) {
+    public List<Comment> getCountsFromComments(List<Comment> comments) {
+        if (!comments.isEmpty()) {
+            for (int i = 0; i < comments.size(); i++) {
+                Comment comment = comments.get(i);
+                countUpvotesOfComment(comment);
+                comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
+                if(!comment.getReplies().isEmpty()){
+                    comments.addAll(comment.getReplies());
+                }
+            }
+        }
+
+        return comments;
+    }
+
+    public ResponseEntity<Void> deleteComment(UUID id) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isPresent()) {
             commentRepository.delete(comment.get());
             return ResponseEntity.status(200).build();
         }
-        return ResponseEntity.status(404).build();
+        throw new CommentNotFoundException("Comment not found");
     }
 
-    public ResponseEntity putComment(UUID id, UpdateCommentData data) {
+    public ResponseEntity<Comment> putComment(UUID id, UpdateCommentData data) {
         Optional<Comment> comment = commentRepository.findById(id);
         if (comment.isEmpty()) {
-            return ResponseEntity.status(404).build();
+            throw new CommentNotFoundException("Comment not found");
         }
         comment.get().update(Optional.ofNullable(data));
         return ResponseEntity.status(200).body(commentRepository.save(comment.get()));
     }
+
+    public int countUpvotesOfComment(Comment comment) {
+        Integer countUpvotes = upvoteRepository.countUpvotesByComment(comment.getIdPost());
+        comment.setUpvotes(countUpvotes);
+        return countUpvotes;
+    }
+
+    public Double generateGeneralRateForComment(UUID idCustomer, UUID idEstablishment) {
+        List<Rate> rates = rateRepository.findByCommentOfCustomer(idCustomer, idEstablishment);
+        int count = 0;
+        Double sum = 0.0;
+        for (Rate rate : rates) {
+            sum += rate.getRatePoint();
+            count++;
+        }
+        if (count == 0) return 0.0;
+        return sum / count;
+    }
+
+
 }

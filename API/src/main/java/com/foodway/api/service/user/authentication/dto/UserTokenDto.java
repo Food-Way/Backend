@@ -6,10 +6,13 @@ import java.util.UUID;
 
 public class UserTokenDto {
     private UUID idUser;
+    private String name;
     private String email;
     private String token;
-
+    private String profilePhoto;
     private ETypeUser typeUser;
+    private String establishmentName;
+    private String culinary;
 
     public UUID getIdUser() {
         return idUser;
@@ -41,5 +44,37 @@ public class UserTokenDto {
 
     public void setTypeUser(ETypeUser typeUser) {
         this.typeUser = typeUser;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(String profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
+    public String getEstablishmentName() {
+        return establishmentName;
+    }
+
+    public void setEstablishmentName(String establishmentName) {
+        this.establishmentName = establishmentName;
+    }
+
+    public String getCulinary() {
+        return culinary;
+    }
+
+    public void setCulinary(String culinary) {
+        this.culinary = culinary;
     }
 }

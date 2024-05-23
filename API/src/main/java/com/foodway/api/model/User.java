@@ -3,15 +3,18 @@ package com.foodway.api.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
+import com.foodway.api.record.RequestCulinary;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Table(name = "tbUser")
@@ -22,12 +25,15 @@ public abstract class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idUser;
     private String name;
+
+    @Column(length = 254, unique = true)
     private String email;
     @JsonIgnore
     private String password;
     @Enumerated
     private ETypeUser typeUser;
     private String profilePhoto;
+    private String profileHeaderImg;
     @ManyToMany
     @JoinTable(
             name = "tbUserCulinary",
@@ -43,12 +49,13 @@ public abstract class User {
     public User() {
     }
 
-    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, List<Culinary> culinary) {
+    public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg, List<Culinary> culinary) {
         this.name = name;
         this.email = email;
         this.password = encodePassword(password);
         this.typeUser = typeUser;
-        this.profilePhoto = profilePhoto;
+        this.profilePhoto = profilePhoto == null || profilePhoto.isEmpty() ? "https://foodway-public-s3.s3.amazonaws.com/website-images/default-user-image.png" : profilePhoto;
+        this.profileHeaderImg = profileHeaderImg == null || profileHeaderImg.isEmpty() ? "https://foodway-public-s3.s3.amazonaws.com/website-images/default-banner.png" : profileHeaderImg;
         this.culinary = culinary;
     }
 
@@ -100,11 +107,25 @@ public abstract class User {
     }
 
     public String getProfilePhoto() {
+        if (profilePhoto == null || profilePhoto.isEmpty() || profilePhoto.isBlank()) {
+            return "https://foodway-public-s3.s3.amazonaws.com/website-images/default-user-image.png";
+        }
         return profilePhoto;
     }
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public String getProfileHeaderImg() {
+        if (profileHeaderImg == null || profileHeaderImg.isEmpty() || profileHeaderImg.isBlank()) {
+            return "https://foodway-public-s3.s3.amazonaws.com/website-images/default-banner.png";
+        }
+        return profileHeaderImg;
+    }
+
+    public void setProfileHeaderImg(String profileHeaderImg) {
+        this.profileHeaderImg = profileHeaderImg;
     }
 
     public List<Culinary> getCulinary() {

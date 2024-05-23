@@ -3,15 +3,17 @@ package com.foodway.api.record;
 import com.foodway.api.model.Enums.ETypeRate;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 public record RequestRate(
         @NotNull
-        int ratePoint,
+        UUID idCustomer,
         @NotNull
-        ETypeRate typeRate,
+        UUID idEstablishment,
         @NotNull
-        LocalDateTime createdAt,
+        Double ratePoint,
         @NotNull
-        LocalDateTime updatedAt
+        ETypeRate typeRate
+
 ) {}
