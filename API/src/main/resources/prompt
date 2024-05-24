@@ -1,0 +1,62 @@
+
+ngninx file
+
+  GNU nano 6.2                   /etc/nginx/sites-available/default                             
+upstream api_backend {
+         # least_conn;
+         server 10.0.0.139:5225; # Primeira instância da API
+         # server 10.0.0.211:8080; # Segunda instância da API
+}
+
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/html/dist;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        server_name _;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        location /api {
+                proxy_pass http://api_backend;
+                proxy_set_header Host $http_host;
+        }
+}
+
+my react aplication is running on http://52.204.190.88/:80 and api is runing o a ec2 with a private subnet 
+
+this is the congiguration file of the api 
+aplication.properties
+
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+## Configuracoes do banco de dados PostgreSQL
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=${DB_URL:url}
+spring.datasource.password=${DB_PASS:senha}
+spring.datasource.username=${DB_USER:postgres}
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.datasource.driver-class-name=org.postgresql.Driver
+# validity of token
+spring.jpa.defer-datasource-initialization=true
+jwt.validity=3600000
+#pass word of token (secret) requers min 32 caracters
+spring.banner.location=classpath:banner.txt
+jwt.secret=${JWT_SECRET:test}
+api.key=${GMAPS_API_KEY:teste}
+spring.config.location=classpath:/application.properties,classpath:/s3.properties
+spring.main.allow-circular-references=true
+server.servlet.context-path=/api
+
+this is the configuration file of the front end
+
+VITE_URL_BACKEND="http://52.204.190.88/api"
+VITE_URL_NIFI="/nifi"
+VITE_GMAPS_API_KEY="key"
+
+
