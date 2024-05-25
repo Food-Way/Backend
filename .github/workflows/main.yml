@@ -5,8 +5,8 @@ on:
     branches: [ main ]
 
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}  
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}  
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
 
 jobs:
   BuildAndDeploy:
@@ -15,16 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-
-      # - name: Verify for 'localhost' in src directory
-      #   run: |
-      #     if grep -rl 'localhost' /home/runner/work/Site-Institucional/Site-Institucional/src/; then
-      #       echo "TIRA O LOCALHOST CORNO"
-      #       grep -rl 'localhost' /home/runner/work/Site-Institucional/Site-Institucional/src/
-      #       exit 1
-      #     else
-      #       echo "No 'localhost' references found in /home/runner/work/Site-Institucional/Site-Institucional/src/."
-      #     fi
+      - name: List files in workspace for debugging
+        run: ls -la
 
       - name: Login to Docker Hub (using encrypted credentials)
         uses: docker/login-action@v2
@@ -36,25 +28,6 @@ jobs:
         run: |
           docker build -t fernandeeess/foodway-api:latest .
           docker push fernandeeess/foodway-api:latest
-
-      # - name: Check "changer" instance with AWS CLI
-      #   run: |
-      #     # Get instance status
-      #     INSTANCE_STATUS=$(aws ec2 describe-instances --filters "Name:tag:Name,Values:changer" | jq -r '.Reservations[].Instances[].State.Name')
-
-      #     # Check if instance is running
-      #     if [[ "${INSTANCE_STATUS}" != "running" ]]; then
-      #       echo "Error: changer instance is not running!"
-
-      #       # Configure AWS CLI for notifications (replace with your setup)
-      #       # ... (e.g., configure SNS topic or other notification service)
-
-      #       # Send notification (replace with your notification command)
-      #       # aws sns publish --topic-arn <your-topic-arn> --message "changer instance down!"
-      #       exit 1
-      #     fi
-
-      #     echo "changer instance is up and running!"
 
       - uses: appleboy/ssh-action@v1.0.3
         with:
