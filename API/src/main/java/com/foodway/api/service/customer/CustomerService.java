@@ -25,6 +25,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -78,7 +79,12 @@ public class CustomerService {
     public ResponseEntity<Customer> saveCustomer(RequestUserCustomer userCreateDto) {
         Customer createdCustomer = new Customer(userCreateDto);
         Customer customerSaved = customerRepository.save(createdCustomer);
+        publishCustomerCreatedMessage(createdCustomer);
+        return ResponseEntity.status(201).body(customerSaved);
+    }
 
+    @Async
+    private void publishCustomerCreatedMessage(Customer createdCustomer) {
         SimpleMailAccountCreated accountCreated = new SimpleMailAccountCreated(createdCustomer.getName(), null,
                 createdCustomer.getEmail(), createdCustomer.getTypeUser());
 
@@ -86,7 +92,6 @@ public class CustomerService {
         message.getMessageProperties().setContentType("application/json");
 
         rabbitTemplate.send("account.created", message);
-        return ResponseEntity.status(201).body(customerSaved);
     }
 
     public ResponseEntity<Customer> deleteCustomer(UUID id) {
