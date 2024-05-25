@@ -2,7 +2,7 @@ name: Build, Push to Docker Hub, and Deploy Nginx Website (with Localhost Check)
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ main ]
 
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}  
