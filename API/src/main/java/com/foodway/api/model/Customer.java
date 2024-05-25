@@ -35,6 +35,7 @@ public class Customer extends User {
 
     public Customer() {
         this.rates = new ArrayList<>();
+        this.favorites = new ArrayList<>();
     }
 
     public Customer(RequestUserCustomer customer) {
