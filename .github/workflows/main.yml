@@ -34,8 +34,8 @@ jobs:
 
       - name: Build and push image to Docker Hub
         run: |
-          docker build -t fernandeeess/foodway-api:00.00 .
-          docker push fernandeeess/foodway-api:00.00
+          docker build -t fernandeeess/foodway-api:latest .
+          docker push fernandeeess/foodway-api:latest
 
       # - name: Check "changer" instance with AWS CLI
       #   run: |
