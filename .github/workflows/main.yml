@@ -47,7 +47,8 @@ jobs:
           docker build -t fernandeeess/foodway-api:latest .
           docker push fernandeeess/foodway-api:latest
 
-      - uses: appleboy/ssh-action@v1.0.3
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: "10.0.0.139"
           username: "ubuntu"
