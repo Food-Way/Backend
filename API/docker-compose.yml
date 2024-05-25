@@ -1,0 +1,73 @@
+services:
+  # foodway-backend:
+  #   image: fernandeeess/foodway-api:00.00
+  #   ports:
+  #     - "5225:8080"
+  #   environment:
+  #     DB_PASS: ${DB_PASS}
+  #     DB_URL: ${DB_URL}
+  #     DB_USER: ${DB_USER}
+  #     JWT_SECRET: ${JWT_SECRET}
+  #     GMAPS_API_KEY: ${GMAPS_API_KEY}
+  #     BUCKET_NAME: ${BUCKET_NAME}
+  #     ACCESS_KEY: ${ACCESS_KEY}
+  #     SECRET: ${SECRET}
+  #     REGION: ${REGION}
+  #     SESSION_TOKEN: ${SESSION_TOKEN}
+  #   networks:
+  #     - foodway
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - foodway
+  #   depends_on:
+  #     - foodway-backend
+
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - foodway
+  #   depends_on:
+  #     - prometheus
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "foodway"
+      RABBITMQ_DEFAULT_PASS: "GfFoodway"
+    volumes:
+      - type: bind
+        source: ./rabbitmq-enabled-plugins
+        target: /etc/rabbitmq/enabled_plugins
+      - type: bind
+        source: ./rabbitmq.config
+        target: /etc/rabbitmq/rabbitmq.config
+      - type: bind
+        source: ./rabbitmq-defs.json
+        target: /etc/rabbitmq/rabbitmq-defs.json
+    networks:
+      - foodway
+
+  nifi:
+    image: apache/nifi:1.25.0
+    container_name: nifi
+    environment:
+      - NIFI_WEB_HTTP_PORT=8443
+    ports:
+      - "8443:8443"
+      - "80:80"
+    restart: always
+
+networks:
+  foodway:
+    driver: bridge
