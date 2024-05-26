@@ -55,7 +55,7 @@ jobs:
           key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
             # Define o caminho para o arquivo de chave SSH
-            ssh_key_path=~/.ssh/ssh_key.pem
+            ssh_key_path=/home/ubuntu/.ssh/ssh_key.pem
 
             # Define o comando chmod para garantir permissões corretas
             chmod 600 $ssh_key_path
