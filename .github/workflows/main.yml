@@ -54,8 +54,8 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
-            # Define o comando SSH com as opções e argumentos corretos
             ssh -o StrictHostKeyChecking=no \
                 -i /home/ubuntu/.ssh/ssh_key.pem \
                 -t ${{ secrets.PRIVATE_USER }}@${{ secrets.PRIVATE_HOST }} \
                 "sudo docker pull fernandeeess/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api"
+      
