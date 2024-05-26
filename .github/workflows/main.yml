@@ -54,7 +54,14 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/ssh_key.pem -t -t ${{ secrets.PRIVATE_USER }}@${{ secrets.PRIVATE_HOST }} << 'ENDSSH'
+            # Define o caminho para o arquivo de chave SSH
+            ssh_key_path=~/.ssh/ssh_key.pem
+
+            # Define o comando chmod para garantir permissões corretas
+            chmod 600 $ssh_key_path
+
+            # Executa os comandos SSH
+            ssh -o StrictHostKeyChecking=no -i $ssh_key_path -t -t ${{ secrets.PRIVATE_USER }}@${{ secrets.PRIVATE_HOST }} << 'ENDSSH'
               sudo docker pull fernandeeess/foodway-api
               sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api
             ENDSSH
