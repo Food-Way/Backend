@@ -47,7 +47,7 @@ jobs:
           docker build -t fernandeeess/foodway-api:latest .
           docker push fernandeeess/foodway-api:latest
 
-      - name: Deploy to Private Server via Bastion Host leoleo
+      - name: Deploy to Private Server via Bastion Host - NOW
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
