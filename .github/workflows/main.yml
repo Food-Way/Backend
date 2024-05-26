@@ -47,12 +47,14 @@ jobs:
           docker build -t fernandeeess/foodway-api:latest .
           docker push fernandeeess/foodway-api:latest
 
-      - name: Deploy to Server
+      - name: Deploy to Private Server via Bastion Host
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          host: ${{ secrets.BASTION_HOST }}
+          username: ${{ secrets.BASTION_USER }}
+          key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
-            sudo docker pull fernandeeess/foodway-api
-            sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -t -t ${{ secrets.PRIVATE_USER }}@${{ secrets.PRIVATE_HOST }} << 'ENDSSH'
+              sudo docker pull fernandeeess/foodway-api
+              sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api
+            ENDSSH
