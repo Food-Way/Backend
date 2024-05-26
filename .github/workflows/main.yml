@@ -55,4 +55,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             sudo docker pull fernandeeess/foodway-api
-            sudo docker run -p 80:80 -p 8080:8080 -p 443:443 -d fernandeeess/foodway-api
+            sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api
