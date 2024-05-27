@@ -47,7 +47,7 @@ jobs:
           docker build -t fernandeeess/foodway-api:latest .
           docker push fernandeeess/foodway-api:latest
 
-      - name: Deploy to Private backend-01 Server via Bastion Host
+      - name: Deploy to Private backend-1 Server via Bastion Host
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -59,7 +59,7 @@ jobs:
                 -t ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} \
                 "sudo docker pull fernandeeess/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api"
 
-      - name: Deploy to Private backend-02 Server via Bastion Host
+      - name: Deploy to Private backend-2 Server via Bastion Host
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
