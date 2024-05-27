@@ -1,15 +1,11 @@
-name: Build, Push to Docker Hub, and Deploy API (with Localhost Check)
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ main ]
 
-env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-
 jobs:
-  build-and-deploy:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,21 +29,57 @@ jobs:
         run: mvn clean package
         working-directory: ./API
 
+      - name: Run Unit Tests
+        run: mvn test
+        working-directory: ./API
+
+      - name: Run Integration Tests
+        run: mvn verify
+        working-directory: ./API
+
+      - name: Check Code Coverage
+        run: mvn jacoco:report
+        working-directory: ./API
+
+      - name: Scan for Vulnerabilities
+        run: snyk test
+
       - name: List files for debugging
         run: ls -la API/target
 
-      - name: Login to Docker Hub (using encrypted credentials)
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push image to Docker Hub
+      - name: Build and Push Docker Image
         run: |
-          docker build -t fernandeeess/foodway-api:latest .
-          docker push fernandeeess/foodway-api:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest
 
-      - name: Deploy to Private backend-01 Server using Bastion Host
+      - name: Install netcat
+        run: sudo apt-get install -y netcat
+
+      - name: Health Check for backend-01 Server
+        run: |
+          if nc -z -w5 ${{ secrets.SERVER_HOST_PRIVATE_ONE }} 22; then
+            echo "backend-01 is up"
+          else
+            echo "backend-01 is down"
+            exit 1
+          fi
+
+      - name: Health Check for backend-02 Server
+        run: |
+          if nc -z -w5 ${{ secrets.SERVER_HOST_PRIVATE_TWO }} 22; then
+            echo "backend-02 is up"
+          else
+            echo "backend-02 is down"
+            exit 1
+          fi
+
+      - name: Deploy to backend-01 Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -57,9 +89,9 @@ jobs:
             ssh -o StrictHostKeyChecking=no \
                 -i /home/ubuntu/.ssh/ssh_key.pem \
                 -t ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} \
-                "sudo docker pull fernandeeess/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api"
+                "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api"
 
-      - name: Deploy to Private backend-02 Server using Bastion Host
+      - name: Deploy to backend-02 Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -69,5 +101,4 @@ jobs:
             ssh -o StrictHostKeyChecking=no \
                 -i /home/ubuntu/.ssh/ssh_key.pem \
                 -t ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_TWO }} \
-                "sudo docker pull fernandeeess/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d fernandeeess/foodway-api"
-      
+                "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api"
