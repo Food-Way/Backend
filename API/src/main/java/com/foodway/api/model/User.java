@@ -47,6 +47,7 @@ public abstract class User {
     private LocalDateTime updatedAt;
 
     public User() {
+        this.culinary = new ArrayList<>();
     }
 
     public User(String name, String email, String password, ETypeUser typeUser, String profilePhoto, String profileHeaderImg, List<Culinary> culinary) {
