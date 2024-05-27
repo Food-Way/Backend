@@ -48,4 +48,14 @@ public class SimpleMailAccountUpdated extends SimpleMail {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"profilePhoto\": \"" + profilePhoto + "\"," +
+                "\"profileHeader\": \"" + profileHeader + "\"," +
+                "\"phone\": \"" + phone + "\"," +
+                "\"description\": \"" + description + "\"" +
+                "}";
+    }
 }
