@@ -10,6 +10,7 @@ public class UserTokenDto {
     private String email;
     private String token;
     private String profilePhoto;
+    private String profileHeaderImg;
     private ETypeUser typeUser;
     private String establishmentName;
     private String culinary;
@@ -20,6 +21,14 @@ public class UserTokenDto {
 
     public void setIdUser(UUID idUser) {
         this.idUser = idUser;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -38,28 +47,28 @@ public class UserTokenDto {
         this.token = token;
     }
 
-    public ETypeUser getTypeUser() {
-        return typeUser;
-    }
-
-    public void setTypeUser(ETypeUser typeUser) {
-        this.typeUser = typeUser;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getProfilePhoto() {
         return profilePhoto;
     }
 
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
+    }
+
+    public String getProfileHeaderImg() {
+        return profileHeaderImg;
+    }
+
+    public void setProfileHeaderImg(String profileHeaderImg) {
+        this.profileHeaderImg = profileHeaderImg;
+    }
+
+    public ETypeUser getTypeUser() {
+        return typeUser;
+    }
+
+    public void setTypeUser(ETypeUser typeUser) {
+        this.typeUser = typeUser;
     }
 
     public String getEstablishmentName() {
