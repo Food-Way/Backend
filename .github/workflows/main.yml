@@ -95,8 +95,12 @@ jobs:
           script: |
             ssh -o StrictHostKeyChecking=no \
                 -i /home/ubuntu/.ssh/ssh_key.pem \
-                -t ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} \
-                "sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api && sudo docker run -p 80:80 -p 5225:8080 -p 443:443 -d ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api"
+                -t ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} << 'EOF'
+                    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+                    sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
+                    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
+                EOF
+      
 
       - name: Deploy to backend-02 Server
         uses: appleboy/ssh-action@v1.0.3
