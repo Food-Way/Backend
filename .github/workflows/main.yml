@@ -58,7 +58,7 @@ jobs:
       - name: Install netcat
         run: sudo apt-get install -y netcat
 
-      - name: Health Check for backend-01 Server via Bastion Host
+      - name: Health Check for backend-01 Server with Bastion Host
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
@@ -72,7 +72,7 @@ jobs:
               exit 1
             fi
 
-      - name: Health Check for backend-02 Server via Bastion Host
+      - name: Health Check for backend-02 Server with Bastion Host
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
