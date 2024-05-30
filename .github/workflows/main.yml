@@ -77,7 +77,7 @@ jobs:
         working-directory: API/infra
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply
         working-directory: API/infra
 
       - name: Get EC2 private IPs
