@@ -9,8 +9,8 @@ resource "aws_instance" "private_ec2_01" {
   instance_type               = var.inst_type
   ebs_block_device {
     device_name = "/dev/sda1"
-    volume_size = 30
-    volume_type = "standard"
+    volume_size = 8
+    volume_type = "gp3"
   }
   key_name                    = aws_key_pair.generated_key.key_name
   subnet_id                   = var.subnet_id
@@ -27,8 +27,8 @@ resource "aws_instance" "private_ec2_02" {
   instance_type               = var.inst_type
   ebs_block_device {
     device_name = "/dev/sda1"
-    volume_size = 30
-    volume_type = "standard"
+    volume_size = 8
+    volume_type = "gp3"
   }
   key_name                    = aws_key_pair.generated_key.key_name
   subnet_id                   = var.subnet_id
