@@ -68,6 +68,10 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
+      - name: Terraform Init
+        run: terraform init
+        working-directory: API/infra
+
       - name: Terraform Validate
         run: terraform validate
         working-directory: API/infra
