@@ -90,16 +90,6 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: API/infra
 
-      - name: Wait for EC2 instances to be running
-        id: wait_for_running
-        run: |
-          INSTANCE_IDS=$(terraform output -json instance_ids | jq -r '.[]')
-          for id in $INSTANCE_IDS; do
-            echo "Waiting for instance $id to be in running state..."
-            aws ec2 wait instance-running --instance-ids $id
-          done
-        working-directory: API/infra
-
       - name: Get EC2 private IPs
         id: get_ips
         run: |
