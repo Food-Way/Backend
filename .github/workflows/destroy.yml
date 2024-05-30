@@ -17,12 +17,12 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Plan Destroy
         run: terraform plan -destroy -out=tfplan-destroy
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Apply Destroy
         run: terraform apply -auto-approve tfplan-destroy
-        working-directory: ./infra
+        working-directory: API/infra

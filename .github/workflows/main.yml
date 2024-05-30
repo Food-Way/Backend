@@ -62,19 +62,19 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Get EC2 private IPs
         id: get_ips
