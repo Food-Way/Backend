@@ -165,3 +165,4 @@ jobs:
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
+
