@@ -21,8 +21,14 @@ jobs:
 
       - name: Terraform Plan Destroy
         run: terraform plan -destroy -out=tfplan-destroy
-        working-directory: API/infra
+        working-directory: ./infra
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Apply Destroy
         run: terraform apply -auto-approve tfplan-destroy
-        working-directory: API/infra
+        working-directory: ./infra
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
