@@ -70,14 +70,14 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        working-directory: ./infra
+        working-directory: API/infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ./infra
+        working-directory: API/infra
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -87,7 +87,7 @@ jobs:
         run: |
           echo "EC2_01_PRIVATE_IP=$(terraform output -raw ec2_01_private_ip)" >> $GITHUB_ENV
           echo "EC2_02_PRIVATE_IP=$(terraform output -raw ec2_02_private_ip)" >> $GITHUB_ENV
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Create SSH key file
         run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
