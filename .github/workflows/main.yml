@@ -63,7 +63,7 @@ jobs:
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest
 
   deploy-to-aws:
-    needs: docker-build-and-push
+    needs: build-and-test
     runs-on: ubuntu-latest
 
     steps:
