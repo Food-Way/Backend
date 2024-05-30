@@ -55,6 +55,13 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest
 
+  deploy-to-aws:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -83,8 +90,10 @@ jobs:
       - name: Get EC2 private IPs
         id: get_ips
         run: |
-          echo "EC2_01_PRIVATE_IP=$(terraform output -raw ec2_01_private_ip)" >> $GITHUB_ENV
-          echo "EC2_02_PRIVATE_IP=$(terraform output -raw ec2_02_private_ip)" >> $GITHUB_ENV
+          ec2_01_ip=$(terraform output -raw ec2_01_private_ip)
+          ec2_02_ip=$(terraform output -raw ec2_02_private_ip)
+          echo "EC2_01_PRIVATE_IP=$ec2_01_ip" >> $GITHUB_ENV
+          echo "EC2_02_PRIVATE_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
 
       - name: Create SSH key file
