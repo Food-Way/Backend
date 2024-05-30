@@ -90,8 +90,14 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: API/infra
 
-      - name: Debug Terraform Output
-        run: terraform output
+      - name: Wait for EC2 instances to be running
+        id: wait_for_running
+        run: |
+          INSTANCE_IDS=$(terraform output -json instance_ids | jq -r '.[]')
+          for id in $INSTANCE_IDS; do
+            echo "Waiting for instance $id to be in running state..."
+            aws ec2 wait instance-running --instance-ids $id
+          done
         working-directory: API/infra
 
       - name: Get EC2 private IPs
@@ -116,7 +122,6 @@ jobs:
           echo "EC2_01_PRIVATE_IP=$ec2_01_ip" >> $GITHUB_ENV
           echo "EC2_02_PRIVATE_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
-
 
       - name: Create SSH key file
         run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
@@ -175,9 +180,8 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: private_key.pem
           script: |
-            ssh -o StrictHostKeyChecking-no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
-
