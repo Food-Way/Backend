@@ -34,3 +34,7 @@ jobs:
       - name: Terraform Apply Destroy
         run: terraform apply -auto-approve tfplan
         working-directory: API/infra
+
+      - name: Verify Destruction
+        run: terraform show
+        working-directory: API/infra
