@@ -1,4 +1,4 @@
-name: CI/CD Pipeline - Foodway
+name: CI/CD Backend - Foodway
 
 on:
   push:
@@ -55,6 +55,40 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./infra
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./infra
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+        working-directory: ./infra
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./infra
+
+      - name: Get EC2 private IPs
+        id: get_ips
+        run: |
+          echo "EC2_01_PRIVATE_IP=$(terraform output -raw ec2_01_private_ip)" >> $GITHUB_ENV
+          echo "EC2_02_PRIVATE_IP=$(terraform output -raw ec2_02_private_ip)" >> $GITHUB_ENV
+        working-directory: ./infra
+
+      - name: Create SSH key file
+        run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
+
+      - name: Set permissions for SSH key
+        run: chmod 600 private_key.pem
+
       - name: Install netcat
         run: sudo apt-get install -y netcat
 
@@ -63,9 +97,9 @@ jobs:
         with:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
-          key: ${{ secrets.BASTION_SSH_KEY }}
+          key: private_key.pem
           script: |
-            if ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} "nc -z -w5 localhost 22"; then
+            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_PRIVATE_IP }} "nc -z -w5 localhost 22"; then
               echo "backend-01 is up"
             else
               echo "backend-01 is down"
@@ -77,9 +111,9 @@ jobs:
         with:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
-          key: ${{ secrets.BASTION_SSH_KEY }}
+          key: private_key.pem
           script: |
-            if ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_TWO }} "nc -z -w5 localhost 22"; then
+            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} "nc -z -w5 localhost 22"; then
               echo "backend-02 is up"
             else
               echo "backend-02 is down"
@@ -91,23 +125,22 @@ jobs:
         with:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
-          key: ${{ secrets.BASTION_SSH_KEY }}
+          key: private_key.pem
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_ONE }} << EOF
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_PRIVATE_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
-      
 
       - name: Deploy to backend-02 Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
-          key: ${{ secrets.BASTION_SSH_KEY }}
+          key: private_key.pem
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST_PRIVATE_TWO }} << EOF
+            ssh -o StrictHostKeyChecking-no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d

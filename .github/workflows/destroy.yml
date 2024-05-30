@@ -1,0 +1,28 @@
+name: Destroy Backend Infrastructure - Foodway
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy-infra:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./infra
+
+      - name: Terraform Plan Destroy
+        run: terraform plan -destroy -out=tfplan-destroy
+        working-directory: ./infra
+
+      - name: Terraform Apply Destroy
+        run: terraform apply -auto-approve tfplan-destroy
+        working-directory: ./infra
