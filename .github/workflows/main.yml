@@ -76,10 +76,6 @@ jobs:
         run: terraform validate
         working-directory: API/infra
 
-      - name: Terraform Plan
-        run: timeout 15m terraform plan -out=tfplan
-        working-directory: API/infra
-
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: API/infra
