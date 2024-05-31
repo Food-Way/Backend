@@ -114,13 +114,11 @@ jobs:
           echo "${{ secrets.TF_KEY }}" | tr -d '\r' > tf_key.pem
         shell: bash
 
+      - name: Convert SSH key to PEM format
+        run: ssh-keygen -p -m PEM -f tf_key.pem -N ""
+
       - name: Set permissions for SSH key
         run: chmod 600 tf_key.pem
-
-      - name: Check SSH key file
-        run: |
-          ls -l tf_key.pem
-          cat tf_key.pem
 
       - name: Install netcat
         run: sudo apt-get install -y netcat
