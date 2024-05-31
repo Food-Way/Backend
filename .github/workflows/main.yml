@@ -93,8 +93,8 @@ jobs:
       - name: Get EC2 private IPs
         id: get_ips
         run: |
-          ec2_01_ip=$(terraform output private_ec2_01_private_ip | awk '{print $1}')
-          ec2_02_ip=$(terraform output private_ec2_02_private_ip | awk '{print $1}')
+          ec2_01_ip=$(terraform output -json private_ec2_01_private_ip | jq -r '.')
+          ec2_02_ip=$(terraform output -json private_ec2_02_private_ip | jq -r '.')
           if [ -z "$ec2_01_ip" ] || [ -z "$ec2_02_ip" ]; then
             echo "Failed to get EC2 IPs" >&2
             exit 1
