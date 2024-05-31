@@ -93,25 +93,14 @@ jobs:
       - name: Get EC2 private IPs
         id: get_ips
         run: |
-          ec2_01_ip=$(terraform output -raw private_ec2_01_private_ip)
-          ec2_02_ip=$(terraform output -raw private_ec2_02_private_ip)
-          
-          echo "EC2_01 IP: $ec2_01_ip"
-          echo "EC2_02 IP: $ec2_02_ip"
-          
-          # Check if variables are set
-          if [ -z "$ec2_01_ip" ]; then
-            echo "Error: EC2_01 IP is empty"
-            exit 1
-          fi
-          if [ -z "$ec2_02_ip" ]; then
-            echo "Error: EC2_02 IP is empty"
-            exit 1
-          fi
-          
-          echo "EC2_01_PRIVATE_IP=$ec2_01_ip" >> $GITHUB_ENV
-          echo "EC2_02_PRIVATE_IP=$ec2_02_ip" >> $GITHUB_ENV
+          echo "EC2_01_IP=$(terraform output -raw private_ec2_01_private_ip)" >> $GITHUB_ENV
+          echo "EC2_02_IP=$(terraform output -raw private_ec2_02_private_ip)" >> $GITHUB_ENV
         working-directory: API/infra
+
+      - name: Display EC2 Private IPs
+        run: |
+          echo "EC2_01 IP: $EC2_01_IP"
+          echo "EC2_02 IP: $EC2_02_IP"
 
       - name: Create SSH key file
         run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
