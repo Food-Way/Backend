@@ -113,7 +113,7 @@ jobs:
         run: echo "${{ secrets.TF_KEY }}" > tf_key.pem
 
       - name: Set permissions for SSH key
-        run: chmod 600 private_key.pem
+        run: chmod 600 tf_key.pem
 
       - name: Install netcat
         run: sudo apt-get install -y netcat
