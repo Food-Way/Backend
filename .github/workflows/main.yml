@@ -95,6 +95,8 @@ jobs:
         run: |
           ec2_01_ip=$(terraform output -raw private_ec2_01_private_ip)
           ec2_02_ip=$(terraform output -raw private_ec2_02_private_ip)
+          echo "$ec2_01_ip"
+          echo "$ec2_02_ip"
           echo "EC2_01_IP=$ec2_01_ip" >> $GITHUB_ENV
           echo "EC2_02_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
