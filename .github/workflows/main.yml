@@ -118,43 +118,18 @@ jobs:
       - name: Install netcat
         run: sudo apt-get install -y netcat
 
-#      - name: Health Check for backend-01 Server with Bastion Host
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.BASTION_HOST }}
-#          username: ${{ secrets.BASTION_USER }}
-#          key: ${{ secrets.BASTION_SSH_KEY }}
-#          script: |
-#            if ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} "nc -z -w5 localhost 22"; then
-#              echo "backend-01 is up"
-#            else
-#              echo "backend-01 is down"
-#              exit 1
-#            fi
-#
-#      - name: Health Check for backend-02 Server with Bastion Host
-#        uses: appleboy/ssh-action@v1.0.3
-#        with:
-#          host: ${{ secrets.BASTION_HOST }}
-#          username: ${{ secrets.BASTION_USER }}
-#          key: ${{ secrets.BASTION_SSH_KEY }}
-#          script: |
-#            if ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} "nc -z -w5 localhost 22"; then
-#              echo "backend-02 is up"
-#            else
-#              echo "backend-02 is down"
-#              exit 1
-#            fi
-
       - name: Deploy to backend-01 Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
+          envs: EC2_01_IP
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@$EC2_01_IP << 'EOF'
+              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
+              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
 
       - name: Deploy to backend-02 Server
@@ -163,8 +138,10 @@ jobs:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
+          envs: EC2_02_IP
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@$EC2_02_IP << 'EOF'
+              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
+              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
-
