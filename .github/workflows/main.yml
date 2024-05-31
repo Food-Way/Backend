@@ -99,14 +99,15 @@ jobs:
             echo "Failed to get EC2 IPs" >&2
             exit 1
           fi
-          echo "EC2_01_IP=$ec2_01_ip" >> $GITHUB_ENV
-          echo "EC2_02_IP=$ec2_02_ip" >> $GITHUB_ENV
+          {
+            echo "EC2_01_IP<<EOF"
+            echo "$ec2_01_ip"
+            echo "EOF"
+            echo "EC2_02_IP<<EOF"
+            echo "$ec2_02_ip"
+            echo "EOF"
+          } >> $GITHUB_ENV
         working-directory: API/infra
-
-      - name: Display EC2 Private IPs
-        run: |
-          echo "EC2_01 IP: ${{ env.EC2_01_IP }}"
-          echo "EC2_02 IP: ${{ env.EC2_02_IP }}"
 
       - name: Create SSH key file
         run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
