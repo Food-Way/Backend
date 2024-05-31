@@ -117,6 +117,12 @@ jobs:
       - name: Set permissions for SSH key
         run: chmod 600 tf_key.pem
 
+      - name: Verify SSH key
+        run: |
+          echo "Verifying SSH key..."
+          ls -l tf_key.pem
+          cat tf_key.pem
+
       - name: Install netcat
         run: sudo apt-get install -y netcat
 
