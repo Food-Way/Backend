@@ -110,7 +110,9 @@ jobs:
         working-directory: API/infra
 
       - name: Create SSH key file
-        run: echo "${{ secrets.TF_KEY }}" > tf_key.pem
+        run: |
+          echo "${{ secrets.TF_KEY }}" > tf_key.pem
+        shell: bash
 
       - name: Set permissions for SSH key
         run: chmod 600 tf_key.pem
@@ -166,7 +168,7 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: tf_key.pem
           script: |
-            ssh -o StrictHostKeyChecking=no -i tf_key.pem${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i tf_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
