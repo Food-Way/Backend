@@ -90,23 +90,26 @@ jobs:
         run: terraform apply -auto-approve
         working-directory: API/infra
 
-      - name: Get EC2 private IPs
-        id: get_ips
+      - name: Get EC2 private IP for server 01
+        id: get_ip_01
         run: |
           ec2_01_ip=$(terraform output -raw private_ec2_01_private_ip | tr -d '"')
-          ec2_02_ip=$(terraform output -raw private_ec2_02_private_ip | tr -d '"')
-          if [ -z "$ec2_01_ip" ] || [ -z "$ec2_02_ip" ]; then
-            echo "Failed to get EC2 IPs" >&2
+          if [ -z "$ec2_01_ip" ]; then
+            echo "Failed to get EC2 IP for server 01" >&2
             exit 1
           fi
-          {
-            echo "EC2_01_IP<<EOF"
-            echo "$ec2_01_ip"
-            echo "EOF"
-            echo "EC2_02_IP<<EOF"
-            echo "$ec2_02_ip"
-            echo "EOF"
-          } >> $GITHUB_ENV
+          echo "EC2_01_IP=$ec2_01_ip" >> $GITHUB_ENV
+        working-directory: API/infra
+
+      - name: Get EC2 private IP for server 02
+        id: get_ip_02
+        run: |
+          ec2_02_ip=$(terraform output -raw private_ec2_02_private_ip | tr -d '"')
+          if [ -z "$ec2_02_ip" ]; then
+            echo "Failed to get EC2 IP for server 02" >&2
+            exit 1
+          fi
+          echo "EC2_02_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
 
       - name: Create tf_key.pem file
@@ -124,9 +127,8 @@ jobs:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
-          envs: EC2_01_IP
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@$EC2_01_IP << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i tf_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} << 'EOF'
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
@@ -138,9 +140,8 @@ jobs:
           host: ${{ secrets.BASTION_HOST }}
           username: ${{ secrets.BASTION_USER }}
           key: ${{ secrets.BASTION_SSH_KEY }}
-          envs: EC2_02_IP
           script: |
-            ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@$EC2_02_IP << 'EOF'
+            ssh -o StrictHostKeyChecking=no -i tf_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << 'EOF'
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
