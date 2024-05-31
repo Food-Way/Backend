@@ -110,7 +110,7 @@ jobs:
         working-directory: API/infra
 
       - name: Create SSH key file
-        run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
+        run: echo "${{ secrets.TF_KEY }}" > private_key.pem
 
       - name: Set permissions for SSH key
         run: chmod 600 private_key.pem
