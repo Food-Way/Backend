@@ -154,9 +154,9 @@ jobs:
           key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} << EOF
-              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+#              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
-              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
+#              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
 
       - name: Deploy to backend-02 Server
@@ -167,8 +167,8 @@ jobs:
           key: ${{ secrets.BASTION_SSH_KEY }}
           script: |
             ssh -o StrictHostKeyChecking=no -i /home/ubuntu/.ssh/ssh_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << EOF
-              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+#              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
-              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
+#              sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
             EOF
 
