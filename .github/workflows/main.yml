@@ -93,8 +93,10 @@ jobs:
       - name: Get EC2 private IPs
         id: get_ips
         run: |
-          echo "EC2_01_IP=$(terraform output -raw private_ec2_01_private_ip)" >> $GITHUB_ENV
-          echo "EC2_02_IP=$(terraform output -raw private_ec2_02_private_ip)" >> $GITHUB_ENV
+          ec2_01_ip=$(terraform output -raw private_ec2_01_private_ip)
+          ec2_02_ip=$(terraform output -raw private_ec2_02_private_ip)
+          echo "EC2_01_IP=$ec2_01_ip" >> $GITHUB_ENV
+          echo "EC2_02_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
 
       - name: Display EC2 Private IPs
