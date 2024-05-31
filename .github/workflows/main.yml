@@ -111,7 +111,7 @@ jobs:
 
       - name: Create SSH key file
         run: |
-          echo "${{ secrets.TF_KEY }}" | tr -d '\r' > tf_key.pem
+          echo "${{ secrets.TF_KEY }}" > tf_key.pem
         shell: bash
 
       - name: Set permissions for SSH key
