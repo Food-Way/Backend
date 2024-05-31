@@ -111,11 +111,16 @@ jobs:
 
       - name: Create SSH key file
         run: |
-          echo "${{ secrets.TF_KEY }}" > tf_key.pem
+          echo "${{ secrets.TF_KEY }}" | tr -d '\r' > tf_key.pem
         shell: bash
 
       - name: Set permissions for SSH key
         run: chmod 600 tf_key.pem
+
+      - name: Check SSH key file
+        run: |
+          ls -l tf_key.pem
+          cat tf_key.pem
 
       - name: Install netcat
         run: sudo apt-get install -y netcat
