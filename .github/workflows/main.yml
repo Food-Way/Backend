@@ -99,11 +99,6 @@ jobs:
           echo "EC2_02_IP=$ec2_02_ip" >> $GITHUB_ENV
         working-directory: API/infra
 
-      - name: Display EC2 Private IPs
-        run: |
-          echo "EC2_01 IP: $EC2_01_IP"
-          echo "EC2_02 IP: $EC2_02_IP"
-
       - name: Create SSH key file
         run: echo "${{ secrets.AWS_SSH_KEY }}" > private_key.pem
 
@@ -120,7 +115,7 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: private_key.pem
           script: |
-            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_PRIVATE_IP }} "nc -z -w5 localhost 22"; then
+            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} "nc -z -w5 localhost 22"; then
               echo "backend-01 is up"
             else
               echo "backend-01 is down"
@@ -134,7 +129,7 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: private_key.pem
           script: |
-            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} "nc -z -w5 localhost 22"; then
+            if ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} "nc -z -w5 localhost 22"; then
               echo "backend-02 is up"
             else
               echo "backend-02 is down"
@@ -148,7 +143,7 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: private_key.pem
           script: |
-            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_PRIVATE_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_01_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
@@ -161,7 +156,7 @@ jobs:
           username: ${{ secrets.BASTION_USER }}
           key: private_key.pem
           script: |
-            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_PRIVATE_IP }} << EOF
+            ssh -o StrictHostKeyChecking=no -i private_key.pem ${{ secrets.SERVER_USER }}@${{ env.EC2_02_IP }} << EOF
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
               sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api
               sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d

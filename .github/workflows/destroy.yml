@@ -32,7 +32,7 @@ jobs:
         working-directory: API/infra
 
       - name: Verify Plan
-        run: terraform show -json tfplan | jq
+        run: terraform show tfplan
         working-directory: API/infra
 
       - name: Terraform Apply Destroy
