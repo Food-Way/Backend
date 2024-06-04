@@ -37,9 +37,6 @@ resource "aws_instance" "private_ec2_01" {
     sudo systemctl start docker
     sudo systemctl enable docker
 
-    # Instalar Docker Compose
-    sudo apt-get install -y docker-compose
-
     # Executar comandos Docker
     sudo docker pull $DOCKERHUB_USERNAME/foodway-api
     sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
