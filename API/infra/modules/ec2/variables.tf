@@ -39,7 +39,7 @@ variable "dockerhub_username" {
   type        = string
 }
 
-variable "var_snapshot_id" {
+variable "snapshot_id" {
   default = "vol-002367949f74f27aa"
   description = "Snapshot ID Backend"
   type        = string
