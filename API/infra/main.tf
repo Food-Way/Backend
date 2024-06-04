@@ -14,6 +14,7 @@ provider "aws" {
 
 module "ec2" {
   source = "./modules/ec2"
+  dockerhub_username = var.dockerhub_username
 }
 
 output "private_ec2_01_private_ip" {
