@@ -9,10 +9,18 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
+  region     = var.region
 }
 
 module "ec2" {
   source = "./modules/ec2"
   dockerhub_username = var.dockerhub_username
+}
+
+output "private_ec2_01_private_ip" {
+  value = module.ec2.private_ec2_01_private_ip
+}
+
+output "private_ec2_02_private_ip" {
+  value = module.ec2.private_ec2_02_private_ip
 }

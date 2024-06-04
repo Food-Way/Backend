@@ -44,6 +44,9 @@ jobs:
       - name: List files for debugging
         run: ls -la API/target
 
+      - name: Verify JAR File
+        run: ls -la ./API/target/
+
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -55,14 +58,29 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest .
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/foodway-api:latest
 
+  deploy-to-aws:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.0
+          terraform_version: 1.2.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Validate
         run: terraform validate
