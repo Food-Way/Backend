@@ -3,14 +3,15 @@
 #   public_key = file("${path.module}/tf_key.pem.pub")
 # }
 
-resource "aws_instance" "private_ec2_01" {
+resource "aws_instance" "public_ec2_backend-1" {
   ami               = var.ami
   availability_zone = var.az
   instance_type     = var.inst_type
   ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_size = 8
-    volume_type = "gp3"
+      device_name = "/dev/sda1"
+      volume_size = 8
+      volume_type = "gp3"
+      snapshot_id = var.snapshot_id 
   }
   key_name                    = "shh_key"
   subnet_id                   = var.subnet_id
@@ -44,7 +45,7 @@ resource "aws_instance" "private_ec2_01" {
   )
 }
 
-resource "aws_instance" "private_ec2_02" {
+resource "aws_instance" "public_ec2_backend-2" {
   ami               = var.ami
   availability_zone = var.az
   instance_type     = var.inst_type
@@ -52,6 +53,7 @@ resource "aws_instance" "private_ec2_02" {
     device_name = "/dev/sda1"
     volume_size = 8
     volume_type = "gp3"
+    snapshot_id = var.snapshot_id
   }
   key_name                    = "shh_key"
   subnet_id                   = var.subnet_id
