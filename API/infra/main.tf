@@ -14,4 +14,5 @@ provider "aws" {
 
 module "ec2" {
   source = "./modules/ec2"
+  dockerhub_username = var.dockerhub_username
 }

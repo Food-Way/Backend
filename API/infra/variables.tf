@@ -3,3 +3,8 @@ variable "region" {
   type        = string
   default     = "us-east-1"
 }
+
+variable "dockerhub_username" {
+  description = "Docker Hub username"
+  type        = string
+}

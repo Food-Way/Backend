@@ -33,3 +33,8 @@ variable "sg_id" {
   type        = string
   default     = "sg-0a69c3d9f7fc1fed6"
 }
+
+variable "dockerhub_username" {
+  description = "Docker Hub username"
+  type        = string
+}
