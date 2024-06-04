@@ -21,6 +21,9 @@ resource "aws_instance" "private_ec2_01" {
   }
   user_data = base64encode(<<-EOF
     #!/bin/bash
+    exec > /var/log/user_data.log 2>&1
+    set -x
+
     export DOCKERHUB_USERNAME=${var.dockerhub_username}
 
     # Atualizar pacotes e instalar Java
@@ -38,8 +41,7 @@ resource "aws_instance" "private_ec2_01" {
     sudo apt-get install -y docker-compose
 
     # Executar comandos Docker
-    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
-    sudo docker pull ${var.dockerhub_username}/foodway-api
+    sudo docker pull $DOCKERHUB_USERNAME/foodway-api
     sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
     EOF
   )
@@ -63,6 +65,9 @@ resource "aws_instance" "private_ec2_02" {
   }
   user_data = base64encode(<<-EOF
     #!/bin/bash
+    exec > /var/log/user_data.log 2>&1
+    set -x
+
     export DOCKERHUB_USERNAME=${var.dockerhub_username}
 
     # Atualizar pacotes e instalar Java
@@ -80,8 +85,7 @@ resource "aws_instance" "private_ec2_02" {
     sudo apt-get install -y docker-compose
 
     # Executar comandos Docker
-    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
-    sudo docker pull ${var.dockerhub_username}/foodway-api
+    sudo docker pull $DOCKERHUB_USERNAME/foodway-api
     sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
     EOF
   )
