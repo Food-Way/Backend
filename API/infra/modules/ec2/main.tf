@@ -19,9 +19,30 @@ resource "aws_instance" "private_ec2_01" {
   tags = {
     Name = "private-ec2-01"
   }
-  user_data = templatefile("${path.module}/user_data.sh", {
-    dockerhub_username = var.dockerhub_username
-  })
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    export DOCKERHUB_USERNAME=${var.dockerhub_username}
+
+    # Atualizar pacotes e instalar Java
+    sudo apt-get update
+    sudo apt-get install -y default-jdk
+
+    # Instalar Docker
+    sudo apt-get install -y docker.io
+
+    # Iniciar e habilitar Docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+
+    # Instalar Docker Compose
+    sudo apt-get install -y docker-compose
+
+    # Executar comandos Docker
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+    sudo docker pull ${var.dockerhub_username}/foodway-api
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
+    EOF
+  )
 }
 
 resource "aws_instance" "private_ec2_02" {
@@ -40,7 +61,28 @@ resource "aws_instance" "private_ec2_02" {
   tags = {
     Name = "private-ec2-02"
   }
-  user_data = templatefile("${path.module}/user_data.sh", {
-    dockerhub_username = var.dockerhub_username
-  })
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    export DOCKERHUB_USERNAME=${var.dockerhub_username}
+
+    # Atualizar pacotes e instalar Java
+    sudo apt-get update
+    sudo apt-get install -y default-jdk
+
+    # Instalar Docker
+    sudo apt-get install -y docker.io
+
+    # Iniciar e habilitar Docker
+    sudo systemctl start docker
+    sudo systemctl enable docker
+
+    # Instalar Docker Compose
+    sudo apt-get install -y docker-compose
+
+    # Executar comandos Docker
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+    sudo docker pull ${var.dockerhub_username}/foodway-api
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
+    EOF
+  )
 }

@@ -88,8 +88,8 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}"
-        working-directory: API/infra
+        working-directory: ./API/infra
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}" tfplan
-        working-directory: API/infra
+        working-directory: ./API/infra
