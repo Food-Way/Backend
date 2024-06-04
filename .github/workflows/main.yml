@@ -84,12 +84,12 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}"
-        working-directory: ./infra
+        working-directory: API/infra
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="dockerhub_username=${{ secrets.DOCKERHUB_USERNAME }}" tfplan
-        working-directory: ./infra
+        working-directory: API/infra
