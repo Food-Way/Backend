@@ -40,7 +40,7 @@ variable "dockerhub_username" {
 }
 
 variable "snapshot_id" {
-  default = "vol-002367949f74f27aa"
+  default = "snap-0d20b4350b63ed2ee"
   description = "Snapshot ID Backend"
   type        = string
 }
