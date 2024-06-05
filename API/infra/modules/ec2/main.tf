@@ -11,7 +11,6 @@ resource "aws_instance" "public_ec2_backend-1" {
       device_name = "/dev/sda1"
       volume_size = 8
       volume_type = "gp3"
-      snapshot_id = var.snapshot_id 
   }
   key_name                    = "shh_key"
   subnet_id                   = var.subnet_id
@@ -53,7 +52,6 @@ resource "aws_instance" "public_ec2_backend-2" {
     device_name = "/dev/sda1"
     volume_size = 8
     volume_type = "gp3"
-    snapshot_id = var.snapshot_id
   }
   key_name                    = "shh_key"
   subnet_id                   = var.subnet_id
