@@ -13,7 +13,7 @@ variable "key_pair_name" {
 variable "ami" {
   description = "AMI ID"
   type        = string
-  default     = "ami-0e001c9271cf7f3b9"
+  default     = "ami-0079cb79a884bc112"
 }
 
 variable "inst_type" {
@@ -36,5 +36,11 @@ variable "sg_id" {
 
 variable "dockerhub_username" {
   description = "Docker Hub username"
+  type        = string
+}
+
+variable "snapshot_id" {
+  default = "snap-0d20b4350b63ed2ee"
+  description = "Snapshot ID Backend"
   type        = string
 }
