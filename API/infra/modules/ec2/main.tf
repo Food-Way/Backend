@@ -3,14 +3,14 @@
 #   public_key = file("${path.module}/tf_key.pem.pub")
 # }
 
-resource "aws_instance" "public_ec2_backend-1" {
+resource "aws_instance" "private_ec2_01" {
   ami               = var.ami
   availability_zone = var.az
   instance_type     = var.inst_type
   ebs_block_device {
-      device_name = "/dev/sda1"
-      volume_size = 8
-      volume_type = "gp3"
+    device_name = "/dev/sda1"
+    volume_size = 8
+    volume_type = "gp3"
   }
   key_name                    = "shh_key"
   subnet_id                   = var.subnet_id
@@ -19,11 +19,8 @@ resource "aws_instance" "public_ec2_backend-1" {
   tags = {
     Name = "private-ec2-01"
   }
-  user_data = base64encode(<<-EOF
+  user_data = <<-EOF
     #!/bin/bash
-    exec > /var/log/user_data.log 2>&1
-    set -x
-
     export DOCKERHUB_USERNAME=${var.dockerhub_username}
 
     # Atualizar pacotes e instalar Java
@@ -32,23 +29,22 @@ resource "aws_instance" "public_ec2_backend-1" {
 
     # Instalar Docker
     sudo apt-get install -y docker.io
-    #instalar docker-compose
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    docker-compose --version
 
     # Iniciar e habilitar Docker
     sudo systemctl start docker
     sudo systemctl enable docker
 
+    # Instalar Docker Compose
+    sudo apt-get install -y docker-compose
+
     # Executar comandos Docker
-    sudo docker pull $DOCKERHUB_USERNAME/foodway-api
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+    sudo docker pull ${DOCKERHUB_USERNAME}/foodway-api
     sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
-    EOF
-  )
+  EOF
 }
 
-resource "aws_instance" "public_ec2_backend-2" {
+resource "aws_instance" "private_ec2_02" {
   ami               = var.ami
   availability_zone = var.az
   instance_type     = var.inst_type
@@ -64,11 +60,8 @@ resource "aws_instance" "public_ec2_backend-2" {
   tags = {
     Name = "private-ec2-02"
   }
-  user_data = base64encode(<<-EOF
+  user_data = <<-EOF
     #!/bin/bash
-    exec > /var/log/user_data.log 2>&1
-    set -x
-
     export DOCKERHUB_USERNAME=${var.dockerhub_username}
 
     # Atualizar pacotes e instalar Java
@@ -78,18 +71,24 @@ resource "aws_instance" "public_ec2_backend-2" {
     # Instalar Docker
     sudo apt-get install -y docker.io
 
-    #instalar docker-compose
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
-    docker-compose --version
-
     # Iniciar e habilitar Docker
     sudo systemctl start docker
     sudo systemctl enable docker
 
+    # Instalar Docker Compose
+    sudo apt-get install -y docker-compose
+
     # Executar comandos Docker
-    sudo docker pull $DOCKERHUB_USERNAME/foodway-api
+    sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml down
+    sudo docker pull ${DOCKERHUB_USERNAME}/foodway-api
     sudo docker-compose -f /home/ubuntu/AWS/docker-compose.yml up -d
-    EOF
-  )
+  EOF
+}
+
+output "private_ec2_01_private_ip" {
+  value = aws_instance.private_ec2_01.private_ip
+}
+
+output "private_ec2_02_private_ip" {
+  value = aws_instance.private_ec2_02.private_ip
 }
