@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -40,6 +41,8 @@ public class CustomerServiceTest {
     CommentRepository commentRepository;
     @Mock
     UpvoteRepository upvoteRepository;
+    @Mock
+    RabbitTemplate rabbitTemplate;
 
     @InjectMocks
     CustomerService customerService;
