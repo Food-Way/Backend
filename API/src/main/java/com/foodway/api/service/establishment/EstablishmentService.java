@@ -1,8 +1,6 @@
 package com.foodway.api.service.establishment;
 
 import com.foodway.api.apiclient.MapsClient;
-import com.foodway.api.apiclient.entities.SimpleMailAccountCreated;
-import com.foodway.api.apiclient.entities.SimpleMailAccountUpdated;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
 import com.foodway.api.model.Comment;
@@ -64,8 +62,6 @@ public class EstablishmentService {
     private FavoriteRepository favoriteRepository;
     @Autowired
     private UpvoteRepository upvoteRepository;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
 
     @Value("${GMAPS_API_KEY}")
     private String GMapsApiKey;
@@ -162,20 +158,9 @@ public class EstablishmentService {
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
 
         Establishment establishmentSaved = establishmentRepository.save(establishment);
-        publishEstablishmentCreatedMessage(establishmentSaved);
         return ResponseEntity.status(201).body(establishmentSaved);
     }
 
-    @Async
-    public void publishEstablishmentCreatedMessage(Establishment establishment) {
-        SimpleMailAccountCreated accountCreated = new SimpleMailAccountCreated(establishment.getName(),
-                establishment.getEstablishmentName(), establishment.getEmail(), establishment.getTypeUser());
-
-        Message message = new Message(accountCreated.toString().getBytes());
-        message.getMessageProperties().setContentType("application/json");
-
-        rabbitTemplate.send("account.created", message);
-    }
 
     public ResponseEntity<Establishment> putEstablishment(UUID id, UpdateEstablishmentData data) {
         ResponseEntity<Establishment> establishment1 = getEstablishment(id);
@@ -249,7 +234,6 @@ public class EstablishmentService {
 
         if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment);
-            publishEstablishmentUpdatedMessage(establishmentSaved);
             return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
         }
         System.out.println("Erro ao atualizar");
@@ -270,27 +254,11 @@ public class EstablishmentService {
         establishment.updatePersonalEstablishment(Optional.of(establishmentUpdate));
         if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
             Establishment establishmentSaved = establishmentRepository.save(establishment);
-            publishEstablishmentUpdatedMessage(establishmentSaved);
             return ResponseEntity.status(200).body(establishmentSaved);
         } else {
             System.out.println("Erro ao atualizar");
         }
         return ResponseEntity.status(401).build();
-    }
-
-    @Async
-    private void publishEstablishmentUpdatedMessage(Establishment establishmentSaved) {
-        SimpleMailAccountUpdated accountUpdated = new
-        SimpleMailAccountUpdated(establishmentSaved.getName(),
-        establishmentSaved.getEstablishmentName(), establishmentSaved.getEmail(),
-        establishmentSaved.getTypeUser(), establishmentSaved.getProfilePhoto(),
-        establishmentSaved.getProfileHeaderImg(), establishmentSaved.getPhone(),
-        establishmentSaved.getDescription());
-
-        Message message = new Message(accountUpdated.toString().getBytes());
-        message.getMessageProperties().setContentType("application/json");
-
-        rabbitTemplate.send("account.updated", message);
     }
 
     public ResponseEntity<List<SearchEstablishmentDTO>> searchAllEstablishments(UUID idSession,
