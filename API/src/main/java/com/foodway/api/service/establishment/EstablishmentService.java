@@ -1,5 +1,7 @@
 package com.foodway.api.service.establishment;
 
+import com.amazonaws.services.apigateway.model.Op;
+import com.amazonaws.services.ec2.model.Storage;
 import com.foodway.api.apiclient.MapsClient;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
@@ -14,9 +16,12 @@ import com.foodway.api.record.DTOs.RelevanceDTO;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentMobileAccount;
+import com.foodway.api.record.UpdateEstablishmentMobileProfile;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.repository.*;
+import com.foodway.api.service.StorageService;
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.comment.CommentService;
 import com.foodway.api.service.user.authentication.dto.UserLoginDto;
@@ -24,8 +29,6 @@ import com.foodway.api.service.user.authentication.dto.UserTokenDto;
 import com.foodway.api.utils.ListaObj;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -33,6 +36,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -51,6 +55,9 @@ public class EstablishmentService {
     private CommentService commentService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StorageService storageService;
 
     @Autowired
     CustomerRepository customerRepository;
@@ -352,5 +359,19 @@ public class EstablishmentService {
                 .filter(comment -> comment.getIdParent() == null)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(filteredComments);
+    }
+    public ResponseEntity<Establishment> patchEstablishmentMobileProfile(UUID id, UpdateEstablishmentMobileProfile establishmentUpdate) {
+        Optional<Establishment> optionalEstablishment = establishmentRepository.findById(id);
+        if (optionalEstablishment.isEmpty()) throw new EstablishmentNotFoundException("Establishment not found");
+        Establishment establishment = optionalEstablishment.get();
+        establishment.updateProfileEstablishmentMobile(establishmentUpdate);
+        return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
+    }
+    public ResponseEntity<Establishment> patchEstablishmentMobileAccount(UUID id, UpdateEstablishmentMobileAccount establishmentUpdate) {
+        Optional<Establishment> optionalEstablishment = establishmentRepository.findById(id);
+        if (optionalEstablishment.isEmpty()) throw new EstablishmentNotFoundException("Establishment not found");
+        Establishment establishment = optionalEstablishment.get();
+        establishment.updateAccountEstablishmentMobile(establishmentUpdate);
+        return ResponseEntity.status(200).body(establishmentRepository.save(establishment));
     }
 }

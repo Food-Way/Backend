@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "FoodWay API", version = "1.0", description = "Documentation FoodWay API v1.0"), servers = {@Server(url = "http://localhost:8080", description = "Base URL API FoodWay")})
+@OpenAPIDefinition(info = @Info(title = "FoodWay API", version = "1.0", description = "Documentation FoodWay API v1.0"), servers = {@Server(url = "http://localhost:5225/api", description = "Base URL API FoodWay")})
 @SecurityRequirement(name = "Bearer Authentication")
 @EnableFeignClients
 public class ApiApplication {
