@@ -18,8 +18,6 @@ import com.foodway.api.repository.*;
 import com.foodway.api.service.UserService;
 import com.foodway.api.service.establishment.EstablishmentService;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
