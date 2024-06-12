@@ -3,6 +3,7 @@ package com.foodway.api.service.dashboard;
 import com.foodway.api.model.Comment;
 import com.foodway.api.model.Establishment;
 import com.foodway.api.record.DTOs.*;
+import com.foodway.api.record.ReviewItem;
 import com.foodway.api.repository.CommentRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.service.comment.CommentService;
@@ -29,11 +30,24 @@ public class DashboardService {
         List<Comment> c = commentRepository.findByidEstablishment(idEstablishment, pageable);
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
         List<CommentDTO> comments = new ArrayList<>();
+        int countByReviewPositive = commentRepository.countByReviewPositive(idEstablishment);
+        int countAllReviewNegative = commentRepository.countByReviewNegative(idEstablishment);
+        int countByReviewNeutral =  commentRepository.countByReviewNeutral(idEstablishment);
+        int countAllReviewByReviewError = commentRepository.countByReviewError(idEstablishment);
+        int countAllReviewByIdEstablishment = commentRepository.countAllReviewByIdEstablishment(idEstablishment);
+        List<ReviewItem>  review = new ArrayList<>(){
+            {
+                add(new ReviewItem("positive", countByReviewPositive));
+                add(new  ReviewItem("neutral", countByReviewNeutral));
+                add(new  ReviewItem("negative", countAllReviewNegative));
+//                add(new  ReviewItem("Error", countAllReviewByReviewError));
+                add(new  ReviewItem("total", countAllReviewByIdEstablishment));
+            }
+        } ;
 
         if (!establishment.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not exist!");
         }
-
         Map<String, Integer> qtdEvaluationDaysForWeek = new HashMap<>(Map.ofEntries(
                 Map.entry("SUNDAY", 0),
                 Map.entry("MONDAY", 0),
@@ -58,7 +72,8 @@ public class DashboardService {
                                 countUpvotes,
                                 comment.getIdEstablishment(),
                                 establishment.get().getProfilePhoto()
-                        ));
+
+));
 
                 String commentDayOfWeek = String.valueOf(comment.getCreatedAt().getDayOfWeek());
 
@@ -90,7 +105,8 @@ public class DashboardService {
                 establishment.get().getGeneralRate(),
                 establishmentRateDto,
                 qtdEvaluationDaysForWeeks,
-                establishment.get().getTags()
+                establishment.get().getTags(),
+                review
         );
 
         return ResponseEntity.status(200).body(dashboardDTO);

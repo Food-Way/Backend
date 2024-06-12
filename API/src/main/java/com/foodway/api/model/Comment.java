@@ -1,6 +1,7 @@
 package com.foodway.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.foodway.api.model.Enums.ESentiment;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
@@ -33,6 +34,7 @@ public class Comment {
     private List<String> images;
     private String userPhoto;
     private String userName;
+    private ESentiment sentiment;
     private ETypeUser typeUser;
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -91,6 +93,13 @@ public class Comment {
         RequestComment c = (RequestComment) optional.get();
         this.setcomment(c.comment());
         this.setImages(c.images());
+    }
+
+    public void setSentiment(ESentiment sentiment) {
+        this.sentiment = sentiment;
+    }
+    public ESentiment getSentiment() {
+        return sentiment;
     }
 
     public String getUserPhoto() {

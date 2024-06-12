@@ -1,7 +1,4 @@
 package com.foodway.api.service.establishment;
-
-import com.amazonaws.services.apigateway.model.Op;
-import com.amazonaws.services.ec2.model.Storage;
 import com.foodway.api.apiclient.MapsClient;
 import com.foodway.api.controller.UserController;
 import com.foodway.api.handler.exceptions.EstablishmentNotFoundException;
@@ -32,16 +29,11 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import static com.foodway.api.utils.GerenciadorDeArquivo.*;
 
 @Service

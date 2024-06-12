@@ -2,7 +2,6 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.RequestUpvote;
 import jakarta.persistence.*;
-
 import java.util.UUID;
 
 @Table(name = "tbUpvote")

@@ -9,5 +9,6 @@ public record CommentDTO(
         int upvotes,
         UUID idEstablishment,
         String photoUrl
+
 ) {
 }

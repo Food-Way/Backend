@@ -1,6 +1,7 @@
 package com.foodway.api.record.DTOs;
 
 import com.foodway.api.model.Tags;
+import com.foodway.api.record.ReviewItem;
 
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,8 @@ public record EstablishmentDashboardViewDTO(
         Double generalRate,
         List<EstablishmentRateDto> establishmentRate,
         List<QtdEvaluationDaysForWeek> qtdEvaluationDaysForWeek,
-        Set<Tags> tags
+        Set<Tags> tags,
+
+        List<ReviewItem> reviews
 ) {
 }
