@@ -12,7 +12,7 @@ import okhttp3.Response;
 import java.io.IOException; // Add this import statement
 @Service
  public class SentimentalText {
-    @Value("${SENTIMENTAL_URL}")
+    @Value("${LLM_URL}")
     private String urlCollab;
     public ESentiment getSentimental(String comment){
         Response response;

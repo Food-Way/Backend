@@ -30,20 +30,14 @@ public class DashboardService {
         List<Comment> c = commentRepository.findByidEstablishment(idEstablishment, pageable);
         Optional<Establishment> establishment = establishmentRepository.findById(idEstablishment);
         List<CommentDTO> comments = new ArrayList<>();
-        int countByReviewPositive = commentRepository.countByReviewPositive(idEstablishment);
-        int countAllReviewNegative = commentRepository.countByReviewNegative(idEstablishment);
-        int countByReviewNeutral =  commentRepository.countByReviewNeutral(idEstablishment);
-        int countAllReviewByReviewError = commentRepository.countByReviewError(idEstablishment);
-        int countAllReviewByIdEstablishment = commentRepository.countAllReviewByIdEstablishment(idEstablishment);
-        List<ReviewItem>  review = new ArrayList<>(){
-            {
-                add(new ReviewItem("positive", countByReviewPositive));
-                add(new  ReviewItem("neutral", countByReviewNeutral));
-                add(new  ReviewItem("negative", countAllReviewNegative));
-//                add(new  ReviewItem("Error", countAllReviewByReviewError));
-                add(new  ReviewItem("total", countAllReviewByIdEstablishment));
+        Map<String, Long> reviewMap = commentRepository.countReviewsBySentiment(idEstablishment);
+        List<ReviewItem>  review = new ArrayList<>();
+        for (Map.Entry<String, Long> entry : reviewMap.entrySet()) {
+            if(!entry.getKey().equals("error")) {
+                review.add(new ReviewItem(entry.getKey().toUpperCase(), entry.getValue()));
             }
-        } ;
+        }
+
 
         if (!establishment.isPresent()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment does not exist!");

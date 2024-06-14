@@ -47,7 +47,7 @@ public class UserService {
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(userLoginDto.getEmail(), userLoginDto.getPassword());
 
         User user = userRepository.findByEmail(userLoginDto.getEmail()).orElseThrow(() -> new ResponseStatusException(404, "Email não cadastrado", null));
-        final Authentication authentication = this.authenticationManager.authenticate(credentials);
+            final Authentication authentication = this.authenticationManager.authenticate(credentials);
         String establishmentName = null;
         String culinary = null;
 

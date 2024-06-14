@@ -1,18 +1,18 @@
 package com.foodway.api.record;
 
 public class ReviewItem {
-  private int count;
+  private Long count;
   private String sentiment;
 
-  public ReviewItem( String sentiment,int count) {
+  public ReviewItem( String sentiment,Long count) {
     this.count = count;
     this.sentiment = sentiment;
   }
 
-  public int getCount() {
+  public Long getCount() {
     return count;
   }
-  public void setCount(int count) {
+  public void setCount(Long count) {
     this.count = count;
   }
   public String getSentiment() {

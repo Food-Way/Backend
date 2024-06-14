@@ -20,7 +20,7 @@ import org.springframework.core.env.Environment;
 @RestController
 @RequestMapping("/files")
 @Tag(name = "S3")
-public class S3Controller {
+public class    S3Controller {
     @Autowired
     private AmazonS3Config s3Config;
     @Autowired
@@ -32,7 +32,6 @@ public class S3Controller {
     @PostMapping("/upload-profile")
     public ResponseEntity<String> uploadProfilePhoto (
             @RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path,
             @RequestParam("idUser") UUID idUser,
             @RequestParam("typeUser") ETypeUser typeUser
     )
@@ -42,7 +41,6 @@ public class S3Controller {
     @PostMapping("/upload-profile-header")
     public ResponseEntity<String> uploadProfileHeader (
             @RequestParam("file") MultipartFile file,
-            @RequestParam("path") String path,
             @RequestParam("idUser") UUID idUser,
             @RequestParam("typeUser") ETypeUser typeUser
     )
