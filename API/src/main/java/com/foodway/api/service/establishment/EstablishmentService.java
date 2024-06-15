@@ -223,21 +223,9 @@ public class EstablishmentService {
 
     public ResponseEntity<Establishment> patchEstablishmentProfile(UUID id, UpdateEstablishmentProfile establishmentUpdate) {
         Establishment establishment = getEstablishment(id).getBody();
-
-        UserLoginDto userLoginDto = new UserLoginDto();
-        userLoginDto.setEmail(establishmentUpdate.emailActual());
-        userLoginDto.setPassword(establishmentUpdate.passwordActual());
-        ResponseEntity<UserTokenDto> userTokenDtoResponseEntity = userController.login(userLoginDto);
-
         establishment.updateProfileEstablishment(Optional.of(establishmentUpdate));
-
-        if (userTokenDtoResponseEntity.getStatusCode().equals(HttpStatus.OK)) {
-            Establishment establishmentSaved = establishmentRepository.save(establishment);
-            return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
-        }
-        System.out.println("Erro ao atualizar");
-        return ResponseEntity.status(401).build();
-
+        Establishment establishmentSaved = establishmentRepository.save(establishment);
+        return ResponseEntity.status(HttpStatus.OK).body(establishmentSaved);
     }
 
     public ResponseEntity<Establishment> patchEstablishmentPersonal(UUID id,
