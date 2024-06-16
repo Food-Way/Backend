@@ -2,6 +2,7 @@ package com.foodway.api.service.comment;
 
 import com.foodway.api.handler.exceptions.CommentNotFoundException;
 import com.foodway.api.model.*;
+import com.foodway.api.model.Enums.ESentiment;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
@@ -9,7 +10,8 @@ import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
-  
+import com.foodway.api.utils.SentimentalText;
+
 import java.util.*; 
 
 
@@ -31,11 +33,15 @@ public class CommentService {
     CustomerService customerService;
     @Autowired
     private RateRepository rateRepository;
+    @Autowired
+    private SentimentalText sentimentalText;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
         final Establishment establishment = establishmentService.getEstablishment(data.idEstablishment()).getBody();
         final Comment comment = new Comment(data);
+        ESentiment resulSentiment = sentimentalText.getSentimental(data.comment());
+        comment.setSentiment(resulSentiment);
         comment.setGeneralRate(generateGeneralRateForComment(comment.getIdCustomer(), comment.getIdEstablishment()));
         establishment.addComment(comment);
         final Comment commentSaved = commentRepository.save(comment);

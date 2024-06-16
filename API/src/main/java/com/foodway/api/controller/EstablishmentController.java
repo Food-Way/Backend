@@ -9,6 +9,8 @@ import com.foodway.api.record.DTOs.RelevanceDTO;
 import com.foodway.api.record.DTOs.SearchEstablishmentDTO;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentMobileAccount;
+import com.foodway.api.record.UpdateEstablishmentMobileProfile;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import com.foodway.api.service.establishment.EstablishmentService;
@@ -21,6 +23,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -218,5 +221,34 @@ public class EstablishmentController {
     })
     public ResponseEntity<Establishment> patchEstablishmentPersonal(@PathVariable UUID id, @RequestBody @Valid UpdateEstablishmentPersonal establishment) {
         return establishmentService.patchEstablishmentPersonal(id, establishment);
+    }
+
+    @PatchMapping("/mobile/profile/{id}")
+    @Operation(summary = "Update establishment profile by ID", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated establishment"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Establishment> patchEstablishmentMobileProfile(
+        @PathVariable UUID id,
+        @RequestBody @Valid UpdateEstablishmentMobileProfile establishment) {
+        return establishmentService.patchEstablishmentMobileProfile(id, establishment);
+    }
+    @PatchMapping("/mobile/account/{id}")
+    @Operation(summary = "Update establishment profile by ID", method = "PATCH")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Return the updated establishment"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = EstablishmentNotFoundException.CODE, description = EstablishmentNotFoundException.DESCRIPTION),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public ResponseEntity<Establishment> patchEstablishmentAccount(
+        @PathVariable UUID id,
+        @RequestBody @Valid UpdateEstablishmentMobileAccount establishment) {
+        return establishmentService.patchEstablishmentMobileAccount(id, establishment);
     }
 }

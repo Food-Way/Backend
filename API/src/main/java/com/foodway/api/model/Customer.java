@@ -2,8 +2,6 @@ package com.foodway.api.model;
 
 import com.foodway.api.record.UpdateCustomerPersonalInfo;
 import com.foodway.api.record.UpdateCustomerProfile;
-import com.foodway.api.model.Enums.ETypeRate;
-import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserCustomer;
 import com.foodway.api.record.UpdateCustomerData;
 import jakarta.persistence.*;
@@ -11,12 +9,9 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Table(name = "tbCustomer")
 @Entity(name = "customer")

@@ -1,20 +1,15 @@
 package com.foodway.api.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
-import com.foodway.api.record.RequestCulinary;
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Table(name = "tbUser")
@@ -120,7 +115,7 @@ public abstract class User {
 
     public String getProfileHeaderImg() {
         if (profileHeaderImg == null || profileHeaderImg.isEmpty() || profileHeaderImg.isBlank()) {
-            return "https://foodway-public-s3.s3.amazonaws.com/website-images/default-banner.png";
+            return "https://foodway.s3.amazonaws.com/public-images/default-banner.webp";
         }
         return profileHeaderImg;
     }

@@ -4,9 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record RequestUpvote(
+public record   RequestUpvote(
         @NotNull
-        UUID idCustomer,
+        UUID    idCustomer,
         @NotNull
         UUID idEstablishment,
         @NotNull

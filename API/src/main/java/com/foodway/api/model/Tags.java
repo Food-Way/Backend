@@ -4,8 +4,6 @@ import com.foodway.api.record.RequestTag;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
-
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

@@ -6,6 +6,8 @@ import com.foodway.api.record.RequestComment;
 import com.foodway.api.record.RequestCommentChild;
 import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.service.comment.CommentService;
+import com.foodway.api.utils.SentimentalText;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -81,7 +83,5 @@ public class CommentController {
     public ResponseEntity<Void> deleteComment(@PathVariable UUID id) {
         return commentService.deleteComment(id);
     }
-
-    //todo fazer filtros de comentários
 
 }

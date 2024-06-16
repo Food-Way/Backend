@@ -1,0 +1,11 @@
+scrape_configs:
+  - job_name: "foodway-prometheus"
+    scrape_interval: 5s
+    static_configs:
+      - targets: ["prometheus:9090"] # Here 'prometheus' is the name of the Prometheus service itself
+
+  - job_name: "foodway-app"
+    scrape_interval: 5s
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["foodway-backend:8080"] # Using the service name 'foodway-backend' with the port the app is running on

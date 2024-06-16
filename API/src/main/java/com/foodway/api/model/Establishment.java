@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.record.RequestUserEstablishment;
 import com.foodway.api.record.UpdateEstablishmentData;
+import com.foodway.api.record.UpdateEstablishmentMobileAccount;
+import com.foodway.api.record.UpdateEstablishmentMobileProfile;
 import com.foodway.api.record.UpdateEstablishmentPersonal;
 import com.foodway.api.record.UpdateEstablishmentProfile;
 import jakarta.persistence.*;
@@ -108,6 +110,7 @@ public class Establishment extends User {
         this.tags = new HashSet<>();
     }
 
+   
     public Set<Tags> getTags() {
         return tags;
     }
@@ -273,4 +276,39 @@ public class Establishment extends User {
             super.setPassword(encodePassword(establishment.get().passwordNew()));
         }
     }
+    public void updateProfileEstablishmentMobile(UpdateEstablishmentMobileProfile establishmentProfile){
+        if(establishmentProfile.profilePhoto() != null && !establishmentProfile.profilePhoto().isEmpty()) {
+            super.setProfilePhoto(establishmentProfile.profilePhoto());
+        }
+        if(establishmentProfile.establishmentName() != null && !establishmentProfile.establishmentName().isEmpty()){
+            setEstablishmentName(establishmentProfile.establishmentName());
+        }
+        if(establishmentProfile.phone() != null && !establishmentProfile.phone().isEmpty()) {
+            setPhone(establishmentProfile.phone());
+        }
+        if(establishmentProfile.description() != null && !establishmentProfile.description().isEmpty()) {
+            setDescription(establishmentProfile.description());
+        }
+    }
+    public void updateAccountEstablishmentMobile(UpdateEstablishmentMobileAccount establishment){
+        if (establishment.name() != null && !establishment.name().isEmpty()) {
+            super.setName(establishment.name());
+        }
+        if (establishment.email() != null && !establishment.email().isEmpty()) {
+            super.setEmail(establishment.email());
+        }
+        if (establishment.newEmail() != null && !establishment.newEmail().isEmpty()) {
+            super.setEmail(establishment.newEmail());
+        }
+        if (establishment.password() != null && !establishment.password().isEmpty()) {
+            super.setPassword(encodePassword(establishment.password()));
+        }
+        if (establishment.newPassword() != null && !establishment.newPassword().isEmpty()) {
+            super.setPassword(encodePassword(establishment.newPassword()));
+        }
+        if (establishment.cep() != null && !establishment.cep().isEmpty()) {
+            this.address.setCep(establishment.cep());
+        }
+    }
+
 }
