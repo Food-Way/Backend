@@ -12,8 +12,7 @@ import okhttp3.Response;
 import java.io.IOException; // Add this import statement
 @Service
  public class SentimentalTextService {
-    @Value("${LLMURL}")
-    private String urlCollab;
+    private String urlCollab = "https://f8a1-34-105-122-67.ngrok-free.app/predict";
     public ESentiment getSentimental(String comment){
         Response response;
         OkHttpClient client = new OkHttpClient().newBuilder()
