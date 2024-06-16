@@ -93,3 +93,8 @@ resource "aws_instance" "public_ec2_backend-2" {
     EOF
   )
 }
+
+resource "aws_eip_association" "eip_assoc_01" {
+  instance_id   = aws_instance.public_ec2_backend-1.id
+  allocation_id = "eipalloc-0f93c5511057aa5a5"
+}
