@@ -11,8 +11,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import java.io.IOException; // Add this import statement
 @Service
- public class SentimentalTextService {
-    final private String urlCollab = System.getenv("LLM_URL");
+ public class SentimentalText {
+    private String urlCollab = System.getenv("LLM_URL");
     public ESentiment getSentimental(String comment){
         Response response;
         OkHttpClient client = new OkHttpClient().newBuilder()
