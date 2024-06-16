@@ -10,7 +10,7 @@ import com.foodway.api.record.UpdateCommentData;
 import com.foodway.api.repository.*;
 import com.foodway.api.service.customer.CustomerService;
 import com.foodway.api.service.establishment.EstablishmentService;
-import com.foodway.api.utils.SentimentalTextService;
+import com.foodway.api.utils.SentimentalText;
 
 import java.util.*; 
 
@@ -28,13 +28,13 @@ public class CommentService {
     @Autowired
     UpvoteRepository upvoteRepository;
     @Autowired
-    private EstablishmentService establishmentService;
+    EstablishmentService establishmentService;
     @Autowired
     CustomerService customerService;
     @Autowired
     private RateRepository rateRepository;
     @Autowired
-    private SentimentalTextService sentimentalText;
+    SentimentalText sentimentalText;
 
     public ResponseEntity<Comment> postComment(RequestComment data) {
         final Customer customer = customerService.getCustomer(data.idCustomer()).getBody();
