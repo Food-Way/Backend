@@ -3,3 +3,5 @@ API/.vscode/launch.json
 API/rabbitmq.config
 API/rabbitmq-enabled-plugins
 API/rabbitmq-defs.json
+API/dump.sql
+API/.env
