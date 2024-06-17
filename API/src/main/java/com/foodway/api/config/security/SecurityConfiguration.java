@@ -64,7 +64,9 @@ public class SecurityConfiguration {
             new AntPathRequestMatcher("/products/**"),
             new AntPathRequestMatcher("/files/**"),
             new AntPathRequestMatcher("/upvotes/**"),
-            new AntPathRequestMatcher("/states/**")
+            new AntPathRequestMatcher("/states/**"),
+            new AntPathRequestMatcher("/comments/**"),
+            new AntPathRequestMatcher("/rates/**")
     };
 
     @Bean
