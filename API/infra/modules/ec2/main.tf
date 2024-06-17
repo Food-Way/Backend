@@ -9,7 +9,7 @@ resource "aws_instance" "public_ec2_backend-1" {
   instance_type     = var.inst_type
   ebs_block_device {
       device_name = "/dev/sda1"
-      volume_size = 8
+      volume_size = 16
       volume_type = "gp3"
   }
   key_name                    = "shh_key"
