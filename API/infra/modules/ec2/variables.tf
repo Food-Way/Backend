@@ -13,7 +13,7 @@ variable "key_pair_name" {
 variable "ami" {
   description = "AMI ID"
   type        = string
-  default     = "ami-002f5904251202468"
+  default     = "ami-0cc52c2dfd2d4e0cc"
 }
 
 variable "inst_type" {
