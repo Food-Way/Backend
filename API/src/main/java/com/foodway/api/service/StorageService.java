@@ -1,16 +1,17 @@
 package com.foodway.api.service;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.foodway.api.handler.exceptions.ProductNotFoundException;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.foodway.api.handler.exceptions.UserNotFoundException;
 import com.foodway.api.model.Customer;
 import com.foodway.api.model.Enums.ETypeUser;
 import com.foodway.api.model.Establishment;
-import com.foodway.api.model.Product;
+
 import com.foodway.api.model.User;
 import com.foodway.api.repository.CustomerRepository;
 import com.foodway.api.repository.EstablishmentRepository;
 import com.foodway.api.repository.ProductRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -21,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import com.amazonaws.services.s3.model.*;
+
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -59,6 +62,7 @@ public class StorageService {
         }
         return ResponseEntity.status(200).body(profilePhotoUrl);
     }
+
     public ResponseEntity<String> saveProfilePhoto(MultipartFile file, UUID idUser, ETypeUser typeUser) {
         String profilePhotoUrl;
         ObjectTagging tagging = new ObjectTagging(Arrays.asList(new Tag("environment", "public")));
@@ -80,26 +84,46 @@ public class StorageService {
         }
         return ResponseEntity.status(200).body(profilePhotoUrl);
     }
-    public ResponseEntity<String> saveProductImage(MultipartFile file, UUID idProduct){
+
+
+    public ResponseEntity<String> saveProductImage(MultipartFile file, UUID idUser, ETypeUser typeUser) {
+        Long count = productRepository.count();
         String profilePhotoUrl;
         ObjectTagging tagging = new ObjectTagging(Arrays.asList(new Tag("environment", "public")));
-        Optional<Product> optionalProduct = productRepository.findById(idProduct);
-        if (optionalProduct.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
+        Optional<? extends User> userOptional = findUserByIdAndType(idUser, typeUser);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("User not found");
         }
-        Product product = optionalProduct.get();
-        String fileName = generateFileName(product.getName(), "product-image");
-        String fullPath = "product" + "/images/" + product.getIdProduct() + "/" + fileName;
+        User user = userOptional.get();
+        String fileName = generateFileName(user.getName(), "profile-photo");
+        String basePath = user instanceof Customer ? "customer" : "establishment";
+        String fullPath = basePath + "/product/" + user.getIdUser() + "/" + fileName + (count + 1);
         try {
             uploadFile(file, fullPath, tagging);
             profilePhotoUrl = "https://foodway.s3.amazonaws.com/" + fullPath;
-            product.setPhoto(profilePhotoUrl);
-            productRepository.save(product);
+            user.setProfilePhoto(profilePhotoUrl);
+            saveUser(user);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload file due to: " + e.getMessage());
         }
         return ResponseEntity.status(200).body(profilePhotoUrl);
     }
+
+//    public ResponseEntity<String> saveProductImage(MultipartFile file){
+//        String profilePhotoUrl;
+//        ObjectTagging tagging = new ObjectTagging(Arrays.asList(new Tag("environment", "public")));
+//        LocalDateTime dateTime = LocalDateTime.now();
+//
+//        String fileName = generateFileName( "produto","product-image");
+//        String fullPath = "product" + "/images/" + fileName;
+//        try {
+//            uploadFile(file, fullPath, tagging);
+//            profilePhotoUrl = "https://foodway.s3.amazonaws.com/" + fullPath;
+//        } catch (Exception e) {
+//            throw new RuntimeException("Failed to upload file due to: " + e.getMessage());
+//        }
+//        return ResponseEntity.status(200).body(profilePhotoUrl);
+//    }
     private Optional<? extends User> findUserByIdAndType(UUID idUser, ETypeUser typeUser) {
         if (typeUser == ETypeUser.CLIENT) {
             return customerRepository.findById(idUser);

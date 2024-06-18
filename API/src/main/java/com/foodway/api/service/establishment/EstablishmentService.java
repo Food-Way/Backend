@@ -155,7 +155,6 @@ public class EstablishmentService {
         MapsLongLag mapsLongLag = mapsClient.getLongLat(address.number(), address.street(), address.city(), GMapsApiKey);
         establishment.getAddress().setLatitude(mapsLongLag.results().get(0).geometry().location().lat());
         establishment.getAddress().setLongitude(mapsLongLag.results().get(0).geometry().location().lng());
-
         Establishment establishmentSaved = establishmentRepository.save(establishment);
         return ResponseEntity.status(201).body(establishmentSaved);
     }

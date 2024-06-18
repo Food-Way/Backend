@@ -52,10 +52,11 @@ public class    S3Controller {
     @PostMapping("/upload-product-image")
     public ResponseEntity<String> uploadProductImage (
             @RequestParam("file") MultipartFile file,
-            @RequestParam("idUser") UUID idProduct
+            @RequestParam("idUser") UUID idUser,
+            @RequestParam("typeUser") ETypeUser typeUser
     )
     {
-        return s3Service.saveProductImage(file,idProduct);
+        return s3Service.saveProductImage(file,idUser,typeUser);
     }
 
     @PostMapping("/update-credentials")
